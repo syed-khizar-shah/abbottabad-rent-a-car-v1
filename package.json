@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "node server.js",
+    "start": "node server.js",
     "lint": "eslint .",
-    "start": "next start",
     "server": "node server/index.js",
     "server:dev": "nodemon server/index.js",
     "seed": "node server/seed.js"
