@@ -1,5 +1,10 @@
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+const fs = require('fs');
+// Try .env.local first (Next.js convention), then .env
+const envLocalPath = path.resolve(__dirname, '../.env.local');
+const envPath = path.resolve(__dirname, '../.env');
+const envFile = fs.existsSync(envLocalPath) ? envLocalPath : envPath;
+require('dotenv').config({ path: envFile });
 const mongoose = require('mongoose');
 const Admin = require('./models/Admin');
 const Category = require('./models/Category');
@@ -442,7 +447,7 @@ async function seedDatabase() {
         }
       ],
       brandsSectionTitle: 'Trusted Brands in Our Premium Fleet',
-      brandsSectionSubtitle: '',
+      brandsSectionSubtitle: 'Premium automotive brands trusted by thousands',
       brands: ['Toyota', 'Honda', 'Hyundai', 'Suzuki', 'KIA', 'Nissan'],
       featuredSectionTitle: 'Featured Vehicles',
       featuredSectionSubtitle: 'Curated selection of premium vehicles offering the perfect fusion of luxury, performance, and exceptional value',

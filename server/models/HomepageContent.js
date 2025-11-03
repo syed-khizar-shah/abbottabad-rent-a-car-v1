@@ -54,7 +54,7 @@ const homepageContentSchema = new mongoose.Schema({
   
   // Brands Section
   brandsSectionTitle: { type: String, required: true },
-  brandsSectionSubtitle: { type: String, required: true },
+  brandsSectionSubtitle: { type: String, default: '' },
   brands: [{ type: String }],
   
   // Featured Vehicles Section

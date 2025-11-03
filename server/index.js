@@ -2,7 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-require('dotenv').config();
+const path = require('path');
+const fs = require('fs');
+// Try .env.local first (Next.js convention), then .env
+const envLocalPath = path.resolve(__dirname, '../.env.local');
+const envPath = path.resolve(__dirname, '../.env');
+const envFile = fs.existsSync(envLocalPath) ? envLocalPath : envPath;
+require('dotenv').config({ path: envFile });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
