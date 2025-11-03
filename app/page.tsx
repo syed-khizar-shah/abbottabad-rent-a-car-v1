@@ -41,9 +41,11 @@ export default function HomePage() {
   const [categories, setCategories] = useState<any[]>([])
   const [featuredCars, setFeaturedCars] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     loadData()
+    setMounted(true)
   }, [])
 
   const loadData = async () => {
@@ -64,11 +66,12 @@ export default function HomePage() {
     }
   }
 
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-    layoutEffect: false,
-  })
+  // Only use scroll when component is mounted and ref exists
+  const scrollOptions = mounted && heroRef.current 
+    ? { target: heroRef, offset: ["start start", "end start"] as const, layoutEffect: false }
+    : { layoutEffect: false }
+  
+  const { scrollYProgress } = useScroll(scrollOptions)
 
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.3])
