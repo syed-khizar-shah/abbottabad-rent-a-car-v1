@@ -2,8 +2,38 @@
 
 import { Phone, MessageCircle } from "lucide-react"
 import { motion } from "framer-motion"
+import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
+import { authApi } from "@/lib/api"
 
 export function ContactButtons() {
+  const [isAdmin, setIsAdmin] = useState(false)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    checkAdminAuth()
+  }, [pathname])
+
+  const checkAdminAuth = async () => {
+    // Don't show buttons on admin pages or if admin is logged in
+    if (pathname?.startsWith("/admin")) {
+      setIsAdmin(true)
+      return
+    }
+
+    try {
+      await authApi.me()
+      setIsAdmin(true)
+    } catch {
+      setIsAdmin(false)
+    }
+  }
+
+  // Hide buttons if admin is logged in
+  if (isAdmin) {
+    return null
+  }
+
   return (
     <motion.div
       className="fixed bottom-8 right-8 z-50 flex flex-col gap-4"
