@@ -1,5 +1,10 @@
+"use client"
+
 import Link from "next/link"
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react"
+import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
+import { authApi } from "@/lib/api"
 
 const footerLinks = {
   company: [
@@ -23,6 +28,33 @@ const footerLinks = {
 }
 
 export function Footer() {
+  const [isAdmin, setIsAdmin] = useState(false)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    checkAdminAuth()
+  }, [pathname])
+
+  const checkAdminAuth = async () => {
+    // Don't show footer on admin pages or if admin is logged in
+    if (pathname?.startsWith("/admin")) {
+      setIsAdmin(true)
+      return
+    }
+
+    try {
+      await authApi.me()
+      setIsAdmin(true)
+    } catch {
+      setIsAdmin(false)
+    }
+  }
+
+  // Hide footer if admin is logged in
+  if (isAdmin) {
+    return null
+  }
+
   return (
     <footer className="bg-gradient-to-br from-muted/50 via-muted/30 to-background border-t border-border/50">
       <div className="container mx-auto px-4 sm:px-6 py-16 md:py-20">
