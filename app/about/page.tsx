@@ -45,7 +45,7 @@ export default function AboutPage() {
 
   // Only use scroll when component is mounted and ref exists
   const scrollOptions = mounted && heroRef.current 
-    ? { target: heroRef, offset: ["start start", "end start"] as const, layoutEffect: false }
+    ? { target: heroRef, offset: ["start start", "end start"], layoutEffect: false }
     : { layoutEffect: false }
   
   const { scrollYProgress } = useScroll(scrollOptions)
