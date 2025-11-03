@@ -20,7 +20,7 @@ export function Header() {
   const checkAdminAuth = async () => {
     // Don't check if we're already on admin pages
     if (pathname?.startsWith("/admin")) {
-      setIsAdmin(true)
+      setIsAdmin(false)
       return
     }
 
@@ -32,7 +32,7 @@ export function Header() {
     }
   }
 
-  // Don't show header on admin pages
+  // Don't show header on admin pages (they have their own sidebar)
   if (pathname?.startsWith("/admin")) {
     return null
   }
@@ -79,27 +79,47 @@ export function Header() {
               </Link>
             </div>
 
-            <nav className="hidden lg:flex items-center gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="relative px-4 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 hover:text-foreground rounded-md hover:bg-accent/5 group"
-                >
-                  <span className="relative z-10">{link.label}</span>
-                  <span className="absolute inset-0 bg-accent/10 scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-md" />
-                </Link>
-              ))}
-            </nav>
+            {!isAdmin && (
+              <nav className="hidden lg:flex items-center gap-1">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="relative px-4 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 hover:text-foreground rounded-md hover:bg-accent/5 group"
+                  >
+                    <span className="relative z-10">{link.label}</span>
+                    <span className="absolute inset-0 bg-accent/10 scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-md" />
+                  </Link>
+                ))}
+              </nav>
+            )}
+            {isAdmin && (
+              <div className="hidden lg:flex items-center gap-2 text-sm text-muted-foreground">
+                <span>Admin Mode</span>
+              </div>
+            )}
 
-            <div className="hidden lg:block">
-              <Button 
-                asChild
-                className="shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95"
-              >
-                <Link href="/contact">Contact Us</Link>
-              </Button>
-            </div>
+            {!isAdmin && (
+              <div className="hidden lg:block">
+                <Button 
+                  asChild
+                  className="shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95"
+                >
+                  <Link href="/contact">Contact Us</Link>
+                </Button>
+              </div>
+            )}
+            {isAdmin && (
+              <div className="hidden lg:block">
+                <Button 
+                  asChild
+                  variant="outline"
+                  className="shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95"
+                >
+                  <Link href="/admin/dashboard">Admin Panel</Link>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </header>
