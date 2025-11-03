@@ -1,13 +1,41 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import { Menu, Car } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { MobileNav } from "@/components/mobile-nav"
+import { authApi } from "@/lib/api"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    checkAdminAuth()
+  }, [pathname])
+
+  const checkAdminAuth = async () => {
+    // Don't check if we're already on admin pages
+    if (pathname?.startsWith("/admin")) {
+      setIsAdmin(true)
+      return
+    }
+
+    try {
+      await authApi.me()
+      setIsAdmin(true)
+    } catch {
+      setIsAdmin(false)
+    }
+  }
+
+  // Don't show header on admin pages
+  if (pathname?.startsWith("/admin")) {
+    return null
+  }
 
   const navLinks = [
     { href: "/", label: "Home" },

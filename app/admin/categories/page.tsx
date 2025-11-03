@@ -64,7 +64,7 @@ export default function AdminCategoriesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 sm:px-6 py-8">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <Button variant="ghost" asChild>
@@ -105,6 +105,11 @@ export default function AdminCategoriesPage() {
                   <span className="text-xl font-bold">${category.priceFrom}/day</span>
                 </div>
                 <div className="flex gap-2">
+                  <Button variant="outline" size="sm" asChild className="flex-1">
+                    <Link href={`/admin/categories/${category._id}/cars`}>
+                      View Cars
+                    </Link>
+                  </Button>
                   <Button variant="outline" size="sm" asChild className="flex-1">
                     <Link href={`/admin/categories/${category._id}`}>
                       <Edit className="mr-2 h-4 w-4" />

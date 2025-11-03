@@ -74,7 +74,7 @@ export default function NewCategoryPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="container mx-auto px-4 sm:px-6 py-8 max-w-2xl">
         <Button variant="ghost" asChild className="mb-6">
           <Link href="/admin/categories">
             <ArrowLeft className="mr-2 h-4 w-4" />
