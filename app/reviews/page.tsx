@@ -1,40 +1,42 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Star, Quote, ThumbsUp, Calendar, Filter, Loader2 } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
-import { motion } from "framer-motion"
-import { reviewsApi } from "@/lib/api"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Star, Quote, ThumbsUp, Calendar, Filter, Loader2 } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { reviewsApi } from "@/lib/api";
 
 export default function ReviewsPage() {
-  const [activeCategory, setActiveCategory] = useState("all")
-  const [loading, setLoading] = useState(true)
-  const [reviews, setReviews] = useState<any[]>([])
-  const [stats, setStats] = useState<any>(null)
-  const [categories, setCategories] = useState<any[]>([])
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const [categories, setCategories] = useState<any[]>([]);
 
   useEffect(() => {
-    loadData()
-  }, [activeCategory])
+    loadData();
+  }, [activeCategory]);
 
   const loadData = async () => {
     try {
-      setLoading(true)
-      const category = activeCategory === "all" ? undefined : activeCategory
-      const data = await reviewsApi.getAll(category ? { category } : undefined)
-      setReviews(data.reviews || [])
-      setStats(data.stats || { averageRating: 0, totalReviews: 0, breakdown: [] })
-      setCategories(data.categories || [])
+      setLoading(true);
+      const category = activeCategory === "all" ? undefined : activeCategory;
+      const data = await reviewsApi.getAll(category ? { category } : undefined);
+      setReviews(data.reviews || []);
+      setStats(
+        data.stats || { averageRating: 0, totalReviews: 0, breakdown: [] }
+      );
+      setCategories(data.categories || []);
     } catch (err) {
-      console.error("Error loading reviews:", err)
+      console.error("Error loading reviews:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex flex-col">
@@ -66,7 +68,10 @@ export default function ReviewsPage() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <Badge variant="outline" className="text-sm bg-background/20 backdrop-blur-sm">
+              <Badge
+                variant="outline"
+                className="text-sm bg-background/20 backdrop-blur-sm"
+              >
                 Customer Testimonials
               </Badge>
             </motion.div>
@@ -84,7 +89,8 @@ export default function ReviewsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              Real experiences from real customers who've trusted us with their luxury automotive needs
+              Real experiences from real customers who've trusted us with their
+              luxury automotive needs
             </motion.p>
           </motion.div>
         </div>
@@ -104,7 +110,10 @@ export default function ReviewsPage() {
                   <div>
                     <div className="flex gap-1 mb-2 justify-center lg:justify-start">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-5 w-5 md:h-6 md:w-6 fill-accent text-accent" />
+                        <Star
+                          key={i}
+                          className="h-5 w-5 md:h-6 md:w-6 fill-accent text-accent"
+                        />
                       ))}
                     </div>
                     <p className="text-sm md:text-base text-muted-foreground">
@@ -120,7 +129,10 @@ export default function ReviewsPage() {
               {/* Rating Breakdown */}
               <div className="space-y-3 animate-in fade-in slide-in-from-right duration-700">
                 {(stats?.breakdown || []).map((item: any) => (
-                  <div key={item.stars} className="flex items-center gap-3 md:gap-4">
+                  <div
+                    key={item.stars}
+                    className="flex items-center gap-3 md:gap-4"
+                  >
                     <div className="flex items-center gap-1 w-16 md:w-20">
                       <span className="text-sm font-medium">{item.stars}</span>
                       <Star className="h-4 w-4 fill-accent text-accent" />
@@ -131,7 +143,9 @@ export default function ReviewsPage() {
                         style={{ width: `${item.percentage}%` }}
                       />
                     </div>
-                    <span className="text-sm text-muted-foreground w-12 md:w-16 text-right">{item.count}</span>
+                    <span className="text-sm text-muted-foreground w-12 md:w-16 text-right">
+                      {item.count}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -149,12 +163,19 @@ export default function ReviewsPage() {
               {categories.map((category) => (
                 <Button
                   key={category.id}
-                  variant={category.id === activeCategory ? "default" : "outline"}
+                  variant={
+                    category.id === activeCategory ? "default" : "outline"
+                  }
                   className="whitespace-nowrap transition-all duration-300 hover:scale-105"
                   onClick={() => setActiveCategory(category.id)}
                 >
                   {category.name}
-                  <Badge variant={category.id === activeCategory ? "secondary" : "outline"} className="ml-2">
+                  <Badge
+                    variant={
+                      category.id === activeCategory ? "secondary" : "outline"
+                    }
+                    className="ml-2"
+                  >
                     {category.count}
                   </Badge>
                 </Button>
@@ -179,78 +200,93 @@ export default function ReviewsPage() {
                 </Card>
               ) : (
                 reviews.map((review, index) => (
-              <Card
-                key={review._id || review.id || index}
-                className="p-4 sm:p-6 md:p-8 hover:shadow-2xl hover:border-accent/50 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
-                  {/* Avatar */}
-                  <div className="flex sm:flex-col items-center sm:items-start gap-4 sm:gap-2">
-                    <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden shrink-0 ring-2 ring-accent/20">
-                      <Image 
-                        src={review.image || "/placeholder.svg"} 
-                        alt={review.name} 
-                        fill 
-                        className="object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = "/placeholder.svg"
-                        }}
-                      />
-                    </div>
-                    <div className="sm:text-center">
-                      <h3 className="font-bold text-sm md:text-base">{review.name}</h3>
-                      <p className="text-xs md:text-sm text-muted-foreground">{review.location}</p>
-                    </div>
-                  </div>
-
-                  {/* Review Content */}
-                  <div className="flex-1 space-y-3 md:space-y-4">
-                    <div className="flex flex-wrap items-center gap-3 md:gap-4">
-                      <div className="flex gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-4 w-4 md:h-5 md:w-5 ${
-                              i < review.rating ? "fill-accent text-accent" : "text-muted-foreground"
-                            }`}
+                  <Card
+                    key={review._id || review.id || index}
+                    className="p-4 sm:p-6 md:p-8 hover:shadow-2xl hover:border-accent/50 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
+                      {/* Avatar */}
+                      <div className="flex sm:flex-col items-center sm:items-start gap-4 sm:gap-2">
+                        <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden shrink-0 ring-2 ring-accent/20">
+                          <Image
+                            src={review.image || "/placeholder.svg"}
+                            alt={review.name}
+                            fill
+                            className="object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src =
+                                "/placeholder.svg";
+                            }}
                           />
-                        ))}
+                        </div>
+                        <div className="sm:text-center">
+                          <h3 className="font-bold text-sm md:text-base">
+                            {review.name}
+                          </h3>
+                          <p className="text-xs md:text-sm text-muted-foreground">
+                            {review.location}
+                          </p>
+                        </div>
                       </div>
-                      {review.verified && (
-                        <Badge variant="secondary" className="text-xs">
-                          Verified Rental
-                        </Badge>
-                      )}
-                      <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground ml-auto">
-                        <Calendar className="h-3 w-3 md:h-4 md:w-4" />
-                        {new Date(review.date).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </div>
-                    </div>
 
-                    <div>
-                      <p className="text-xs md:text-sm text-muted-foreground mb-2">Rented: {review.vehicle}</p>
-                      <div className="relative">
-                        <Quote className="absolute -top-2 -left-2 h-6 w-6 md:h-8 md:w-8 text-muted-foreground/20" />
-                        <p className="text-sm md:text-base text-muted-foreground pl-4 md:pl-6 leading-relaxed">
-                          {review.review}
-                        </p>
+                      {/* Review Content */}
+                      <div className="flex-1 space-y-3 md:space-y-4">
+                        <div className="flex flex-wrap items-center gap-3 md:gap-4">
+                          <div className="flex gap-1">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`h-4 w-4 md:h-5 md:w-5 ${
+                                  i < review.rating
+                                    ? "fill-accent text-accent"
+                                    : "text-muted-foreground"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          {review.verified && (
+                            <Badge variant="secondary" className="text-xs">
+                              Verified Rental
+                            </Badge>
+                          )}
+                          <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground ml-auto">
+                            <Calendar className="h-3 w-3 md:h-4 md:w-4" />
+                            {new Date(review.date).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })}
+                          </div>
+                        </div>
+
+                        <div>
+                          <p className="text-xs md:text-sm text-muted-foreground mb-2">
+                            Rented: {review.vehicle}
+                          </p>
+                          <div className="relative">
+                            <Quote className="absolute -top-2 -left-2 h-6 w-6 md:h-8 md:w-8 text-muted-foreground/20" />
+                            <p className="text-sm md:text-base text-muted-foreground pl-4 md:pl-6 leading-relaxed">
+                              {review.review}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 pt-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="gap-2 hover:bg-accent/10 transition-colors"
+                          >
+                            <ThumbsUp className="h-4 w-4" />
+                            <span className="text-xs md:text-sm">
+                              Helpful ({review.helpful})
+                            </span>
+                          </Button>
+                        </div>
                       </div>
                     </div>
-
-                    <div className="flex items-center gap-2 pt-2">
-                      <Button variant="ghost" size="sm" className="gap-2 hover:bg-accent/10 transition-colors">
-                        <ThumbsUp className="h-4 w-4" />
-                        <span className="text-xs md:text-sm">Helpful ({review.helpful})</span>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </Card>
+                  </Card>
                 ))
               )}
             </div>
@@ -262,9 +298,12 @@ export default function ReviewsPage() {
       <section className="py-12 md:py-16 bg-gradient-to-br from-muted/30 via-background to-muted/50">
         <div className="container mx-auto px-4">
           <Card className="p-6 sm:p-8 md:p-12 text-center max-w-3xl mx-auto shadow-xl animate-in fade-in zoom-in">
-            <h3 className="text-2xl md:text-3xl font-serif font-bold mb-4">Ready to Create Your Own Story?</h3>
+            <h3 className="text-2xl md:text-3xl font-serif font-bold mb-4">
+              Ready to Create Your Own Story?
+            </h3>
             <p className="text-sm md:text-base text-muted-foreground mb-6 leading-relaxed">
-              Join hundreds of satisfied customers and experience the luxury you deserve
+              Join hundreds of satisfied customers and experience the luxury you
+              deserve
             </p>
             <Button size="lg" className="w-full sm:w-auto" asChild>
               <Link href="/fleet">Browse Our Fleet</Link>
@@ -273,5 +312,5 @@ export default function ReviewsPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }
