@@ -1,37 +1,43 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { MessageCircle, Phone, Mail, ArrowRight, Loader2 } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
-import { motion } from "framer-motion"
-import { AnimatedSection, FadeIn } from "@/components/animated-section"
-import { faqsApi } from "@/lib/api"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { MessageCircle, Phone, Mail, ArrowRight, Loader2 } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { AnimatedSection, FadeIn } from "@/components/animated-section";
+import { faqsApi } from "@/lib/api";
 
 export default function FAQsPage() {
-  const [loading, setLoading] = useState(true)
-  const [faqs, setFaqs] = useState<any[]>([])
-  const [categories, setCategories] = useState<any[]>([])
+  const [loading, setLoading] = useState(true);
+  const [faqs, setFaqs] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
 
   useEffect(() => {
-    loadData()
-  }, [])
+    loadData();
+  }, []);
 
   const loadData = async () => {
     try {
-      setLoading(true)
-      const data = await faqsApi.getAll()
-      setFaqs(data.faqs || [])
-      setCategories(data.categories || [])
+      setLoading(true);
+      const data = await faqsApi.getAll();
+      setFaqs(data.faqs || []);
+      setCategories(data.categories || []);
     } catch (err) {
-      console.error("Error loading FAQs:", err)
+      console.error("Error loading FAQs:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -62,7 +68,10 @@ export default function FAQsPage() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <Badge variant="outline" className="text-sm bg-background/20 backdrop-blur-sm">
+              <Badge
+                variant="outline"
+                className="text-sm bg-background/20 backdrop-blur-sm"
+              >
                 Help Center
               </Badge>
             </motion.div>
@@ -80,7 +89,8 @@ export default function FAQsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              Find answers to common questions about our luxury car rental services
+              Find answers to common questions about our luxury car rental
+              services
             </motion.p>
           </motion.div>
         </div>
@@ -91,16 +101,25 @@ export default function FAQsPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <FadeIn>
-              <p className="text-center text-muted-foreground mb-6">Can't find what you're looking for?</p>
+              <p className="text-center text-muted-foreground mb-6">
+                Can't find what you're looking for?
+              </p>
             </FadeIn>
             <div className="flex flex-wrap justify-center gap-4">
               {[
                 { icon: MessageCircle, text: "Live Chat", href: "/contact" },
                 { icon: Phone, text: "Call Us", href: "tel:+92-300-1234567" },
-                { icon: Mail, text: "Email Support", href: "mailto:info@abbottabadrentacar.com" },
+                {
+                  icon: Mail,
+                  text: "Email Support",
+                  href: "mailto:info@abbottabadrentacar.com",
+                },
               ].map((item, index) => (
                 <FadeIn key={item.text} delay={index * 0.1}>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
                     <Button variant="outline" asChild>
                       <Link href={item.href}>
                         <item.icon className="mr-2 h-4 w-4" />
@@ -118,25 +137,35 @@ export default function FAQsPage() {
       {/* Category Navigation */}
       <section className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm border-b border-border py-4">
         <div className="container mx-auto px-4">
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            {faqCategories.map((category, index) => (
-              <motion.div
-                key={category.id}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-              >
-                <Button variant="outline" className="whitespace-nowrap bg-transparent" asChild>
-                  <a href={`#${category.id}`}>
-                    {category.name}
-                    <Badge variant="secondary" className="ml-2">
-                      {category.count}
-                    </Badge>
-                  </a>
-                </Button>
-              </motion.div>
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center">
+              <Loader2 className="h-5 w-5 animate-spin text-accent" />
+            </div>
+          ) : (
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+              {categories.map((category, index) => (
+                <motion.div
+                  key={category.id}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                >
+                  <Button
+                    variant="outline"
+                    className="whitespace-nowrap bg-transparent"
+                    asChild
+                  >
+                    <a href={`#${category.id}`}>
+                      {category.name}
+                      <Badge variant="secondary" className="ml-2">
+                        {category.count}
+                      </Badge>
+                    </a>
+                  </Button>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -155,14 +184,22 @@ export default function FAQsPage() {
                 </Card>
               ) : (
                 categories.map((category, catIndex) => {
-                  const categoryFaqs = faqs.filter((faq) => faq.category === category.id)
-                  if (categoryFaqs.length === 0) return null
-                  
+                  const categoryFaqs = faqs.filter(
+                    (faq) => faq.category === category.id
+                  );
+                  if (categoryFaqs.length === 0) return null;
+
                   return (
                     <AnimatedSection key={category.id} delay={catIndex * 0.1}>
                       <div id={category.id} className="scroll-mt-32">
-                        <h2 className="text-3xl font-serif font-bold mb-6">{category.name}</h2>
-                        <Accordion type="single" collapsible className="space-y-4">
+                        <h2 className="text-3xl font-serif font-bold mb-6">
+                          {category.name}
+                        </h2>
+                        <Accordion
+                          type="single"
+                          collapsible
+                          className="space-y-4"
+                        >
                           {categoryFaqs.map((faq, index) => (
                             <motion.div
                               key={faq._id || index}
@@ -171,18 +208,25 @@ export default function FAQsPage() {
                               viewport={{ once: true, amount: 0.3 }}
                               transition={{ duration: 0.5, delay: index * 0.1 }}
                             >
-                              <AccordionItem value={`${category.id}-${index}`} className="border rounded-lg px-6">
+                              <AccordionItem
+                                value={`${category.id}-${index}`}
+                                className="border rounded-lg px-6"
+                              >
                                 <AccordionTrigger className="text-left hover:no-underline py-6">
-                                  <span className="font-semibold">{faq.question}</span>
+                                  <span className="font-semibold">
+                                    {faq.question}
+                                  </span>
                                 </AccordionTrigger>
-                                <AccordionContent className="text-muted-foreground pb-6">{faq.answer}</AccordionContent>
+                                <AccordionContent className="text-muted-foreground pb-6">
+                                  {faq.answer}
+                                </AccordionContent>
                               </AccordionItem>
                             </motion.div>
                           ))}
                         </Accordion>
                       </div>
                     </AnimatedSection>
-                  )
+                  );
                 })
               )}
             </div>
@@ -195,11 +239,17 @@ export default function FAQsPage() {
         <div className="container mx-auto px-4">
           <AnimatedSection>
             <div className="max-w-3xl mx-auto text-center space-y-6">
-              <h2 className="text-4xl font-serif font-bold">Still Have Questions?</h2>
+              <h2 className="text-4xl font-serif font-bold">
+                Still Have Questions?
+              </h2>
               <p className="text-xl opacity-90">
-                Our concierge team is available 24/7 to assist you with any inquiries
+                Our concierge team is available 24/7 to assist you with any
+                inquiries
               </p>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Button size="lg" variant="secondary" asChild>
                   <Link href="/contact">
                     Contact Our Team
@@ -212,5 +262,5 @@ export default function FAQsPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }
