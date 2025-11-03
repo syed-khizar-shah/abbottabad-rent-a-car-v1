@@ -1,117 +1,40 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Star, Quote, ThumbsUp, Calendar, Filter } from "lucide-react"
+import { Star, Quote, ThumbsUp, Calendar, Filter, Loader2 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
-
-const overallStats = {
-  averageRating: 4.9,
-  totalReviews: 247,
-  breakdown: [
-    { stars: 5, count: 198, percentage: 80 },
-    { stars: 4, count: 42, percentage: 17 },
-    { stars: 3, count: 5, percentage: 2 },
-    { stars: 2, count: 2, percentage: 1 },
-    { stars: 1, count: 0, percentage: 0 },
-  ],
-}
-
-const reviews = [
-  {
-    id: 1,
-    name: "Imran Ahmed",
-    location: "Islamabad",
-    rating: 5,
-    date: "2025-01-15",
-    vehicle: "Rolls-Royce Phantom",
-    image: "/placeholder.svg?key=rev1",
-    review:
-      "Absolutely exceptional service! Rented the Rolls-Royce Phantom for my wedding and it was the highlight of the day. The car was immaculate, the chauffeur was professional, and the entire experience was seamless. Worth every penny!",
-    helpful: 24,
-    verified: true,
-  },
-  {
-    id: 2,
-    name: "Sarah Khan",
-    location: "Lahore",
-    rating: 5,
-    date: "2025-01-10",
-    vehicle: "Mercedes-Benz S-Class",
-    image: "/placeholder.svg?key=rev2",
-    review:
-      "I've used several luxury car rental services, but this one stands out. The Mercedes S-Class was in perfect condition, and the customer service was outstanding. They even delivered the car to my hotel. Highly recommended!",
-    helpful: 18,
-    verified: true,
-  },
-  {
-    id: 3,
-    name: "Ali Hassan",
-    location: "Karachi",
-    rating: 5,
-    date: "2025-01-05",
-    vehicle: "Bentley Continental GT",
-    image: "/placeholder.svg?key=rev3",
-    review:
-      "What an incredible experience! The Bentley was a dream to drive through the northern areas. The team was very accommodating with our itinerary changes and provided excellent support throughout our trip.",
-    helpful: 31,
-    verified: true,
-  },
-  {
-    id: 4,
-    name: "Fatima Malik",
-    location: "Abbottabad",
-    rating: 5,
-    date: "2024-12-28",
-    vehicle: "Range Rover Autobiography",
-    image: "/placeholder.svg?key=rev4",
-    review:
-      "Perfect for our family trip to Naran! The Range Rover handled the mountain roads beautifully. The staff was incredibly helpful and made sure we had everything we needed. Will definitely rent again!",
-    helpful: 15,
-    verified: true,
-  },
-  {
-    id: 5,
-    name: "Zain Abbas",
-    location: "Rawalpindi",
-    rating: 4,
-    date: "2024-12-20",
-    vehicle: "BMW 7 Series",
-    image: "/placeholder.svg?key=rev5",
-    review:
-      "Great service overall. The BMW was luxurious and comfortable for our business meetings. Only minor issue was a slight delay in pickup, but they compensated with an upgrade. Very professional team.",
-    helpful: 12,
-    verified: true,
-  },
-  {
-    id: 6,
-    name: "Ayesha Siddiqui",
-    location: "Peshawar",
-    rating: 5,
-    date: "2024-12-15",
-    vehicle: "Porsche 911 Turbo S",
-    image: "/placeholder.svg?key=rev6",
-    review:
-      "An unforgettable experience! Rented the Porsche for a special occasion and it exceeded all expectations. The car was pristine, powerful, and turned heads everywhere. The booking process was smooth and hassle-free.",
-    helpful: 28,
-    verified: true,
-  },
-]
-
-const categories = [
-  { id: "all", name: "All Reviews", count: 247 },
-  { id: "wedding", name: "Weddings", count: 89 },
-  { id: "business", name: "Business", count: 64 },
-  { id: "tourism", name: "Tourism", count: 72 },
-  { id: "special", name: "Special Events", count: 22 },
-]
+import { reviewsApi } from "@/lib/api"
 
 export default function ReviewsPage() {
   const [activeCategory, setActiveCategory] = useState("all")
+  const [loading, setLoading] = useState(true)
+  const [reviews, setReviews] = useState<any[]>([])
+  const [stats, setStats] = useState<any>(null)
+  const [categories, setCategories] = useState<any[]>([])
+
+  useEffect(() => {
+    loadData()
+  }, [activeCategory])
+
+  const loadData = async () => {
+    try {
+      setLoading(true)
+      const category = activeCategory === "all" ? undefined : activeCategory
+      const data = await reviewsApi.getAll(category ? { category } : undefined)
+      setReviews(data.reviews || [])
+      setStats(data.stats || { averageRating: 0, totalReviews: 0, breakdown: [] })
+      setCategories(data.categories || [])
+    } catch (err) {
+      console.error("Error loading reviews:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="flex flex-col">
@@ -176,7 +99,7 @@ export default function ReviewsPage() {
               <div className="text-center lg:text-left space-y-4 md:space-y-6 animate-in fade-in slide-in-from-left duration-700">
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 md:gap-6">
                   <div className="text-5xl md:text-6xl lg:text-7xl font-bold text-accent">
-                    {overallStats.averageRating}
+                    {stats?.averageRating || 0}
                   </div>
                   <div>
                     <div className="flex gap-1 mb-2 justify-center lg:justify-start">
@@ -185,7 +108,7 @@ export default function ReviewsPage() {
                       ))}
                     </div>
                     <p className="text-sm md:text-base text-muted-foreground">
-                      Based on {overallStats.totalReviews} reviews
+                      Based on {stats?.totalReviews || 0} reviews
                     </p>
                   </div>
                 </div>
@@ -196,7 +119,7 @@ export default function ReviewsPage() {
 
               {/* Rating Breakdown */}
               <div className="space-y-3 animate-in fade-in slide-in-from-right duration-700">
-                {overallStats.breakdown.map((item) => (
+                {(stats?.breakdown || []).map((item: any) => (
                   <div key={item.stars} className="flex items-center gap-3 md:gap-4">
                     <div className="flex items-center gap-1 w-16 md:w-20">
                       <span className="text-sm font-medium">{item.stars}</span>
@@ -244,10 +167,20 @@ export default function ReviewsPage() {
       {/* Reviews Grid */}
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto space-y-6">
-            {reviews.map((review, index) => (
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-accent" />
+            </div>
+          ) : (
+            <div className="max-w-5xl mx-auto space-y-6">
+              {reviews.length === 0 ? (
+                <Card className="p-8 text-center">
+                  <p className="text-muted-foreground">No reviews found.</p>
+                </Card>
+              ) : (
+                reviews.map((review, index) => (
               <Card
-                key={review.id}
+                key={review._id || review.id || index}
                 className="p-4 sm:p-6 md:p-8 hover:shadow-2xl hover:border-accent/50 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -255,7 +188,15 @@ export default function ReviewsPage() {
                   {/* Avatar */}
                   <div className="flex sm:flex-col items-center sm:items-start gap-4 sm:gap-2">
                     <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden shrink-0 ring-2 ring-accent/20">
-                      <Image src={review.image || "/placeholder.svg"} alt={review.name} fill className="object-cover" />
+                      <Image 
+                        src={review.image || "/placeholder.svg"} 
+                        alt={review.name} 
+                        fill 
+                        className="object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "/placeholder.svg"
+                        }}
+                      />
                     </div>
                     <div className="sm:text-center">
                       <h3 className="font-bold text-sm md:text-base">{review.name}</h3>
@@ -310,19 +251,10 @@ export default function ReviewsPage() {
                   </div>
                 </div>
               </Card>
-            ))}
-          </div>
-
-          {/* Load More */}
-          <div className="text-center mt-12">
-            <Button
-              variant="outline"
-              size="lg"
-              className="hover:bg-accent hover:text-accent-foreground transition-all duration-300 bg-transparent"
-            >
-              Load More Reviews
-            </Button>
-          </div>
+                ))
+              )}
+            </div>
+          )}
         </div>
       </section>
 

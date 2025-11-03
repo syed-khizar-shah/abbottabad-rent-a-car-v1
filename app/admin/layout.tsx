@@ -11,6 +11,8 @@ import {
   FileText, 
   MapPin,
   Users,
+  Star,
+  HelpCircle,
   LogOut,
   Menu,
   X
@@ -24,6 +26,8 @@ const menuItems = [
   { icon: FileText, label: "Homepage Content", href: "/admin/homepage" },
   { icon: MapPin, label: "Tour Routes", href: "/admin/tour-routes" },
   { icon: Users, label: "About Us", href: "/admin/about" },
+  { icon: Star, label: "Reviews", href: "/admin/reviews" },
+  { icon: HelpCircle, label: "FAQs", href: "/admin/faqs" },
 ]
 
 export default function AdminLayout({

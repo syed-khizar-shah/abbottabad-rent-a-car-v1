@@ -12,6 +12,8 @@ const Car = require('./models/Car');
 const HomepageContent = require('./models/HomepageContent');
 const TourRoutesContent = require('./models/TourRoutesContent');
 const AboutContent = require('./models/AboutContent');
+const Review = require('./models/Review');
+const FAQ = require('./models/FAQ');
 
 // Debug: Check if env vars are loaded
 console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
@@ -40,6 +42,8 @@ async function seedDatabase() {
     await HomepageContent.deleteMany({});
     await TourRoutesContent.deleteMany({});
     await AboutContent.deleteMany({});
+    await Review.deleteMany({});
+    await FAQ.deleteMany({});
 
     console.log('📦 Seeding database...');
 
@@ -739,6 +743,178 @@ async function seedDatabase() {
       ctaSecondaryButton: 'View Fleet',
     });
     console.log('✅ About content created');
+
+    // Seed Reviews
+    const reviews = await Review.insertMany([
+      {
+        name: 'Imran Ahmed',
+        location: 'Islamabad',
+        rating: 5,
+        date: '2025-01-15',
+        vehicle: 'Rolls-Royce Phantom',
+        image: '/placeholder.svg?key=rev1',
+        review: 'Absolutely exceptional service! Rented the Rolls-Royce Phantom for my wedding and it was the highlight of the day. The car was immaculate, the chauffeur was professional, and the entire experience was seamless. Worth every penny!',
+        helpful: 24,
+        verified: true,
+        category: 'wedding',
+      },
+      {
+        name: 'Sarah Khan',
+        location: 'Lahore',
+        rating: 5,
+        date: '2025-01-10',
+        vehicle: 'Mercedes-Benz S-Class',
+        image: '/placeholder.svg?key=rev2',
+        review: "I've used several luxury car rental services, but this one stands out. The Mercedes S-Class was in perfect condition, and the customer service was outstanding. They even delivered the car to my hotel. Highly recommended!",
+        helpful: 18,
+        verified: true,
+        category: 'business',
+      },
+      {
+        name: 'Ali Hassan',
+        location: 'Karachi',
+        rating: 5,
+        date: '2025-01-05',
+        vehicle: 'Bentley Continental GT',
+        image: '/placeholder.svg?key=rev3',
+        review: 'What an incredible experience! The Bentley was a dream to drive through the northern areas. The team was very accommodating with our itinerary changes and provided excellent support throughout our trip.',
+        helpful: 31,
+        verified: true,
+        category: 'tourism',
+      },
+      {
+        name: 'Fatima Malik',
+        location: 'Abbottabad',
+        rating: 5,
+        date: '2024-12-28',
+        vehicle: 'Range Rover Autobiography',
+        image: '/placeholder.svg?key=rev4',
+        review: 'Perfect for our family trip to Naran! The Range Rover handled the mountain roads beautifully. The staff was incredibly helpful and made sure we had everything we needed. Will definitely rent again!',
+        helpful: 15,
+        verified: true,
+        category: 'tourism',
+      },
+      {
+        name: 'Zain Abbas',
+        location: 'Rawalpindi',
+        rating: 4,
+        date: '2024-12-20',
+        vehicle: 'BMW 7 Series',
+        image: '/placeholder.svg?key=rev5',
+        review: 'Great service overall. The BMW was luxurious and comfortable for our business meetings. Only minor issue was a slight delay in pickup, but they compensated with an upgrade. Very professional team.',
+        helpful: 12,
+        verified: true,
+        category: 'business',
+      },
+      {
+        name: 'Ayesha Siddiqui',
+        location: 'Peshawar',
+        rating: 5,
+        date: '2024-12-15',
+        vehicle: 'Porsche 911 Turbo S',
+        image: '/placeholder.svg?key=rev6',
+        review: 'An unforgettable experience! Rented the Porsche for a special occasion and it exceeded all expectations. The car was pristine, powerful, and turned heads everywhere. The booking process was smooth and hassle-free.',
+        helpful: 28,
+        verified: true,
+        category: 'special',
+      },
+    ]);
+    console.log('✅ Reviews created');
+
+    // Seed FAQs
+    const faqs = await FAQ.insertMany([
+      {
+        category: 'booking',
+        question: 'How far in advance should I book?',
+        answer: 'We recommend booking at least 2-3 weeks in advance, especially for peak seasons (wedding season, holidays, summer months). However, we do accept last-minute bookings subject to availability. For special events like weddings, we suggest booking 2-3 months ahead to ensure your preferred vehicle is available.',
+        order: 1,
+      },
+      {
+        category: 'booking',
+        question: 'Can I modify or cancel my reservation?',
+        answer: 'Yes, you can modify or cancel your reservation. Modifications are free up to 48 hours before pickup. Cancellations made 7+ days before pickup receive a full refund. Cancellations 3-7 days before receive 50% refund. Cancellations within 48 hours are non-refundable. Please contact our concierge team for assistance.',
+        order: 2,
+      },
+      {
+        category: 'booking',
+        question: 'Do you offer delivery and pickup services?',
+        answer: 'Yes! We offer complimentary delivery and pickup within Abbottabad city limits. For locations outside the city, we charge a nominal fee based on distance. We can deliver to your home, hotel, airport, or any location of your choice. Our team will coordinate the exact timing with you.',
+        order: 3,
+      },
+      {
+        category: 'pricing',
+        question: 'What is included in the rental price?',
+        answer: 'Our rental prices include comprehensive insurance, 24/7 roadside assistance, regular maintenance, and basic cleaning. Fuel is not included - vehicles are provided with a full tank and should be returned with a full tank. Chauffeur services are available at an additional cost for select vehicles.',
+        order: 1,
+      },
+      {
+        category: 'pricing',
+        question: 'Are there any additional fees?',
+        answer: 'Additional fees may apply for: delivery outside city limits, chauffeur services, additional drivers, extended mileage (over 200km/day), late returns (charged hourly), and any traffic violations or damages. All fees are clearly outlined in your rental agreement before booking.',
+        order: 2,
+      },
+      {
+        category: 'pricing',
+        question: 'What payment methods do you accept?',
+        answer: 'We accept cash, bank transfers, all major credit/debit cards (Visa, Mastercard, American Express), and mobile payment apps (JazzCash, Easypaisa). A security deposit is required at pickup, which is refunded upon safe return of the vehicle. Corporate accounts with invoicing are also available.',
+        order: 3,
+      },
+      {
+        category: 'insurance',
+        question: 'What insurance coverage is provided?',
+        answer: 'All vehicles come with comprehensive insurance covering collision damage, theft, and third-party liability. The insurance includes a deductible amount that varies by vehicle class. Additional coverage options with reduced or zero deductible are available for purchase. Full details are provided in your rental agreement.',
+        order: 1,
+      },
+      {
+        category: 'insurance',
+        question: 'What happens if the vehicle is damaged?',
+        answer: 'In case of damage, immediately contact our 24/7 support line. Do not leave the scene. Our insurance covers most damages, but you\'ll be responsible for the deductible amount. If damage occurs due to negligence or violation of rental terms, additional charges may apply. Always file a police report for accidents.',
+        order: 2,
+      },
+      {
+        category: 'insurance',
+        question: 'Are there age restrictions for drivers?',
+        answer: 'Primary drivers must be at least 25 years old with a valid driver\'s license held for minimum 3 years. For ultra-luxury vehicles (Rolls-Royce, Bentley), the minimum age is 30 years with 5 years driving experience. International visitors must have an International Driving Permit along with their home country license.',
+        order: 3,
+      },
+      {
+        category: 'vehicles',
+        question: 'How often are vehicles serviced and maintained?',
+        answer: 'All vehicles undergo rigorous maintenance following manufacturer specifications. Each vehicle is professionally detailed and mechanically inspected before every rental. We maintain service records for complete transparency. Our fleet is regularly updated to ensure you always drive the latest models in pristine condition.',
+        order: 1,
+      },
+      {
+        category: 'vehicles',
+        question: 'Can I request specific vehicle features or colors?',
+        answer: 'Yes! When booking, you can specify preferences for color, interior options, and special features. While we\'ll do our best to accommodate, specific requests are subject to availability. For guaranteed specific vehicles, we recommend booking well in advance and confirming your requirements with our concierge team.',
+        order: 2,
+      },
+      {
+        category: 'vehicles',
+        question: 'Do you provide chauffeur services?',
+        answer: 'Yes, professional chauffeur services are available for all vehicles. Our chauffeurs are experienced, licensed, professionally trained, and familiar with all major routes in Pakistan. Chauffeur rates vary by vehicle and duration. This is especially popular for weddings, corporate events, and airport transfers.',
+        order: 3,
+      },
+      {
+        category: 'policies',
+        question: 'What is your fuel policy?',
+        answer: 'We operate on a \'Full-to-Full\' fuel policy. Vehicles are provided with a full tank and must be returned with a full tank. If returned with less fuel, you\'ll be charged for the missing fuel plus a refueling service fee. We recommend refueling at a nearby station before return.',
+        order: 1,
+      },
+      {
+        category: 'policies',
+        question: 'Can I take the vehicle outside of Pakistan?',
+        answer: 'No, our vehicles are not permitted to leave Pakistan. They can be driven anywhere within Pakistan, but cross-border travel is strictly prohibited due to insurance and legal restrictions. Violation of this policy will result in immediate termination of rental and forfeiture of security deposit.',
+        order: 2,
+      },
+      {
+        category: 'policies',
+        question: 'What documents do I need to rent a vehicle?',
+        answer: 'Required documents: Valid CNIC (for Pakistani residents) or passport (for international visitors), valid driver\'s license (held for minimum 3 years), proof of address, and a credit card for security deposit. International visitors also need an International Driving Permit. All documents must be original.',
+        order: 3,
+      },
+    ]);
+    console.log('✅ FAQs created');
 
     console.log('🎉 Database seeding completed successfully!');
     console.log(`📧 Admin login: ${admin.email} / admin123`);

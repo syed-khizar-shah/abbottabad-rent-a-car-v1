@@ -149,3 +149,67 @@ export const aboutApi = {
     }),
 };
 
+// Reviews API
+export const reviewsApi = {
+  getAll: (params?: { category?: string }) => {
+    const query = params?.category ? `?category=${params.category}` : '';
+    return apiRequest(`/reviews${query}`);
+  },
+  getOne: (id: string) => apiRequest(`/reviews/${id}`),
+  create: (formData: FormData) => {
+    return fetch(`${API_URL}/reviews`, {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+    }).then((res) => {
+      if (!res.ok) {
+        return res.json().then((err) => {
+          throw new Error(err.message || 'Request failed');
+        });
+      }
+      return res.json();
+    });
+  },
+  update: (id: string, formData: FormData) => {
+    return fetch(`${API_URL}/reviews/${id}`, {
+      method: 'PUT',
+      credentials: 'include',
+      body: formData,
+    }).then((res) => {
+      if (!res.ok) {
+        return res.json().then((err) => {
+          throw new Error(err.message || 'Request failed');
+        });
+      }
+      return res.json();
+    });
+  },
+  delete: (id: string) =>
+    apiRequest(`/reviews/${id}`, {
+      method: 'DELETE',
+    }),
+};
+
+// FAQs API
+export const faqsApi = {
+  getAll: (params?: { category?: string }) => {
+    const query = params?.category ? `?category=${params.category}` : '';
+    return apiRequest(`/faqs${query}`);
+  },
+  getOne: (id: string) => apiRequest(`/faqs/${id}`),
+  create: (data: any) =>
+    apiRequest('/faqs', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  update: (id: string, data: any) =>
+    apiRequest(`/faqs/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+  delete: (id: string) =>
+    apiRequest(`/faqs/${id}`, {
+      method: 'DELETE',
+    }),
+};
+
