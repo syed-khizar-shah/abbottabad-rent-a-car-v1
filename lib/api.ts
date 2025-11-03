@@ -115,3 +115,23 @@ export const adminApi = {
   getStats: () => apiRequest('/admin/stats'),
 };
 
+// Tour Routes API
+export const tourRoutesApi = {
+  get: () => apiRequest('/tour-routes'),
+  update: (data: any) =>
+    apiRequest('/tour-routes', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+};
+
+// About API
+export const aboutApi = {
+  get: () => apiRequest('/about'),
+  update: (data: any) =>
+    apiRequest('/about', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+};
+

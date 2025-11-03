@@ -9,6 +9,8 @@ import {
   Car, 
   Tag, 
   FileText, 
+  MapPin,
+  Users,
   LogOut,
   Menu,
   X
@@ -20,6 +22,8 @@ const menuItems = [
   { icon: Car, label: "Manage Cars", href: "/admin/cars" },
   { icon: Tag, label: "Manage Categories", href: "/admin/categories" },
   { icon: FileText, label: "Homepage Content", href: "/admin/homepage" },
+  { icon: MapPin, label: "Tour Routes", href: "/admin/tour-routes" },
+  { icon: Users, label: "About Us", href: "/admin/about" },
 ]
 
 export default function AdminLayout({

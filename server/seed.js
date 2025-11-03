@@ -10,6 +10,8 @@ const Admin = require('./models/Admin');
 const Category = require('./models/Category');
 const Car = require('./models/Car');
 const HomepageContent = require('./models/HomepageContent');
+const TourRoutesContent = require('./models/TourRoutesContent');
+const AboutContent = require('./models/AboutContent');
 
 // Debug: Check if env vars are loaded
 console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
@@ -36,6 +38,8 @@ async function seedDatabase() {
     await Category.deleteMany({});
     await Car.deleteMany({});
     await HomepageContent.deleteMany({});
+    await TourRoutesContent.deleteMany({});
+    await AboutContent.deleteMany({});
 
     console.log('📦 Seeding database...');
 
@@ -513,6 +517,228 @@ async function seedDatabase() {
       ctaAddress: 'Main Mansehra Road, Abbottabad, KPK, Pakistan'
     });
     console.log('✅ Homepage content created');
+
+    // Seed Tour Routes Content
+    await TourRoutesContent.create({
+      heroTitle: 'Tour Routes & Destinations',
+      heroSubtitle: 'Explore Pakistan\'s most beautiful destinations with Abbottabad Rent A Car',
+      heroBadge: 'Travel Destinations',
+      heroImage: '/scenic-mountain-road-pakistan.jpg',
+      heroPrimaryCTA: 'Call for Rates',
+      heroSecondaryCTA: 'WhatsApp Us',
+      heroPhone: '+923001234567',
+      heroWhatsApp: '923001234567',
+      popularDestinationsTitle: 'Popular Destinations',
+      popularDestinations: [
+        'Naran Kaghan',
+        'Hunza',
+        'Skardu',
+        'Swat',
+        'Kashmir',
+        'Neelum Valley',
+        'Murree',
+        'Nathiagali',
+        'Gilgit',
+        'Chitral',
+        'Shogran',
+        'Saiful Muluk',
+      ],
+      routes: [
+        {
+          category: 'From Islamabad',
+          routes: [
+            { destination: 'Abbottabad', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Mansehra', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Murree', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Nathiagali', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Kashmir', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Neelum Valley', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Swat', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Naran Kaghan', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Hunza', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Skardu', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Gilgit', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Lahore', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Multan', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Faisalabad', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Chitral', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Shogran', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Saiful Muluk', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Peshawar', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Sukkur', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Karachi', oneWay: 'On Call', twoWay: 'On Call' },
+          ],
+        },
+        {
+          category: 'From Rawalpindi',
+          routes: [
+            { destination: 'Abbottabad', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Mansehra', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Murree', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Nathiagali', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Kashmir', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Neelum Valley', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Swat', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Naran Kaghan', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Hunza', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Skardu', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Gilgit', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Lahore', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Multan', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Faisalabad', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Chitral', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Shogran', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Peshawar', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Saiful Muluk', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Sukkur', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Karachi', oneWay: 'On Call', twoWay: 'On Call' },
+          ],
+        },
+        {
+          category: 'From Abbottabad',
+          routes: [
+            { destination: 'Islamabad', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Islamabad Airport', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Murree', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Nathiagali', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Lahore', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Multan', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Faisalabad', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Peshawar', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Mardan', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Karachi', oneWay: 'On Call', twoWay: 'On Call' },
+          ],
+        },
+        {
+          category: 'From Mansehra',
+          routes: [
+            { destination: 'Islamabad', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Islamabad Airport', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Murree', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Nathiagali', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Lahore', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Multan', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Faisalabad', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Peshawar', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Mardan', oneWay: 'On Call', twoWay: 'On Call' },
+            { destination: 'Karachi', oneWay: 'On Call', twoWay: 'On Call' },
+          ],
+        },
+      ],
+      ctaTitle: 'Ready to Start Your Journey?',
+      ctaSubtitle: 'Contact us today to get customized rates for your destination. We offer competitive pricing and flexible packages for all routes.',
+      ctaPrimaryButton: 'Call Now',
+      ctaSecondaryButton: 'View All Services',
+      ctaPhone: '+923001234567',
+    });
+    console.log('✅ Tour routes content created');
+
+    // Seed About Content
+    await AboutContent.create({
+      heroBadge: 'Our Story',
+      heroTitle: 'Redefining Luxury Travel',
+      heroSubtitle: 'For over 15 years, we\'ve been the trusted choice for discerning clients seeking the finest automotive experiences',
+      heroImage: '/professional-luxury-car-rental-service-team.jpg',
+      stats: [
+        { label: 'Years of Excellence', value: '15+' },
+        { label: 'Luxury Vehicles', value: '50+' },
+        { label: 'Happy Clients', value: '5,000+' },
+        { label: 'Customer Rating', value: '4.9/5' },
+      ],
+      storyTitle: 'A Legacy of Excellence',
+      storyParagraphs: [
+        'Founded in 2010, Abbottabad Rent a Car began with a simple yet ambitious vision: to bring world-class luxury automotive experiences to our beautiful city and surrounding regions.',
+        'What started as a small collection of premium vehicles has grown into the region\'s most prestigious luxury car rental service, featuring an exclusive fleet of the world\'s finest automobiles.',
+        'Today, we\'re proud to serve thousands of satisfied clients annually, from business executives and wedding parties to tourists seeking an unforgettable journey through Pakistan\'s stunning landscapes.',
+      ],
+      storyImage: '/luxury-car-showroom-elegant-interior.jpg',
+      storyButtonText: 'Explore Our Fleet',
+      valuesTitle: 'Our Core Values',
+      valuesSubtitle: 'The principles that guide everything we do',
+      values: [
+        {
+          icon: 'Award',
+          title: 'Excellence',
+          description: 'We maintain the highest standards in vehicle quality, service delivery, and customer experience.',
+        },
+        {
+          icon: 'Shield',
+          title: 'Trust & Safety',
+          description: 'Your safety is paramount. All vehicles are fully insured and maintained to manufacturer specifications.',
+        },
+        {
+          icon: 'Users',
+          title: 'Personalized Service',
+          description: 'Our concierge team provides white-glove service tailored to your unique requirements.',
+        },
+        {
+          icon: 'Clock',
+          title: '24/7 Support',
+          description: 'Round-the-clock assistance ensures you\'re never alone on your journey.',
+        },
+      ],
+      timelineTitle: 'Our Journey',
+      timelineSubtitle: 'Key milestones in our story of growth and excellence',
+      milestones: [
+        {
+          year: '2010',
+          title: 'Founded',
+          description: 'Started with a vision to bring world-class luxury car rentals to Abbottabad',
+        },
+        {
+          year: '2015',
+          title: 'Fleet Expansion',
+          description: 'Expanded to include ultra-luxury brands like Rolls-Royce and Bentley',
+        },
+        {
+          year: '2020',
+          title: '5,000 Clients',
+          description: 'Reached milestone of serving over 5,000 satisfied customers',
+        },
+        {
+          year: '2025',
+          title: 'Industry Leader',
+          description: 'Recognized as the premier luxury car rental service in the region',
+        },
+      ],
+      teamTitle: 'Meet Our Team',
+      teamSubtitle: 'Dedicated professionals committed to your exceptional experience',
+      team: [
+        {
+          name: 'Ahmed Khan',
+          role: 'Founder & CEO',
+          image: '/placeholder.svg?key=team1',
+          bio: '15+ years in luxury automotive industry',
+        },
+        {
+          name: 'Sarah Ali',
+          role: 'Fleet Manager',
+          image: '/placeholder.svg?key=team2',
+          bio: 'Expert in premium vehicle maintenance',
+        },
+        {
+          name: 'Hassan Malik',
+          role: 'Concierge Director',
+          image: '/placeholder.svg?key=team3',
+          bio: 'Hospitality professional with luxury brand experience',
+        },
+      ],
+      certificationsTitle: 'Certifications & Standards',
+      certificationsSubtitle: 'Committed to the highest industry standards',
+      certifications: [
+        'ISO 9001 Certified',
+        'Luxury Vehicle Specialist',
+        'Comprehensive Insurance Partner',
+        '24/7 Roadside Assistance',
+        'Professional Chauffeur Services',
+        'Corporate Account Management',
+      ],
+      ctaTitle: 'Experience the Difference',
+      ctaSubtitle: 'Join thousands of satisfied clients who trust us for their luxury automotive needs',
+      ctaPrimaryButton: 'Get in Touch',
+      ctaSecondaryButton: 'View Fleet',
+    });
+    console.log('✅ About content created');
 
     console.log('🎉 Database seeding completed successfully!');
     console.log(`📧 Admin login: ${admin.email} / admin123`);
