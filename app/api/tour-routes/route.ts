@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import TourRoutesContent from '@/lib/models/TourRoutes';
+import { uploadImage, deleteImage } from '@/lib/cloudinary';
 import jwt from 'jsonwebtoken';
 
 // Helper function to verify admin
@@ -64,12 +65,44 @@ export async function PUT(request: NextRequest) {
 
     await connectDB();
     
-    const data = await request.json();
+    const formData = await request.formData();
+    const existingContent = await TourRoutesContent.findOne();
+    
+    const updateData: any = {};
+    
+    // Handle text fields
+    const textFields = [
+      'heroTitle', 'heroSubtitle', 'heroBadge', 'heroPrimaryCTA', 'heroSecondaryCTA',
+      'heroPhone', 'heroWhatsApp', 'popularDestinationsTitle',
+      'ctaTitle', 'ctaSubtitle', 'ctaPrimaryButton', 'ctaSecondaryButton', 'ctaPhone'
+    ];
+    
+    for (const field of textFields) {
+      const value = formData.get(field) as string;
+      if (value !== null) updateData[field] = value;
+    }
+    
+    // Handle hero image upload
+    const heroImageFile = formData.get('heroImage') as File;
+    if (heroImageFile && heroImageFile.size > 0) {
+      if (existingContent?.heroImage && existingContent.heroImage.startsWith('http')) {
+        await deleteImage(existingContent.heroImage, 'abbottabad-rent-a-car/tour-routes');
+      }
+      const imageUrl = await uploadImage(heroImageFile, 'abbottabad-rent-a-car/tour-routes');
+      updateData.heroImage = imageUrl;
+    }
+    
+    // Handle JSON arrays
+    const popularDestinations = formData.get('popularDestinations') as string;
+    if (popularDestinations) updateData.popularDestinations = JSON.parse(popularDestinations);
+    
+    const routes = formData.get('routes') as string;
+    if (routes) updateData.routes = JSON.parse(routes);
     
     // Update or create the single document
     const content = await TourRoutesContent.findOneAndUpdate(
       {},
-      data,
+      updateData,
       { new: true, upsert: true }
     );
 

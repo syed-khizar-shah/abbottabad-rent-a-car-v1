@@ -14,6 +14,12 @@ export default function AdminAboutPage() {
   const [saving, setSaving] = useState(false)
   const [content, setContent] = useState<any>(null)
   const [formData, setFormData] = useState<any>({})
+  const [heroImageFile, setHeroImageFile] = useState<File | null>(null)
+  const [heroImagePreview, setHeroImagePreview] = useState<string | null>(null)
+  const [storyImageFile, setStoryImageFile] = useState<File | null>(null)
+  const [storyImagePreview, setStoryImagePreview] = useState<string | null>(null)
+  const [teamImageFiles, setTeamImageFiles] = useState<{ [key: number]: File }>({})
+  const [teamImagePreviews, setTeamImagePreviews] = useState<{ [key: number]: string }>({})
 
   useEffect(() => {
     checkAuth()
@@ -47,13 +53,91 @@ export default function AdminAboutPage() {
     setSaving(true)
 
     try {
-      await aboutApi.update(formData)
+      const formDataToSend = new FormData()
+      
+      // Add all text fields
+      Object.keys(formData).forEach(key => {
+        if (key === 'stats' || key === 'storyParagraphs' || key === 'values' || 
+            key === 'milestones' || key === 'team' || key === 'certifications') {
+          formDataToSend.append(key, JSON.stringify(formData[key]))
+        } else if (key !== 'heroImage' && key !== 'storyImage') {
+          formDataToSend.append(key, formData[key] || '')
+        }
+      })
+      
+      // Add images
+      if (heroImageFile) {
+        formDataToSend.append('heroImage', heroImageFile)
+      }
+      if (storyImageFile) {
+        formDataToSend.append('storyImage', storyImageFile)
+      }
+      
+      // Add team member images
+      Object.keys(teamImageFiles).forEach(index => {
+        formDataToSend.append(`teamImage_${index}`, teamImageFiles[parseInt(index)])
+      })
+      
+      // Use fetch directly to send FormData
+      const response = await fetch('/api/about', {
+        method: 'PUT',
+        credentials: 'include',
+        body: formDataToSend,
+      })
+      
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || 'Failed to update about content')
+      }
+      
       alert("About content updated successfully!")
+      setHeroImageFile(null)
+      setHeroImagePreview(null)
+      setStoryImageFile(null)
+      setStoryImagePreview(null)
+      setTeamImageFiles({})
+      setTeamImagePreviews({})
       await loadContent()
     } catch (err: any) {
       alert(err.message || "Failed to update about content")
     } finally {
       setSaving(false)
+    }
+  }
+  
+  const handleHeroImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setHeroImageFile(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setHeroImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+  
+  const handleStoryImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setStoryImageFile(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setStoryImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+  
+  const handleTeamImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setTeamImageFiles({ ...teamImageFiles, [index]: file })
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setTeamImagePreviews({ ...teamImagePreviews, [index]: reader.result as string })
+      }
+      reader.readAsDataURL(file)
     }
   }
 
@@ -148,6 +232,29 @@ export default function AdminAboutPage() {
               <h2 className="text-xl font-bold mb-4">Hero Section</h2>
               <div className="space-y-4">
                 <div>
+                  <label className="block text-sm font-medium mb-2">Hero Image</label>
+                  <div className="space-y-2">
+                    {(heroImagePreview || formData.heroImage) && (
+                      <div className="relative w-full h-48 border rounded-lg overflow-hidden">
+                        <img
+                          src={heroImagePreview || formData.heroImage}
+                          alt="Hero preview"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleHeroImageChange}
+                      className="w-full px-3 py-2 border rounded-lg"
+                    />
+                    {formData.heroImage && !heroImageFile && (
+                      <p className="text-xs text-muted-foreground">Current image: {formData.heroImage}</p>
+                    )}
+                  </div>
+                </div>
+                <div>
                   <label className="block text-sm font-medium mb-2">Badge</label>
                   <input
                     type="text"
@@ -172,15 +279,6 @@ export default function AdminAboutPage() {
                     onChange={(e) => updateField("heroSubtitle", e.target.value)}
                     className="w-full px-3 py-2 border rounded-lg"
                     rows={3}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Hero Image URL</label>
-                  <input
-                    type="text"
-                    value={formData.heroImage || ""}
-                    onChange={(e) => updateField("heroImage", e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg"
                   />
                 </div>
               </div>
@@ -270,13 +368,27 @@ export default function AdminAboutPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Story Image URL</label>
-                  <input
-                    type="text"
-                    value={formData.storyImage || ""}
-                    onChange={(e) => updateField("storyImage", e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
+                  <label className="block text-sm font-medium mb-2">Story Image</label>
+                  <div className="space-y-2">
+                    {(storyImagePreview || formData.storyImage) && (
+                      <div className="relative w-full h-48 border rounded-lg overflow-hidden">
+                        <img
+                          src={storyImagePreview || formData.storyImage}
+                          alt="Story preview"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleStoryImageChange}
+                      className="w-full px-3 py-2 border rounded-lg"
+                    />
+                    {formData.storyImage && !storyImageFile && (
+                      <p className="text-xs text-muted-foreground">Current image: {formData.storyImage}</p>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Button Text</label>
@@ -464,13 +576,29 @@ export default function AdminAboutPage() {
                         placeholder="Role"
                       />
                     </div>
-                    <input
-                      type="text"
-                      value={member.image || ""}
-                      onChange={(e) => updateArrayItem("team", index, "image", e.target.value)}
-                      className="w-full px-2 py-1 text-sm border rounded"
-                      placeholder="Image URL"
-                    />
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Image</label>
+                      <div className="space-y-1">
+                        {(teamImagePreviews[index] || member.image) && (
+                          <div className="relative w-full h-24 border rounded overflow-hidden">
+                            <img
+                              src={teamImagePreviews[index] || member.image}
+                              alt="Team member preview"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleTeamImageChange(index, e)}
+                          className="w-full px-2 py-1 text-sm border rounded"
+                        />
+                        {member.image && !teamImageFiles[index] && (
+                          <p className="text-xs text-muted-foreground">Current: {member.image}</p>
+                        )}
+                      </div>
+                    </div>
                     <textarea
                       value={member.bio || ""}
                       onChange={(e) => updateArrayItem("team", index, "bio", e.target.value)}

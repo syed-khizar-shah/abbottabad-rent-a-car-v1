@@ -108,6 +108,20 @@ export const homepageApi = {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
+  updateWithFile: (formData: FormData) => {
+    return fetch(`${API_URL}/homepage`, {
+      method: 'PUT',
+      credentials: 'include',
+      body: formData,
+    }).then((res) => {
+      if (!res.ok) {
+        return res.json().then((err) => {
+          throw new Error(err.message || 'Request failed');
+        });
+      }
+      return res.json();
+    });
+  },
 };
 
 // Admin API

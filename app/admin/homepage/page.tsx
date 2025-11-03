@@ -14,6 +14,8 @@ export default function AdminHomepagePage() {
   const [saving, setSaving] = useState(false)
   const [content, setContent] = useState<any>(null)
   const [formData, setFormData] = useState<any>({})
+  const [heroImageFile, setHeroImageFile] = useState<File | null>(null)
+  const [heroImagePreview, setHeroImagePreview] = useState<string | null>(null)
 
   useEffect(() => {
     checkAuth()
@@ -47,13 +49,54 @@ export default function AdminHomepagePage() {
     setSaving(true)
 
     try {
-      await homepageApi.update(formData)
+      const formDataToSend = new FormData()
+      
+      // Add all text fields
+      Object.keys(formData).forEach(key => {
+        if (key === 'stats' || key === 'offers' || key === 'brands' || key === 'testimonials' || key === 'benefits') {
+          formDataToSend.append(key, JSON.stringify(formData[key]))
+        } else if (key !== 'heroImage') {
+          formDataToSend.append(key, formData[key] || '')
+        }
+      })
+      
+      // Add hero image if selected
+      if (heroImageFile) {
+        formDataToSend.append('heroImage', heroImageFile)
+      }
+      
+      // Use fetch directly to send FormData
+      const response = await fetch('/api/homepage', {
+        method: 'PUT',
+        credentials: 'include',
+        body: formDataToSend,
+      })
+      
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || 'Failed to update homepage content')
+      }
+      
       alert("Homepage content updated successfully!")
+      setHeroImageFile(null)
+      setHeroImagePreview(null)
       await loadContent()
     } catch (err: any) {
       alert(err.message || "Failed to update homepage content")
     } finally {
       setSaving(false)
+    }
+  }
+  
+  const handleHeroImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setHeroImageFile(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setHeroImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
     }
   }
 
@@ -127,6 +170,29 @@ export default function AdminHomepagePage() {
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4">Hero Section</h2>
               <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Hero Image</label>
+                  <div className="space-y-2">
+                    {(heroImagePreview || formData.heroImage) && (
+                      <div className="relative w-full h-48 border rounded-lg overflow-hidden">
+                        <img
+                          src={heroImagePreview || formData.heroImage}
+                          alt="Hero preview"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleHeroImageChange}
+                      className="w-full px-3 py-2 border rounded-lg"
+                    />
+                    {formData.heroImage && !heroImageFile && (
+                      <p className="text-xs text-muted-foreground">Current image: {formData.heroImage}</p>
+                    )}
+                  </div>
+                </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Title</label>
                   <input

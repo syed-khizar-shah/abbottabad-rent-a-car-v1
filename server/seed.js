@@ -405,7 +405,7 @@ async function seedDatabase() {
       heroTitleAccent: 'Mile',
       heroSubtitle: 'Experience the pinnacle of luxury automotive rentals. Hand-selected premium vehicles, impeccable service, and unforgettable journeys await.',
       heroBadge: 'Abbottabad\'s Premier Luxury Car Rental',
-      heroImage: '/luxury-car-showroom-elegant-interior.jpg',
+      heroImage: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&h=1080&fit=crop',
       heroPrimaryCTA: 'Explore Premium Fleet',
       heroSecondaryCTA: 'Schedule Consultation',
       stats: [

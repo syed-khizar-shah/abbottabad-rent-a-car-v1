@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import AboutContent from '@/lib/models/AboutContent';
+import { uploadImage, deleteImage } from '@/lib/cloudinary';
 import jwt from 'jsonwebtoken';
 
 // Helper function to verify admin
@@ -73,12 +74,83 @@ export async function PUT(request: NextRequest) {
 
     await connectDB();
     
-    const data = await request.json();
+    const formData = await request.formData();
+    const existingContent = await AboutContent.findOne();
+    
+    const updateData: any = {};
+    
+    // Handle text fields
+    const textFields = [
+      'heroBadge', 'heroTitle', 'heroSubtitle', 'storyTitle', 'storyButtonText',
+      'valuesTitle', 'valuesSubtitle', 'timelineTitle', 'timelineSubtitle',
+      'teamTitle', 'teamSubtitle', 'certificationsTitle', 'certificationsSubtitle',
+      'ctaTitle', 'ctaSubtitle', 'ctaPrimaryButton', 'ctaSecondaryButton'
+    ];
+    
+    for (const field of textFields) {
+      const value = formData.get(field) as string;
+      if (value !== null) updateData[field] = value;
+    }
+    
+    // Handle hero image upload
+    const heroImageFile = formData.get('heroImage') as File;
+    if (heroImageFile && heroImageFile.size > 0) {
+      if (existingContent?.heroImage && existingContent.heroImage.startsWith('http')) {
+        await deleteImage(existingContent.heroImage, 'abbottabad-rent-a-car/about');
+      }
+      const imageUrl = await uploadImage(heroImageFile, 'abbottabad-rent-a-car/about');
+      updateData.heroImage = imageUrl;
+    }
+    
+    // Handle story image upload
+    const storyImageFile = formData.get('storyImage') as File;
+    if (storyImageFile && storyImageFile.size > 0) {
+      if (existingContent?.storyImage && existingContent.storyImage.startsWith('http')) {
+        await deleteImage(existingContent.storyImage, 'abbottabad-rent-a-car/about');
+      }
+      const imageUrl = await uploadImage(storyImageFile, 'abbottabad-rent-a-car/about');
+      updateData.storyImage = imageUrl;
+    }
+    
+    // Handle JSON arrays
+    const stats = formData.get('stats') as string;
+    if (stats) updateData.stats = JSON.parse(stats);
+    
+    const storyParagraphs = formData.get('storyParagraphs') as string;
+    if (storyParagraphs) updateData.storyParagraphs = JSON.parse(storyParagraphs);
+    
+    const values = formData.get('values') as string;
+    if (values) updateData.values = JSON.parse(values);
+    
+    const milestones = formData.get('milestones') as string;
+    if (milestones) updateData.milestones = JSON.parse(milestones);
+    
+    const certifications = formData.get('certifications') as string;
+    if (certifications) updateData.certifications = JSON.parse(certifications);
+    
+    // Handle team members (with image uploads)
+    const teamData = formData.get('team') as string;
+    if (teamData) {
+      const team = JSON.parse(teamData);
+      // Process team member images if uploaded
+      for (let i = 0; i < team.length; i++) {
+        const teamImageFile = formData.get(`teamImage_${i}`) as File;
+        if (teamImageFile && teamImageFile.size > 0) {
+          const existingMember = existingContent?.team?.[i];
+          if (existingMember?.image && existingMember.image.startsWith('http')) {
+            await deleteImage(existingMember.image, 'abbottabad-rent-a-car/about');
+          }
+          const imageUrl = await uploadImage(teamImageFile, 'abbottabad-rent-a-car/about');
+          team[i].image = imageUrl;
+        }
+      }
+      updateData.team = team;
+    }
     
     // Update or create the single document
     const content = await AboutContent.findOneAndUpdate(
       {},
-      data,
+      updateData,
       { new: true, upsert: true }
     );
 
