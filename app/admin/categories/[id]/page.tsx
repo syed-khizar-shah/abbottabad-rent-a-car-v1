@@ -24,6 +24,7 @@ export default function EditCategoryPage() {
     order: "0"
   })
   const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
 
   useEffect(() => {
     checkAuth()
@@ -174,13 +175,39 @@ export default function EditCategoryPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Image {!imageFile && "(current: " + (category?.image || "none") + ")"}</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
+              <label className="block text-sm font-medium mb-2">Image</label>
+              <div className="space-y-2">
+                {(imagePreview || category?.image) && (
+                  <div className="relative w-full h-64 border rounded-lg overflow-hidden">
+                    <img
+                      src={imagePreview || category?.image}
+                      alt="Category preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    setImageFile(file || null);
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setImagePreview(reader.result as string);
+                      };
+                      reader.readAsDataURL(file);
+                    } else {
+                      setImagePreview(null);
+                    }
+                  }}
+                  className="w-full px-3 py-2 border rounded-lg"
+                />
+                {category?.image && !imageFile && (
+                  <p className="text-xs text-muted-foreground">Current image: {category.image}</p>
+                )}
+              </div>
             </div>
 
             <div className="flex gap-4">

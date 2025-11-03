@@ -111,10 +111,10 @@ export async function PUT(
     if (imageFile && imageFile.size > 0) {
       // Delete old image if exists
       if (car.image) {
-        await deleteImage(car.image);
+        await deleteImage(car.image, 'abbottabad-rent-a-car/cars');
       }
       // Upload new image
-      const imageUrl = await uploadImage(imageFile);
+      const imageUrl = await uploadImage(imageFile, 'abbottabad-rent-a-car/cars');
       updateData.image = imageUrl;
     }
 
@@ -148,7 +148,7 @@ export async function DELETE(
 
     // Delete image from Cloudinary
     if (car.image) {
-      await deleteImage(car.image);
+      await deleteImage(car.image, 'abbottabad-rent-a-car/cars');
     }
 
     await Car.findByIdAndDelete(id);

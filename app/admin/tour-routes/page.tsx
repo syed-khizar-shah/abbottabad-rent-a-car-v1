@@ -50,33 +50,33 @@ export default function AdminTourRoutesPage() {
 
     try {
       const formDataToSend = new FormData();
-      
+
       // Add all text fields
-      Object.keys(formData).forEach(key => {
-        if (key === 'popularDestinations' || key === 'routes') {
+      Object.keys(formData).forEach((key) => {
+        if (key === "popularDestinations" || key === "routes") {
           formDataToSend.append(key, JSON.stringify(formData[key]));
-        } else if (key !== 'heroImage') {
-          formDataToSend.append(key, formData[key] || '');
+        } else if (key !== "heroImage") {
+          formDataToSend.append(key, formData[key] || "");
         }
       });
-      
+
       // Add hero image if selected
       if (heroImageFile) {
-        formDataToSend.append('heroImage', heroImageFile);
+        formDataToSend.append("heroImage", heroImageFile);
       }
-      
+
       // Use fetch directly to send FormData
-      const response = await fetch('/api/tour-routes', {
-        method: 'PUT',
-        credentials: 'include',
+      const response = await fetch("/api/tour-routes", {
+        method: "PUT",
+        credentials: "include",
         body: formDataToSend,
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to update tour routes');
+        throw new Error(error.message || "Failed to update tour routes");
       }
-      
+
       alert("Tour routes updated successfully!");
       setHeroImageFile(null);
       setHeroImagePreview(null);
@@ -87,7 +87,7 @@ export default function AdminTourRoutesPage() {
       setSaving(false);
     }
   };
-  
+
   const handleHeroImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -266,7 +266,9 @@ export default function AdminTourRoutesPage() {
                       className="w-full px-3 py-2 border rounded-lg"
                     />
                     {formData.heroImage && !heroImageFile && (
-                      <p className="text-xs text-muted-foreground">Current image: {formData.heroImage}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Current image: {formData.heroImage}
+                      </p>
                     )}
                   </div>
                 </div>
