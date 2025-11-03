@@ -60,14 +60,8 @@ mongoose.connection.on("error", (err) => {
   console.error("❌ MongoDB connection error:", err);
 });
 
-// Routes (database connection is handled automatically via connectDB function)
-app.use("/api/auth", require("./routes/auth"));
-app.use("/api/cars", require("./routes/cars"));
-app.use("/api/categories", require("./routes/categories"));
-app.use("/api/homepage", require("./routes/homepage"));
-app.use("/api/admin", require("./routes/admin"));
-
 // Middleware to ensure DB connection before handling API requests
+// This must be placed BEFORE routes
 app.use("/api/*", async (req, res, next) => {
   if (mongoose.connection.readyState !== 1) {
     console.log("🔄 Database not connected, attempting connection...");
@@ -79,6 +73,9 @@ app.use("/api/*", async (req, res, next) => {
         await new Promise((resolve) => setTimeout(resolve, 500));
         attempts++;
       }
+      if (mongoose.connection.readyState !== 1) {
+        return res.status(503).json({ error: "Database connection timeout" });
+      }
     } catch (err) {
       console.error("Failed to connect to database:", err);
       return res.status(503).json({ error: "Database connection failed" });
@@ -86,6 +83,13 @@ app.use("/api/*", async (req, res, next) => {
   }
   next();
 });
+
+// Routes (database connection is now ensured by middleware above)
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/cars", require("./routes/cars"));
+app.use("/api/categories", require("./routes/categories"));
+app.use("/api/homepage", require("./routes/homepage"));
+app.use("/api/admin", require("./routes/admin"));
 
 // Health check
 app.get("/api/health", (req, res) => {
