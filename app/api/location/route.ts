@@ -31,8 +31,18 @@ export async function GET() {
     return NextResponse.json(content);
   } catch (error: any) {
     console.error('Error fetching location content:', error);
+    // Check if it's a MongoDB connection error
+    if (error.name === 'MongooseServerSelectionError' || error.message?.includes('MongoDB Atlas')) {
+      return NextResponse.json(
+        { 
+          message: 'Database connection error. Please check MongoDB Atlas IP whitelist settings.',
+          error: 'MongoDB connection failed'
+        },
+        { status: 503 }
+      );
+    }
     return NextResponse.json(
-      { message: 'Server error', error: error.message },
+      { message: 'Server error', error: process.env.NODE_ENV === 'production' ? 'Internal server error' : error.message },
       { status: 500 }
     );
   }
