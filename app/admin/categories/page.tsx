@@ -114,7 +114,7 @@ export default function AdminCategoriesPage() {
                     <Button variant="outline" size="sm" asChild className="flex-1 text-xs sm:text-sm">
                       <Link href={`/admin/categories/${category._id}`}>
                         <Edit className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                        <span className="hidden xs:inline">Edit</span>
+                        <span className="sm:inline">Edit</span>
                       </Link>
                     </Button>
                     <Button
