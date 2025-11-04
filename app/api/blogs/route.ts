@@ -141,9 +141,7 @@ export async function POST(request: NextRequest) {
     // Upload featured image if provided
     let featuredImageUrl = '';
     if (featuredImageFile && featuredImageFile.size > 0) {
-      const arrayBuffer = await featuredImageFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      featuredImageUrl = await uploadImage(buffer, 'blog', featuredImageFile.name);
+      featuredImageUrl = await uploadImage(featuredImageFile, 'abbottabad-rent-a-car/blogs');
     }
 
     // Parse keywords and tags

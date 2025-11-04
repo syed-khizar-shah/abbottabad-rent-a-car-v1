@@ -6,9 +6,45 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function uploadImage(file: File, folder: string = 'abbottabad-rent-a-car/cars'): Promise<string> {
-  const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
+export async function uploadImage(file: File | Buffer, folder: string = 'abbottabad-rent-a-car/cars'): Promise<string> {
+  let buffer: Buffer;
+
+  // Handle both File and Buffer inputs
+  if (file instanceof Buffer) {
+    buffer = file;
+  } else {
+    // Handle File object from FormData
+    // Next.js FormData returns File objects, but we need to convert to Buffer
+    try {
+      // Method 1: Try arrayBuffer() (standard File API)
+      if ('arrayBuffer' in file && typeof file.arrayBuffer === 'function') {
+        const bytes = await file.arrayBuffer();
+        buffer = Buffer.from(bytes);
+      } 
+      // Method 2: Try stream() (alternative File API)
+      else if ('stream' in file && typeof file.stream === 'function') {
+        const stream = file.stream();
+        const reader = stream.getReader();
+        const chunks: Uint8Array[] = [];
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          if (value) chunks.push(value);
+        }
+        buffer = Buffer.concat(chunks);
+      }
+      // Method 3: Convert to Blob and use arrayBuffer
+      else {
+        const blob = file instanceof Blob ? file : new Blob([file]);
+        const arrayBuffer = await blob.arrayBuffer();
+        buffer = Buffer.from(arrayBuffer);
+      }
+    } catch (error) {
+      console.error('Error converting file to buffer:', error);
+      throw new Error('Failed to process image file');
+    }
+  }
 
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
