@@ -12,7 +12,12 @@ async function verifyAdmin(request: NextRequest) {
     return null;
   }
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const JWT_SECRET = process.env.JWT_SECRET;
+    if (!JWT_SECRET) {
+      console.error('JWT_SECRET is not set in environment variables');
+      return null;
+    }
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
     return decoded;
   } catch {
     return null;
