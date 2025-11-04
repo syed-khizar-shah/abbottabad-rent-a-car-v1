@@ -115,7 +115,7 @@ export default function HomePage() {
       {/* Hero Section - Dynamic */}
       <section
         ref={heroRef}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden pb-32 md:pb-24"
       >
         <motion.div
           className="absolute inset-0 z-0"
@@ -147,7 +147,7 @@ export default function HomePage() {
         />
 
         <motion.div
-          className="relative z-10 container mx-auto px-4 sm:px-6 text-center text-white"
+          className="relative z-20 container mx-auto px-4 sm:px-6 text-center text-white"
           style={{ opacity: heroOpacity }}
         >
           <motion.div
@@ -191,7 +191,7 @@ export default function HomePage() {
             </motion.p>
 
             <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6 relative z-10"
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6 relative z-30"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.7 }}
@@ -221,7 +221,7 @@ export default function HomePage() {
         </motion.div>
 
         <motion.div
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20"
           animate={{ y: [0, 12, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -243,9 +243,9 @@ export default function HomePage() {
       </section>
 
       {/* Premium Stats Bar - Dynamic */}
-      <section className="relative -mt-20 z-10 mb-20">
+      <section className="relative -mt-32 md:-mt-20 z-[5] mb-20">
         <div className="container mx-auto px-4 sm:px-6">
-          <Card className="border-0 shadow-2xl bg-background/95 backdrop-blur-xl">
+          <Card className="border-0 shadow-2xl bg-background/95 backdrop-blur-xl relative z-[5]">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 p-6 md:p-10">
               {homepageContent.stats?.map((stat: any, index: number) => {
                 const IconComponent = getIconComponent(stat.icon);
@@ -873,17 +873,23 @@ export default function HomePage() {
                 {homepageContent.faqSectionBadge || "Common Questions"}
               </Badge>
               <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
-                {homepageContent.faqSectionTitle || "Frequently Asked Questions"}
+                {homepageContent.faqSectionTitle ||
+                  "Frequently Asked Questions"}
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                {homepageContent.faqSectionSubtitle || "Quick answers to questions you may have"}
+                {homepageContent.faqSectionSubtitle ||
+                  "Quick answers to questions you may have"}
               </p>
             </AnimatedSection>
 
             <div className="max-w-3xl mx-auto">
               <Accordion type="single" collapsible className="space-y-4">
                 {homepageContent.faqs.map((faq: any, index: number) => (
-                  <AnimatedSection key={index} delay={index * 0.1} direction="up">
+                  <AnimatedSection
+                    key={index}
+                    delay={index * 0.1}
+                    direction="up"
+                  >
                     <AccordionItem
                       value={`faq-${index}`}
                       className="border rounded-lg px-6"
