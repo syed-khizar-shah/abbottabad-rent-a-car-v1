@@ -246,6 +246,141 @@ export default function AdminContactPage() {
               </div>
             </Card>
 
+            {/* Contact Methods */}
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4">Contact Methods Cards</h2>
+              <div className="space-y-4">
+                {(formData.contactMethods || []).map((method: any, index: number) => (
+                  <div key={index} className="p-4 border rounded-lg space-y-3">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium mb-1">Icon (Phone, Mail, MapPin, Clock)</label>
+                        <input
+                          type="text"
+                          value={method.icon || ""}
+                          onChange={(e) => {
+                            const newMethods = [...(formData.contactMethods || [])]
+                            newMethods[index] = { ...method, icon: e.target.value }
+                            updateField("contactMethods", newMethods)
+                          }}
+                          className="w-full px-2 py-1 text-sm border rounded"
+                          placeholder="Phone"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium mb-1">Title</label>
+                        <input
+                          type="text"
+                          value={method.title || ""}
+                          onChange={(e) => {
+                            const newMethods = [...(formData.contactMethods || [])]
+                            newMethods[index] = { ...method, title: e.target.value }
+                            updateField("contactMethods", newMethods)
+                          }}
+                          className="w-full px-2 py-1 text-sm border rounded"
+                          placeholder="Phone"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Details (one per line)</label>
+                      <textarea
+                        value={method.details?.join('\n') || ""}
+                        onChange={(e) => {
+                          const newMethods = [...(formData.contactMethods || [])]
+                          newMethods[index] = { 
+                            ...method, 
+                            details: e.target.value.split('\n').filter(d => d.trim()) 
+                          }
+                          updateField("contactMethods", newMethods)
+                        }}
+                        className="w-full px-2 py-1 text-sm border rounded"
+                        rows={3}
+                        placeholder="+92 300 1234567&#10;+92 992 123456"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Description</label>
+                      <input
+                        type="text"
+                        value={method.description || ""}
+                        onChange={(e) => {
+                          const newMethods = [...(formData.contactMethods || [])]
+                          newMethods[index] = { ...method, description: e.target.value }
+                          updateField("contactMethods", newMethods)
+                        }}
+                        className="w-full px-2 py-1 text-sm border rounded"
+                        placeholder="Available 24/7 for your convenience"
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const newMethods = (formData.contactMethods || []).filter((_: any, i: number) => i !== index)
+                        updateField("contactMethods", newMethods)
+                      }}
+                    >
+                      Remove Method
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    const newMethods = [...(formData.contactMethods || []), { icon: "", title: "", details: [], description: "" }]
+                    updateField("contactMethods", newMethods)
+                  }}
+                >
+                  Add Contact Method
+                </Button>
+              </div>
+            </Card>
+
+            {/* Services */}
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4">Services</h2>
+              <div className="space-y-4">
+                {(formData.services || []).map((service: string, index: number) => (
+                  <div key={index} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={service || ""}
+                      onChange={(e) => {
+                        const newServices = [...(formData.services || [])]
+                        newServices[index] = e.target.value
+                        updateField("services", newServices)
+                      }}
+                      className="flex-1 px-3 py-2 border rounded-lg"
+                      placeholder="Wedding Car Rental"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        const newServices = (formData.services || []).filter((_: any, i: number) => i !== index)
+                        updateField("services", newServices)
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    const newServices = [...(formData.services || []), ""]
+                    updateField("services", newServices)
+                  }}
+                >
+                  Add Service
+                </Button>
+              </div>
+            </Card>
+
             {/* Map Section */}
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4">Map Configuration</h2>
