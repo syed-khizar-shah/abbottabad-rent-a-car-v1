@@ -23,6 +23,20 @@ export function RichTextEditor({ value, onChange, placeholder = "Write your cont
     // Dynamically import Quill
     const initQuill = async () => {
       try {
+        // Wait for the ref to be available
+        if (!editorRef.current) {
+          // Retry after a short delay
+          setTimeout(() => {
+            if (isMounted && editorRef.current) {
+              initQuill()
+            }
+          }, 100)
+          return
+        }
+
+        // Check if already initialized
+        if (quillRef.current) return
+
         // Load CSS
         const linkId = "quill-snow-css"
         if (!document.getElementById(linkId)) {
@@ -31,6 +45,12 @@ export function RichTextEditor({ value, onChange, placeholder = "Write your cont
           link.href = "https://cdn.quilljs.com/1.3.6/quill.snow.css"
           link.rel = "stylesheet"
           document.head.appendChild(link)
+          // Wait for CSS to load
+          await new Promise((resolve) => {
+            link.onload = resolve
+            link.onerror = resolve
+            setTimeout(resolve, 100) // Fallback timeout
+          })
         }
 
         // Import Quill
@@ -67,20 +87,28 @@ export function RichTextEditor({ value, onChange, placeholder = "Write your cont
 
         // Listen for text changes
         quill.on("text-change", () => {
-          const html = quill.root.innerHTML
-          onChange(html)
+          if (isMounted) {
+            const html = quill.root.innerHTML
+            onChange(html)
+          }
         })
 
         quillRef.current = quill
         setMounted(true)
       } catch (error) {
         console.error("Error initializing Quill:", error)
+        // Set mounted anyway to show error state
+        setMounted(true)
       }
     }
 
-    initQuill()
+    // Small delay to ensure DOM is ready
+    const timeoutId = setTimeout(() => {
+      initQuill()
+    }, 50)
 
     return () => {
+      clearTimeout(timeoutId)
       isMounted = false
       if (quillRef.current) {
         quillRef.current = null
@@ -106,21 +134,25 @@ export function RichTextEditor({ value, onChange, placeholder = "Write your cont
     }
   }, [value])
 
-  if (!mounted) {
-    return (
-      <div className="min-h-[300px] border rounded-lg p-4 bg-muted/50 animate-pulse">
-        <div className="h-10 bg-muted rounded mb-4" />
-        <div className="space-y-2">
-          <div className="h-4 bg-muted rounded w-full" />
-          <div className="h-4 bg-muted rounded w-3/4" />
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="rich-text-editor">
-      <div ref={editorRef} className="bg-background" />
+    <div className="rich-text-editor relative">
+      {/* Always render the editor container so ref is available */}
+      <div 
+        ref={editorRef} 
+        className={`bg-background ${!mounted ? 'opacity-0' : 'opacity-100'}`}
+      />
+      
+      {/* Show loading skeleton overlay while mounting */}
+      {!mounted && (
+        <div className="absolute inset-0 min-h-[300px] border rounded-lg p-4 bg-muted/50 animate-pulse pointer-events-none">
+          <div className="h-10 bg-muted rounded mb-4" />
+          <div className="space-y-2">
+            <div className="h-4 bg-muted rounded w-full" />
+            <div className="h-4 bg-muted rounded w-3/4" />
+          </div>
+        </div>
+      )}
+      
       <style jsx global>{`
         .rich-text-editor .ql-container {
           font-family: inherit;
