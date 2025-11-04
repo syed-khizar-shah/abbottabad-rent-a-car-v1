@@ -7,6 +7,7 @@ import { Menu, Car } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { MobileNav } from "@/components/mobile-nav"
 import { authApi } from "@/lib/api"
+import Image from "next/image"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -70,7 +71,8 @@ export function Header() {
                 className="flex items-center gap-2.5 transition-all duration-200 hover:opacity-90 active:scale-95 group"
               >
                 <div className="relative">
-                  <Car className="h-6 w-6 md:h-7 md:w-7 text-primary transition-transform group-hover:scale-110" />
+                  {/* <Car className="h-6 w-6 md:h-7 md:w-7 text-primary transition-transform group-hover:scale-110" /> */}
+                  <Image src="/logo.png" alt="Abbottabad Rent A Car" width={100} height={100} className="h-16 transition-transform group-hover:scale-110" />
                   <div className="absolute inset-0 bg-accent/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
                 </div>
                 <span className="font-serif text-base sm:text-lg md:text-xl font-bold text-foreground tracking-tight">

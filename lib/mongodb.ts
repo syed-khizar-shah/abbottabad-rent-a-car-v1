@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 if (!process.env.MONGODB_URI) {
-  throw new Error('Please add MONGODB_URI to your environment variables');
+  throw new Error('Please add MONGODB_URI to your .env.local file');
 }
 
 const MONGODB_URI = process.env.MONGODB_URI;
