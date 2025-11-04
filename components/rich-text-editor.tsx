@@ -13,8 +13,8 @@ export function RichTextEditor({ value, onChange, placeholder = "Write your cont
   const editorRef = useRef<HTMLDivElement>(null)
   const quillRef = useRef<Quill | null>(null)
   const [mounted, setMounted] = useState(false)
-  const isUpdatingRef = useRef(false)
-  const initialValueSetRef = useRef(false)
+  const lastValueRef = useRef<string>("")
+  const isInitialMount = useRef(true)
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -82,28 +82,18 @@ export function RichTextEditor({ value, onChange, placeholder = "Write your cont
           },
         })
 
-        // Set initial content only once
-        if (value && !initialValueSetRef.current) {
+        // Set initial content
+        if (value) {
           quill.root.innerHTML = value
-          initialValueSetRef.current = true
+          lastValueRef.current = value
         }
 
-        // Listen for text changes - simplified without debouncing
-        quill.on("text-change", (delta, oldDelta, source) => {
-          if (source === "user" && isMounted && !isUpdatingRef.current) {
-            try {
-              const html = quill.root.innerHTML
-              // Immediately call onChange without debouncing
-              isUpdatingRef.current = true
-              onChange(html)
-              // Use microtask queue to reset flag
-              Promise.resolve().then(() => {
-                isUpdatingRef.current = false
-              })
-            } catch (error) {
-              console.error("Error in onChange:", error)
-              isUpdatingRef.current = false
-            }
+        // Listen for text changes - Quill is the source of truth
+        quill.on("text-change", () => {
+          if (isMounted) {
+            const html = quill.root.innerHTML
+            lastValueRef.current = html
+            onChange(html)
           }
         })
 
@@ -133,44 +123,38 @@ export function RichTextEditor({ value, onChange, placeholder = "Write your cont
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Update content when value prop changes (external updates only, not from user typing)
+  // Only update Quill when value changes externally (e.g., initial load or form reset)
+  // NOT during user typing
   useEffect(() => {
-    if (!quillRef.current || isUpdatingRef.current || !mounted || !initialValueSetRef.current) return
+    if (!quillRef.current || !mounted) return
 
-    const currentContent = quillRef.current.root.innerHTML
-    
-    // Simple comparison - only update if value is different
-    // Don't normalize to preserve exact formatting
-    if (value !== currentContent && value !== undefined && value !== null) {
-      try {
-        isUpdatingRef.current = true
-        
-        // Save current selection
-        const selection = quillRef.current.getSelection()
-        
-        // Update content
-        quillRef.current.root.innerHTML = value || ""
-        
-        // Restore selection if it existed and is valid
-        if (selection && quillRef.current) {
-          requestAnimationFrame(() => {
-            try {
-              if (quillRef.current) {
-                const length = quillRef.current.getLength()
-                const safeIndex = Math.max(0, Math.min(selection.index, length - 1))
-                quillRef.current.setSelection(safeIndex)
-              }
-            } catch (e) {
-              // Ignore selection errors
-            }
-            isUpdatingRef.current = false
-          })
-        } else {
-          isUpdatingRef.current = false
+    // On initial mount, skip - we already set value during init
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
+
+    // Only update if the value changed from outside (not from user typing)
+    // Compare with last known value to prevent loops
+    if (value !== lastValueRef.current) {
+      const quill = quillRef.current
+      
+      // Save cursor position
+      const selection = quill.getSelection()
+      
+      // Update content
+      quill.root.innerHTML = value || ""
+      lastValueRef.current = value || ""
+      
+      // Restore cursor if it existed
+      if (selection) {
+        try {
+          const newLength = quill.getLength()
+          const newIndex = Math.min(selection.index, newLength - 1)
+          quill.setSelection(newIndex, 0)
+        } catch (e) {
+          // Ignore
         }
-      } catch (error) {
-        console.error("Error updating Quill content:", error)
-        isUpdatingRef.current = false
       }
     }
   }, [value, mounted])
