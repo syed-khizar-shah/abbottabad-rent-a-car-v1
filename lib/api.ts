@@ -251,3 +251,50 @@ export const locationApi = {
   },
 };
 
+// Blogs API
+export const blogsApi = {
+  getAll: (params?: { category?: string; featured?: string; published?: string; limit?: number; skip?: number }) => {
+    const query = new URLSearchParams();
+    if (params?.category) query.append('category', params.category);
+    if (params?.featured) query.append('featured', params.featured);
+    if (params?.published !== undefined) query.append('published', params.published);
+    if (params?.limit) query.append('limit', params.limit.toString());
+    if (params?.skip) query.append('skip', params.skip.toString());
+    const queryString = query.toString();
+    return apiRequest(`/blogs${queryString ? `?${queryString}` : ''}`);
+  },
+  getOne: (slug: string) => apiRequest(`/blogs/${slug}`),
+  create: (formData: FormData) => {
+    return fetch(`${API_URL}/blogs`, {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+    }).then((res) => {
+      if (!res.ok) {
+        return res.json().then((err) => {
+          throw new Error(err.message || 'Request failed');
+        });
+      }
+      return res.json();
+    });
+  },
+  update: (slug: string, formData: FormData) => {
+    return fetch(`${API_URL}/blogs/${slug}`, {
+      method: 'PUT',
+      credentials: 'include',
+      body: formData,
+    }).then((res) => {
+      if (!res.ok) {
+        return res.json().then((err) => {
+          throw new Error(err.message || 'Request failed');
+        });
+      }
+      return res.json();
+    });
+  },
+  delete: (slug: string) =>
+    apiRequest(`/blogs/${slug}`, {
+      method: 'DELETE',
+    }),
+};
+

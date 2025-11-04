@@ -1,10 +1,15 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import {
   ArrowRight,
   Star,
@@ -26,56 +31,69 @@ import {
   MapPin,
   Phone,
   Mail,
-} from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { AnimatedSection, FadeIn, ScaleIn } from "@/components/animated-section"
-import { useRef } from "react"
-import { carsApi, categoriesApi, homepageApi } from "@/lib/api"
-import { getIcon } from "@/lib/iconLoader"
+} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  AnimatedSection,
+  FadeIn,
+  ScaleIn,
+} from "@/components/animated-section";
+import { useRef } from "react";
+import { carsApi, categoriesApi, homepageApi, blogsApi } from "@/lib/api";
+import { getIcon } from "@/lib/iconLoader";
 
 export default function HomePage() {
-  const heroRef = useRef<HTMLElement>(null)
-  const [homepageContent, setHomepageContent] = useState<any>(null)
-  const [categories, setCategories] = useState<any[]>([])
-  const [featuredCars, setFeaturedCars] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [mounted, setMounted] = useState(false)
+  const heroRef = useRef<HTMLElement>(null);
+  const [homepageContent, setHomepageContent] = useState<any>(null);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [featuredCars, setFeaturedCars] = useState<any[]>([]);
+  const [recentBlogs, setRecentBlogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    loadData()
-    setMounted(true)
-  }, [])
+    loadData();
+    setMounted(true);
+  }, []);
 
   const loadData = async () => {
     try {
-      const [content, categoriesData, carsData] = await Promise.all([
+      const [content, categoriesData, carsData, blogsData] = await Promise.all([
         homepageApi.get(),
         categoriesApi.getAll(),
-        carsApi.getAll({ featured: "true" })
-      ])
-      
-      setHomepageContent(content)
-      setCategories(categoriesData)
-      setFeaturedCars(carsData.slice(0, 3)) // Show first 3 featured cars
+        carsApi.getAll({ featured: "true" }),
+        blogsApi
+          .getAll({ published: "true", limit: 3 })
+          .catch(() => ({ blogs: [] })),
+      ]);
+
+      setHomepageContent(content);
+      setCategories(categoriesData);
+      setFeaturedCars(carsData.slice(0, 3)); // Show first 3 featured cars
+      setRecentBlogs(blogsData.blogs || []); // Show latest 3 blog posts
     } catch (err) {
-      console.error("Error loading data:", err)
+      console.error("Error loading data:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   // Only use scroll when component is mounted and ref exists
-  const scrollOptions = mounted && heroRef.current 
-    ? { target: heroRef, offset: ["start start", "end start"] as const, layoutEffect: false }
-    : { layoutEffect: false }
-  
-  const { scrollYProgress } = useScroll(scrollOptions)
+  const { scrollYProgress } = useScroll(
+    mounted && heroRef.current
+      ? {
+          target: heroRef,
+          offset: ["start start", "end start"],
+          layoutEffect: false,
+        }
+      : { layoutEffect: false }
+  );
 
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.3])
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.1])
+  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.3]);
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
   if (loading || !homepageContent) {
     return (
@@ -85,13 +103,13 @@ export default function HomePage() {
           <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
-    )
+    );
   }
 
   // Helper to get icon component from string
   const getIconComponent = (iconName: string) => {
-    return getIcon(iconName)
-  }
+    return getIcon(iconName);
+  };
 
   // Static data for sections not yet in API
   const homeFaqs = [
@@ -115,42 +133,24 @@ export default function HomePage() {
       answer:
         "Required documents: Valid CNIC or passport, valid driver's license (held for minimum 3 years), proof of address, and a credit card for security deposit.",
     },
-  ]
-
-  const recentPosts = [
-    {
-      id: 1,
-      title: "Top 5 Scenic Routes in Pakistan Perfect for Road Trips",
-      excerpt: "Explore Pakistan's most stunning drives and discover why these routes are unforgettable.",
-      category: "Travel Guides",
-      date: "2025-01-18",
-      image: "/scenic-mountain-road-pakistan.jpg",
-    },
-    {
-      id: 2,
-      title: "First-Time Car Rental: Everything You Need to Know",
-      excerpt: "A beginner's guide to renting your first vehicle with confidence.",
-      category: "Rental Tips",
-      date: "2025-01-12",
-      image: "/car-rental-guide.jpg",
-    },
-    {
-      id: 3,
-      title: "Wedding Car Decoration: Elegant Ideas for Your Special Day",
-      excerpt: "Explore tasteful decoration ideas that complement your wedding vehicle.",
-      category: "Events",
-      date: "2025-01-03",
-      image: "/wedding-car-decorated.jpg",
-    },
-  ]
+  ];
 
   return (
     <div className="flex flex-col">
       {/* Hero Section - Dynamic */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <motion.div className="absolute inset-0 z-0" style={{ y: heroY, scale: heroScale }}>
+      <section
+        ref={heroRef}
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      >
+        <motion.div
+          className="absolute inset-0 z-0"
+          style={{ y: heroY, scale: heroScale }}
+        >
           <Image
-            src={homepageContent.heroImage || "/luxury-car-showroom-elegant-interior.jpg"}
+            src={
+              homepageContent.heroImage ||
+              "/luxury-car-showroom-elegant-interior.jpg"
+            }
             alt="Luxury car showroom"
             fill
             className="object-cover brightness-[0.35]"
@@ -188,7 +188,8 @@ export default function HomePage() {
             >
               <Badge className="text-sm md:text-base px-4 py-2 bg-white/10 backdrop-blur-md border-white/20 text-white shadow-lg hover:bg-white/15 transition-all">
                 <Sparkles className="h-4 w-4 mr-2" />
-                {homepageContent.heroBadge || "Abbottabad's Premier Luxury Car Rental"}
+                {homepageContent.heroBadge ||
+                  "Abbottabad's Premier Luxury Car Rental"}
               </Badge>
             </motion.div>
 
@@ -210,7 +211,8 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              {homepageContent.heroSubtitle || "Experience the pinnacle of luxury automotive rentals. Hand-selected premium vehicles, impeccable service, and unforgettable journeys await."}
+              {homepageContent.heroSubtitle ||
+                "Experience the pinnacle of luxury automotive rentals. Hand-selected premium vehicles, impeccable service, and unforgettable journeys await."}
             </motion.p>
 
             <motion.div
@@ -235,7 +237,9 @@ export default function HomePage() {
                 className="text-base md:text-lg px-8 md:px-10 py-6 md:py-7 bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white hover:text-primary transition-all shadow-xl hover:scale-105"
                 asChild
               >
-                <Link href="/contact">{homepageContent.heroSecondaryCTA || "Schedule Consultation"}</Link>
+                <Link href="/contact">
+                  {homepageContent.heroSecondaryCTA || "Schedule Consultation"}
+                </Link>
               </Button>
             </motion.div>
           </motion.div>
@@ -252,7 +256,11 @@ export default function HomePage() {
               <motion.div
                 className="w-1.5 h-3 bg-white/60 rounded-full"
                 animate={{ y: [0, 14, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               />
             </div>
           </div>
@@ -265,7 +273,7 @@ export default function HomePage() {
           <Card className="border-0 shadow-2xl bg-background/95 backdrop-blur-xl">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 p-6 md:p-10">
               {homepageContent.stats?.map((stat: any, index: number) => {
-                const IconComponent = getIconComponent(stat.icon)
+                const IconComponent = getIconComponent(stat.icon);
                 return (
                   <motion.div
                     key={index}
@@ -282,9 +290,11 @@ export default function HomePage() {
                     <div className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-accent bg-clip-text text-transparent">
                       {stat.value}
                     </div>
-                    <div className="text-sm md:text-base text-muted-foreground font-medium">{stat.label}</div>
+                    <div className="text-sm md:text-base text-muted-foreground font-medium">
+                      {stat.label}
+                    </div>
                   </motion.div>
-                )
+                );
               })}
             </div>
           </Card>
@@ -299,21 +309,26 @@ export default function HomePage() {
 
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <AnimatedSection className="text-center mb-12 md:mb-16">
-            <Badge variant="outline" className="mb-4 text-xs md:text-sm px-3 py-1.5 bg-accent/5 border-accent/20">
+            <Badge
+              variant="outline"
+              className="mb-4 text-xs md:text-sm px-3 py-1.5 bg-accent/5 border-accent/20"
+            >
               <Car className="h-3.5 w-3.5 mr-2 text-accent" />
-              {homepageContent.categoriesSectionBadge || "Our Vehicle Categories"}
+              {homepageContent.categoriesSectionBadge ||
+                "Our Vehicle Categories"}
             </Badge>
             <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-serif font-bold mb-4 md:mb-6 leading-tight">
               {homepageContent.categoriesSectionTitle || "Choose Your Class"}
             </h2>
             <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              {homepageContent.categoriesSectionSubtitle || "From economical to premium, discover the perfect vehicle category tailored to your journey and preferences"}
+              {homepageContent.categoriesSectionSubtitle ||
+                "From economical to premium, discover the perfect vehicle category tailored to your journey and preferences"}
             </p>
           </AnimatedSection>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {categories.map((carClass: any, index: number) => {
-              const IconComponent = getIconComponent(carClass.icon)
+              const IconComponent = getIconComponent(carClass.icon);
               return (
                 <ScaleIn key={carClass._id} delay={index * 0.1}>
                   <motion.div
@@ -323,7 +338,7 @@ export default function HomePage() {
                   >
                     <Card className="group relative overflow-hidden hover:shadow-2xl transition-all duration-500 h-full border-border/50 bg-gradient-to-br from-background to-muted/10 backdrop-blur-sm">
                       <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      
+
                       <div className="relative h-64 md:h-72 overflow-hidden bg-muted/30">
                         <Image
                           src={carClass.image || "/placeholder.svg"}
@@ -333,7 +348,7 @@ export default function HomePage() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                         <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-transparent to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                        
+
                         <motion.div
                           className="absolute top-5 left-5 p-3 rounded-xl bg-accent/95 backdrop-blur-md shadow-xl border border-accent/30"
                           whileHover={{ scale: 1.1, rotate: 5 }}
@@ -341,21 +356,23 @@ export default function HomePage() {
                         >
                           <IconComponent className="h-7 w-7 md:h-8 md:w-8 text-white" />
                         </motion.div>
-                        
+
                         <div className="absolute bottom-5 left-5 right-5">
                           <motion.div
                             className="bg-background/95 backdrop-blur-md px-4 py-2.5 rounded-xl shadow-xl border border-border/50"
                             whileHover={{ scale: 1.05 }}
                             transition={{ duration: 0.2 }}
                           >
-                            <p className="text-xs text-muted-foreground mb-0.5">Starting from</p>
+                            <p className="text-xs text-muted-foreground mb-0.5">
+                              Starting from
+                            </p>
                             <p className="text-lg md:text-xl font-bold bg-gradient-to-r from-accent to-accent/70 bg-clip-text text-transparent">
                               ${carClass.priceFrom}/day
                             </p>
                           </motion.div>
                         </div>
                       </div>
-                      
+
                       <div className="p-6 md:p-8 space-y-6 relative z-10">
                         <div className="space-y-3">
                           <h3 className="text-2xl md:text-3xl font-serif font-bold group-hover:text-accent transition-colors duration-300">
@@ -365,23 +382,28 @@ export default function HomePage() {
                             {carClass.description}
                           </p>
                         </div>
-                        
+
                         <div className="space-y-3 pt-2 border-t border-border/50">
-                          {carClass.features?.map((feature: string, idx: number) => (
-                            <motion.div
-                              key={feature}
-                              className="flex items-center gap-3 text-sm md:text-base group-hover:text-foreground transition-colors"
-                              initial={{ opacity: 0, x: -10 }}
-                              whileInView={{ opacity: 1, x: 0 }}
-                              viewport={{ once: true }}
-                              transition={{ duration: 0.3, delay: idx * 0.05 }}
-                            >
-                              <div className="h-2 w-2 rounded-full bg-accent shrink-0 group-hover:scale-125 transition-transform duration-300" />
-                              <span>{feature}</span>
-                            </motion.div>
-                          ))}
+                          {carClass.features?.map(
+                            (feature: string, idx: number) => (
+                              <motion.div
+                                key={feature}
+                                className="flex items-center gap-3 text-sm md:text-base group-hover:text-foreground transition-colors"
+                                initial={{ opacity: 0, x: -10 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{
+                                  duration: 0.3,
+                                  delay: idx * 0.05,
+                                }}
+                              >
+                                <div className="h-2 w-2 rounded-full bg-accent shrink-0 group-hover:scale-125 transition-transform duration-300" />
+                                <span>{feature}</span>
+                              </motion.div>
+                            )
+                          )}
                         </div>
-                        
+
                         <Button
                           variant="outline"
                           className="w-full group-hover:bg-accent group-hover:text-accent-foreground group-hover:border-accent group-hover:shadow-lg transition-all duration-300 font-medium"
@@ -393,12 +415,12 @@ export default function HomePage() {
                           </Link>
                         </Button>
                       </div>
-                      
+
                       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-accent/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </Card>
                   </motion.div>
                 </ScaleIn>
-              )
+              );
             })}
           </div>
         </div>
@@ -407,23 +429,27 @@ export default function HomePage() {
       {/* Premium Offers Section - Dynamic */}
       <section className="py-20 md:py-28 bg-gradient-to-br from-muted/40 via-background to-muted/30 relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-white/[0.015] bg-[size:50px_50px]" />
-        
+
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <AnimatedSection className="text-center mb-12 md:mb-16">
-            <Badge variant="outline" className="mb-4 text-xs md:text-sm px-3 py-1">
+            <Badge
+              variant="outline"
+              className="mb-4 text-xs md:text-sm px-3 py-1"
+            >
               {homepageContent.offersSectionBadge || "Exclusive Offers"}
             </Badge>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-4 md:mb-6">
               {homepageContent.offersSectionTitle || "Special Promotions"}
             </h2>
             <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              {homepageContent.offersSectionSubtitle || "Limited-time offers designed to enhance your rental experience"}
+              {homepageContent.offersSectionSubtitle ||
+                "Limited-time offers designed to enhance your rental experience"}
             </p>
           </AnimatedSection>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto">
             {homepageContent.offers?.map((offer: any, index: number) => {
-              const OfferIconComponent = getIconComponent(offer.icon)
+              const OfferIconComponent = getIconComponent(offer.icon);
               return (
                 <AnimatedSection key={index} delay={index * 0.1} direction="up">
                   <motion.div
@@ -438,7 +464,7 @@ export default function HomePage() {
                         transition={{ duration: 0.6 }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      
+
                       <div className="p-6 md:p-8 space-y-6 relative z-10">
                         <motion.div
                           className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl ${offer.color} text-white shadow-xl group-hover:shadow-2xl transition-all duration-300`}
@@ -447,17 +473,19 @@ export default function HomePage() {
                         >
                           <OfferIconComponent className="h-8 w-8" />
                         </motion.div>
-                        
+
                         <div className="space-y-3">
                           <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-accent to-accent/70 bg-clip-text text-transparent">
                             {offer.discount}
                           </div>
-                          <h3 className="text-xl md:text-2xl font-bold font-serif leading-tight">{offer.title}</h3>
+                          <h3 className="text-xl md:text-2xl font-bold font-serif leading-tight">
+                            {offer.title}
+                          </h3>
                           <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                             {offer.description}
                           </p>
                         </div>
-                        
+
                         <Button
                           variant="ghost"
                           className="w-full justify-between group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-300 font-medium"
@@ -469,12 +497,12 @@ export default function HomePage() {
                           </Link>
                         </Button>
                       </div>
-                      
+
                       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-accent/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </Card>
                   </motion.div>
                 </AnimatedSection>
-              )
+              );
             })}
           </div>
         </div>
@@ -489,7 +517,8 @@ export default function HomePage() {
                 Our Fleet Partners
               </Badge>
               <p className="text-sm md:text-base uppercase tracking-widest text-muted-foreground font-medium">
-                {homepageContent.brandsSectionTitle || "Trusted Brands in Our Premium Fleet"}
+                {homepageContent.brandsSectionTitle ||
+                  "Trusted Brands in Our Premium Fleet"}
               </p>
             </div>
           </FadeIn>
@@ -520,10 +549,13 @@ export default function HomePage() {
           animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
         />
-        
+
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <AnimatedSection className="text-center mb-12 md:mb-16">
-            <Badge variant="outline" className="mb-4 text-xs md:text-sm px-3 py-1.5 bg-accent/5 border-accent/20">
+            <Badge
+              variant="outline"
+              className="mb-4 text-xs md:text-sm px-3 py-1.5 bg-accent/5 border-accent/20"
+            >
               <Star className="h-3.5 w-3.5 mr-2 text-accent fill-accent" />
               {homepageContent.featuredSectionBadge || "Popular Choices"}
             </Badge>
@@ -531,7 +563,8 @@ export default function HomePage() {
               {homepageContent.featuredSectionTitle || "Featured Vehicles"}
             </h2>
             <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              {homepageContent.featuredSectionSubtitle || "Curated selection of premium vehicles offering the perfect fusion of luxury, performance, and exceptional value"}
+              {homepageContent.featuredSectionSubtitle ||
+                "Curated selection of premium vehicles offering the perfect fusion of luxury, performance, and exceptional value"}
             </p>
           </AnimatedSection>
 
@@ -557,15 +590,17 @@ export default function HomePage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-accent/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
+
                     <div className="absolute top-4 right-4 bg-background/95 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-xl border border-border/50 group-hover:bg-accent group-hover:border-accent transition-all duration-300">
                       <Star className="h-4 w-4 fill-accent text-accent group-hover:fill-white group-hover:text-white transition-colors" />
-                      <span className="text-sm font-bold group-hover:text-white transition-colors">{car.rating}</span>
+                      <span className="text-sm font-bold group-hover:text-white transition-colors">
+                        {car.rating}
+                      </span>
                       <span className="text-xs text-muted-foreground group-hover:text-white/80 transition-colors">
                         ({car.reviews})
                       </span>
                     </div>
-                    
+
                     <div className="absolute top-4 left-4">
                       <Badge className="bg-accent/95 backdrop-blur-sm text-accent-foreground shadow-xl border-0 text-xs font-semibold">
                         {car.categoryName}
@@ -578,9 +613,13 @@ export default function HomePage() {
                         {car.name}
                       </h3>
                       <div className="flex items-center gap-3">
-                        <p className="text-sm md:text-base text-muted-foreground">{car.specs?.year || "2023"} Model</p>
+                        <p className="text-sm md:text-base text-muted-foreground">
+                          {car.specs?.year || "2023"} Model
+                        </p>
                         <div className="h-1 w-1 rounded-full bg-accent/50" />
-                        <Badge variant="secondary" className="text-xs">{car.categoryName}</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          {car.categoryName}
+                        </Badge>
                       </div>
                     </div>
 
@@ -593,7 +632,9 @@ export default function HomePage() {
                         <div className="p-1.5 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
                           <Users className="h-4 w-4 text-accent" />
                         </div>
-                        <span className="font-medium">{car.specs?.seats || car.specs?.passengers} Seats</span>
+                        <span className="font-medium">
+                          {car.specs?.seats || car.specs?.passengers} Seats
+                        </span>
                       </motion.div>
                       <motion.div
                         className="flex items-center gap-3 text-sm group-hover:text-foreground transition-colors"
@@ -603,7 +644,9 @@ export default function HomePage() {
                         <div className="p-1.5 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
                           <Gauge className="h-4 w-4 text-accent" />
                         </div>
-                        <span className="font-medium">{car.specs?.transmission}</span>
+                        <span className="font-medium">
+                          {car.specs?.transmission}
+                        </span>
                       </motion.div>
                       <motion.div
                         className="flex items-center gap-3 text-sm group-hover:text-foreground transition-colors"
@@ -623,23 +666,46 @@ export default function HomePage() {
                         <div className="p-1.5 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors">
                           <Car className="h-4 w-4 text-accent" />
                         </div>
-                        <span className="font-medium">{car.specs?.drive || "N/A"}</span>
+                        <span className="font-medium">
+                          {car.specs?.drive || "N/A"}
+                        </span>
                       </motion.div>
                     </div>
 
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Daily Rates</p>
-                        <Badge variant="outline" className="text-xs bg-accent/5 border-accent/20">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                          Daily Rates
+                        </p>
+                        <Badge
+                          variant="outline"
+                          className="text-xs bg-accent/5 border-accent/20"
+                        >
                           Best Value
                         </Badge>
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         {[
-                          { days: "1-3", price: car.pricing?.["1-3"], highlight: false },
-                          { days: "4-9", price: car.pricing?.["4-9"], highlight: false },
-                          { days: "10-25", price: car.pricing?.["10-25"], highlight: false },
-                          { days: "26+", price: car.pricing?.["26+"], highlight: true },
+                          {
+                            days: "1-3",
+                            price: car.pricing?.["1-3"],
+                            highlight: false,
+                          },
+                          {
+                            days: "4-9",
+                            price: car.pricing?.["4-9"],
+                            highlight: false,
+                          },
+                          {
+                            days: "10-25",
+                            price: car.pricing?.["10-25"],
+                            highlight: false,
+                          },
+                          {
+                            days: "26+",
+                            price: car.pricing?.["26+"],
+                            highlight: true,
+                          },
                         ].map((tier, tierIdx) => (
                           <motion.div
                             key={tier.days}
@@ -651,8 +717,16 @@ export default function HomePage() {
                             whileHover={{ scale: 1.05, y: -2 }}
                             transition={{ duration: 0.2 }}
                           >
-                            <span className="text-xs text-muted-foreground mb-1">{tier.days} days</span>
-                            <span className={`text-lg font-bold ${tier.highlight ? "text-accent" : "text-foreground"}`}>
+                            <span className="text-xs text-muted-foreground mb-1">
+                              {tier.days} days
+                            </span>
+                            <span
+                              className={`text-lg font-bold ${
+                                tier.highlight
+                                  ? "text-accent"
+                                  : "text-foreground"
+                              }`}
+                            >
                               ${tier.price}
                             </span>
                           </motion.div>
@@ -690,51 +764,68 @@ export default function HomePage() {
       <section className="py-20 md:py-28 bg-gradient-to-br from-background via-muted/20 to-background">
         <div className="container mx-auto px-4 sm:px-6">
           <AnimatedSection className="text-center mb-12 md:mb-16">
-            <Badge variant="outline" className="mb-4 text-xs md:text-sm px-3 py-1">
-              {homepageContent.testimonialsSectionBadge || "Client Testimonials"}
+            <Badge
+              variant="outline"
+              className="mb-4 text-xs md:text-sm px-3 py-1"
+            >
+              {homepageContent.testimonialsSectionBadge ||
+                "Client Testimonials"}
             </Badge>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-4 md:mb-6">
-              {homepageContent.testimonialsSectionTitle || "Trusted by Thousands"}
+              {homepageContent.testimonialsSectionTitle ||
+                "Trusted by Thousands"}
             </h2>
             <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              {homepageContent.testimonialsSectionSubtitle || "Hear from our valued customers who have experienced the premium difference"}
+              {homepageContent.testimonialsSectionSubtitle ||
+                "Hear from our valued customers who have experienced the premium difference"}
             </p>
           </AnimatedSection>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {homepageContent.testimonials?.map((testimonial: any, index: number) => (
-              <ScaleIn key={index} delay={index * 0.15}>
-                <Card className="relative overflow-hidden group hover:shadow-2xl transition-all duration-300 h-full border-border/50 p-8">
-                  <Quote className="absolute top-6 right-6 h-16 w-16 text-accent/10" />
-                  <div className="relative z-10 space-y-6">
-                    <div className="flex items-center gap-1">
-                      {[...Array(Math.floor(testimonial.rating))].map((_, i) => (
-                        <Star key={i} className="h-5 w-5 fill-accent text-accent" />
-                      ))}
-                    </div>
-
-                    <p className="text-muted-foreground leading-relaxed text-base italic">
-                      "{testimonial.text}"
-                    </p>
-
-                    <div className="flex items-center gap-4 pt-4 border-t border-border/50">
-                      <div className="relative h-12 w-12 rounded-full overflow-hidden bg-muted">
-                        <Image
-                          src={testimonial.image || "/placeholder-user.jpg"}
-                          alt={testimonial.name}
-                          fill
-                          className="object-cover"
-                        />
+            {homepageContent.testimonials?.map(
+              (testimonial: any, index: number) => (
+                <ScaleIn key={index} delay={index * 0.15}>
+                  <Card className="relative overflow-hidden group hover:shadow-2xl transition-all duration-300 h-full border-border/50 p-8">
+                    <Quote className="absolute top-6 right-6 h-16 w-16 text-accent/10" />
+                    <div className="relative z-10 space-y-6">
+                      <div className="flex items-center gap-1">
+                        {[...Array(Math.floor(testimonial.rating))].map(
+                          (_, i) => (
+                            <Star
+                              key={i}
+                              className="h-5 w-5 fill-accent text-accent"
+                            />
+                          )
+                        )}
                       </div>
-                      <div>
-                        <div className="font-bold text-foreground">{testimonial.name}</div>
-                        <div className="text-sm text-muted-foreground">{testimonial.role}</div>
+
+                      <p className="text-muted-foreground leading-relaxed text-base italic">
+                        "{testimonial.text}"
+                      </p>
+
+                      <div className="flex items-center gap-4 pt-4 border-t border-border/50">
+                        <div className="relative h-12 w-12 rounded-full overflow-hidden bg-muted">
+                          <Image
+                            src={testimonial.image || "/placeholder-user.jpg"}
+                            alt={testimonial.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div>
+                          <div className="font-bold text-foreground">
+                            {testimonial.name}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {testimonial.role}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Card>
-              </ScaleIn>
-            ))}
+                  </Card>
+                </ScaleIn>
+              )
+            )}
           </div>
         </div>
       </section>
@@ -747,20 +838,24 @@ export default function HomePage() {
 
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <AnimatedSection className="text-center mb-12 md:mb-16">
-            <Badge variant="outline" className="mb-4 text-xs md:text-sm px-3 py-1">
+            <Badge
+              variant="outline"
+              className="mb-4 text-xs md:text-sm px-3 py-1"
+            >
               {homepageContent.benefitsSectionBadge || "Why Choose Us"}
             </Badge>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-4 md:mb-6">
               {homepageContent.benefitsSectionTitle || "Unmatched Excellence"}
             </h2>
             <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              {homepageContent.benefitsSectionSubtitle || "Every detail crafted to deliver a premium experience that exceeds expectations"}
+              {homepageContent.benefitsSectionSubtitle ||
+                "Every detail crafted to deliver a premium experience that exceeds expectations"}
             </p>
           </AnimatedSection>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {homepageContent.benefits?.map((benefit: any, index: number) => {
-              const BenefitIconComponent = getIconComponent(benefit.icon)
+              const BenefitIconComponent = getIconComponent(benefit.icon);
               return (
                 <AnimatedSection key={index} delay={index * 0.1} direction="up">
                   <motion.div
@@ -777,7 +872,9 @@ export default function HomePage() {
                         <BenefitIconComponent className="h-10 w-10 text-accent" />
                       </motion.div>
                       <div>
-                        <h3 className="text-xl md:text-2xl font-bold mb-3 font-serif">{benefit.title}</h3>
+                        <h3 className="text-xl md:text-2xl font-bold mb-3 font-serif">
+                          {benefit.title}
+                        </h3>
                         <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
                           {benefit.description}
                         </p>
@@ -786,7 +883,7 @@ export default function HomePage() {
                     </Card>
                   </motion.div>
                 </AnimatedSection>
-              )
+              );
             })}
           </div>
         </div>
@@ -799,7 +896,9 @@ export default function HomePage() {
             <Badge variant="outline" className="mb-4">
               Common Questions
             </Badge>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">Frequently Asked Questions</h2>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
+              Frequently Asked Questions
+            </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Quick answers to questions you may have
             </p>
@@ -809,9 +908,14 @@ export default function HomePage() {
             <Accordion type="single" collapsible className="space-y-4">
               {homeFaqs.map((faq, index) => (
                 <AnimatedSection key={index} delay={index * 0.1} direction="up">
-                  <AccordionItem value={`faq-${index}`} className="border rounded-lg px-6">
+                  <AccordionItem
+                    value={`faq-${index}`}
+                    className="border rounded-lg px-6"
+                  >
                     <AccordionTrigger className="text-left hover:no-underline py-6">
-                      <span className="font-semibold text-lg">{faq.question}</span>
+                      <span className="font-semibold text-lg">
+                        {faq.question}
+                      </span>
                     </AccordionTrigger>
                     <AccordionContent className="text-muted-foreground pb-6 leading-relaxed">
                       {faq.answer}
@@ -833,69 +937,78 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Blog Section - Static for now */}
-      <section className="py-24 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <AnimatedSection className="text-center mb-16">
-            <Badge variant="outline" className="mb-4">
-              Latest Updates
-            </Badge>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">From Our Blog</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Tips, guides, and stories to enhance your rental experience
-            </p>
-          </AnimatedSection>
+      {/* Blog Section - Dynamic */}
+      {recentBlogs.length > 0 && (
+        <section className="py-24 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <AnimatedSection className="text-center mb-16">
+              <Badge variant="outline" className="mb-4">
+                Latest Updates
+              </Badge>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
+                From Our Blog
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                Tips, guides, and stories to enhance your rental experience
+              </p>
+            </AnimatedSection>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {recentPosts.map((post, index) => (
-              <ScaleIn key={post.id} delay={index * 0.15}>
-                <Card className="group overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
-                  <div className="relative h-48 overflow-hidden">
-                    <Image
-                      src={post.image || "/placeholder.svg"}
-                      alt={post.title}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="p-6 space-y-3">
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                      <Badge variant="secondary">{post.category}</Badge>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {new Date(post.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                      </div>
+            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {recentBlogs.map((post, index) => (
+                <ScaleIn key={post._id} delay={index * 0.15}>
+                  <Card className="group overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
+                    <div className="relative h-48 overflow-hidden">
+                      <Image
+                        src={post.featuredImage || "/placeholder.svg"}
+                        alt={post.title}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
                     </div>
-                    <h3 className="text-xl font-bold line-clamp-2 group-hover:text-accent transition-colors">
-                      {post.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed">{post.excerpt}</p>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-between group-hover:bg-accent/10 transition-colors"
-                      asChild
-                    >
-                      <Link href={`/blog/${post.id}`}>
-                        Read More
-                        <ArrowRight className="h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </div>
-                </Card>
-              </ScaleIn>
-            ))}
-          </div>
+                    <div className="p-6 space-y-3">
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <Badge variant="secondary">{post.category}</Badge>
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          {new Date(post.date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </div>
+                      </div>
+                      <h3 className="text-xl font-bold line-clamp-2 group-hover:text-accent transition-colors">
+                        {post.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed">
+                        {post.excerpt}
+                      </p>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-between group-hover:bg-accent/10 transition-colors"
+                        asChild
+                      >
+                        <Link href={`/blog/${post.slug}`}>
+                          Read More
+                          <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </Card>
+                </ScaleIn>
+              ))}
+            </div>
 
-          <AnimatedSection className="text-center mt-12" delay={0.5}>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/blog">
-                View All Articles
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-          </AnimatedSection>
-        </div>
-      </section>
+            <AnimatedSection className="text-center mt-12" delay={0.5}>
+              <Button size="lg" variant="outline" asChild>
+                <Link href="/blog">
+                  View All Articles
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </AnimatedSection>
+          </div>
+        </section>
+      )}
 
       {/* Premium CTA Section - Dynamic */}
       <section className="py-24 md:py-32 bg-gradient-to-br from-primary/5 via-accent/10 to-primary/5 relative overflow-hidden">
@@ -926,7 +1039,8 @@ export default function HomePage() {
                       {homepageContent.ctaTitle || "Begin Your Luxury Journey"}
                     </h2>
                     <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                      {homepageContent.ctaSubtitle || "Our dedicated team is ready to curate the perfect rental experience tailored to your needs"}
+                      {homepageContent.ctaSubtitle ||
+                        "Our dedicated team is ready to curate the perfect rental experience tailored to your needs"}
                     </p>
                   </div>
 
@@ -937,7 +1051,8 @@ export default function HomePage() {
                       asChild
                     >
                       <Link href="/contact" className="group">
-                        {homepageContent.ctaPrimaryButton || "Schedule Your Rental"}
+                        {homepageContent.ctaPrimaryButton ||
+                          "Schedule Your Rental"}
                         <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                       </Link>
                     </Button>
@@ -947,7 +1062,10 @@ export default function HomePage() {
                       className="text-base md:text-lg px-8 md:px-10 py-6 md:py-7 border-2 hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all shadow-lg hover:scale-105"
                       asChild
                     >
-                      <a href={`tel:${homepageContent.ctaPhone}`} className="flex items-center gap-2">
+                      <a
+                        href={`tel:${homepageContent.ctaPhone}`}
+                        className="flex items-center gap-2"
+                      >
                         <Phone className="h-5 w-5" />
                         {homepageContent.ctaPhone || "+92 300 1234567"}
                       </a>
@@ -972,12 +1090,19 @@ export default function HomePage() {
                   <div className="pt-6 space-y-2">
                     <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                       <MapPin className="h-4 w-4" />
-                      <span>{homepageContent.ctaAddress || "Main Mansehra Road, Abbottabad, KPK, Pakistan"}</span>
+                      <span>
+                        {homepageContent.ctaAddress ||
+                          "Main Mansehra Road, Abbottabad, KPK, Pakistan"}
+                      </span>
                     </div>
                     <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                       <Mail className="h-4 w-4" />
-                      <a href={`mailto:${homepageContent.ctaEmail}`} className="hover:text-accent transition-colors">
-                        {homepageContent.ctaEmail || "info@abbottabadrentacar.com"}
+                      <a
+                        href={`mailto:${homepageContent.ctaEmail}`}
+                        className="hover:text-accent transition-colors"
+                      >
+                        {homepageContent.ctaEmail ||
+                          "info@abbottabadrentacar.com"}
                       </a>
                     </div>
                   </div>
@@ -988,5 +1113,5 @@ export default function HomePage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

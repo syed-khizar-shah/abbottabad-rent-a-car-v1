@@ -16,6 +16,7 @@ const Review = require('./models/Review');
 const FAQ = require('./models/FAQ');
 const ContactContent = require('./models/ContactContent');
 const LocationContent = require('./models/LocationContent');
+const Blog = require('./models/Blog');
 
 // Debug: Check if env vars are loaded
 console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
@@ -48,6 +49,7 @@ async function seedDatabase() {
     await FAQ.deleteMany({});
     await ContactContent.deleteMany({});
     await LocationContent.deleteMany({});
+    await Blog.deleteMany({});
 
     console.log('📦 Seeding database...');
 
@@ -1024,6 +1026,914 @@ async function seedDatabase() {
       ctaSubtitle: 'Visit our showroom today or contact us to reserve your premium vehicle',
     });
     console.log('✅ Location content created');
+
+    // Seed Blog Posts
+    const blogPosts = [
+      {
+        title: 'The Ultimate Guide to Planning a Luxury Wedding in Northern Pakistan',
+        slug: 'ultimate-guide-luxury-wedding-northern-pakistan',
+        excerpt: 'Discover how to create an unforgettable wedding experience in the breathtaking landscapes of northern Pakistan, complete with luxury transportation that matches the grandeur of your special day.',
+        content: `<p>Planning a wedding in the stunning landscapes of Northern Pakistan is a dream come true for many couples. The majestic mountains, pristine valleys, and rich cultural heritage provide the perfect backdrop for a celebration that will be remembered for a lifetime.</p>
+
+<h2>Choosing the Perfect Location</h2>
+<p>Northern Pakistan offers numerous breathtaking venues for your special day. From the serene valleys of Hunza to the picturesque landscapes of Naran and Kaghan, each location brings its own unique charm. Consider factors like accessibility, accommodation options for guests, and the season when making your choice.</p>
+
+<h3>Popular Wedding Destinations</h3>
+<ul>
+<li><strong>Hunza Valley:</strong> Known for its stunning mountain views and hospitable locals</li>
+<li><strong>Naran Kaghan:</strong> Perfect for summer weddings with lush green meadows</li>
+<li><strong>Swat Valley:</strong> The "Switzerland of Pakistan" offers diverse venues</li>
+<li><strong>Murree:</strong> Accessible year-round with excellent facilities</li>
+</ul>
+
+<h2>Luxury Transportation: Making an Entrance</h2>
+<p>Your wedding day transportation sets the tone for the entire celebration. Arriving in a luxury vehicle not only makes a statement but also ensures comfort and style throughout your special day.</p>
+
+<h3>Choosing the Right Vehicle</h3>
+<p>For weddings in Northern Pakistan, we recommend vehicles that combine luxury with practicality. Our fleet includes:</p>
+<ul>
+<li><strong>Rolls-Royce Phantom:</strong> The ultimate in luxury and prestige</li>
+<li><strong>Mercedes S-Class:</strong> Perfect blend of comfort and elegance</li>
+<li><strong>Range Rover:</strong> Ideal for mountain terrain while maintaining luxury</li>
+<li><strong>Bentley Continental:</strong> For couples who want to make a grand entrance</li>
+</ul>
+
+<h2>Planning Timeline</h2>
+<p>A destination wedding requires careful planning. Here's a recommended timeline:</p>
+<ul>
+<li><strong>12 months before:</strong> Choose location and book venue</li>
+<li><strong>9 months before:</strong> Reserve luxury transportation and accommodation</li>
+<li><strong>6 months before:</strong> Send save-the-dates to guests</li>
+<li><strong>3 months before:</strong> Finalize all vendor contracts</li>
+<li><strong>1 month before:</strong> Confirm all arrangements and create detailed schedule</li>
+</ul>
+
+<h2>Guest Transportation</h2>
+<p>Don't forget about your guests! Arrange comfortable transportation for them as well. We offer fleet packages that can accommodate wedding parties of all sizes, ensuring everyone arrives in style and comfort.</p>
+
+<h2>Weather Considerations</h2>
+<p>Northern Pakistan's weather can be unpredictable. The best months for weddings are:</p>
+<ul>
+<li><strong>April to June:</strong> Pleasant weather with blooming flowers</li>
+<li><strong>September to October:</strong> Clear skies and comfortable temperatures</li>
+</ul>
+
+<h2>Making It Memorable</h2>
+<p>A luxury wedding in Northern Pakistan is about creating unforgettable moments. From the scenic drive to your venue in a premium vehicle to the stunning mountain backdrop for your photos, every detail contributes to the magic of your special day.</p>
+
+<p>At Abbottabad Rent A Car, we understand the importance of your wedding day. Our experienced team ensures that your luxury transportation is flawless, allowing you to focus on celebrating your love story in one of the most beautiful regions in the world.</p>`,
+        featuredImage: '/luxury-wedding-northern-pakistan-mountains.jpg',
+        category: 'Events & Weddings',
+        author: 'Sarah Khan',
+        authorBio: 'Wedding planner and luxury event specialist with over 10 years of experience in destination weddings.',
+        date: '2025-01-20',
+        readTime: '8 min read',
+        featured: true,
+        published: true,
+        metaTitle: 'The Ultimate Guide to Planning a Luxury Wedding in Northern Pakistan',
+        metaDescription: 'Discover how to create an unforgettable wedding experience in the breathtaking landscapes of northern Pakistan, complete with luxury transportation.',
+        keywords: ['luxury wedding', 'northern pakistan', 'wedding planning', 'luxury transportation', 'destination wedding'],
+        tags: ['wedding', 'luxury', 'northern pakistan', 'event planning'],
+      },
+      {
+        title: 'Top 5 Scenic Routes in Pakistan Perfect for Luxury Car Tours',
+        slug: 'top-5-scenic-routes-pakistan-luxury-car-tours',
+        excerpt: 'Explore Pakistan\'s most stunning drives, from the Karakoram Highway to the coastal beauty of Makran, and discover why these routes are best experienced in a luxury vehicle.',
+        content: `<p>Pakistan is home to some of the world's most spectacular driving routes. From the legendary Karakoram Highway to the coastal beauty of Makran, these roads offer experiences that are best enjoyed in a luxury vehicle.</p>
+
+<h2>1. The Karakoram Highway</h2>
+<p>Often called the "Eighth Wonder of the World," the Karakoram Highway is a 1,300 km marvel of engineering that connects Pakistan with China. This high-altitude road offers breathtaking views of some of the world's highest peaks.</p>
+
+<h3>Best Time to Visit</h3>
+<p>May to October, when the road is fully accessible and weather conditions are favorable.</p>
+
+<h3>Recommended Vehicle</h3>
+<p>Range Rover or Land Cruiser for comfort and capability on mountain terrain.</p>
+
+<h2>2. Naran to Babusar Top</h2>
+<p>This route takes you through lush green valleys, alongside crystal-clear rivers, and up to the stunning Babusar Pass at 4,173 meters. The journey offers diverse landscapes and numerous photo opportunities.</p>
+
+<h2>3. Islamabad to Murree via Expressway</h2>
+<p>A perfect route for those who want to enjoy luxury driving on well-maintained roads. The Murree Expressway offers smooth sailing with beautiful views of the Margalla Hills.</p>
+
+<h2>4. Coastal Highway (Makran)</h2>
+<p>Experience the unique beauty of Pakistan's coastline. This route offers dramatic cliffs, pristine beaches, and the mesmerizing Arabian Sea.</p>
+
+<h2>5. Swat Valley Circuit</h2>
+<p>Known as the "Switzerland of Pakistan," Swat Valley offers a complete circuit of natural beauty, historical sites, and cultural experiences.</p>
+
+<h2>Tips for Luxury Road Trips</h2>
+<ul>
+<li>Plan your route and book accommodations in advance</li>
+<li>Choose a vehicle appropriate for the terrain</li>
+<li>Pack emergency supplies and ensure your vehicle is well-maintained</li>
+<li>Allow extra time for photo stops and unexpected delays</li>
+<li>Respect local customs and environment</li>
+</ul>`,
+        featuredImage: '/karakoram-highway-scenic-mountain-road.jpg',
+        category: 'Travel Guides',
+        author: 'Ahmed Hassan',
+        authorBio: 'Travel enthusiast and automotive journalist specializing in luxury road trips.',
+        date: '2025-01-18',
+        readTime: '6 min read',
+        featured: false,
+        published: true,
+        metaTitle: 'Top 5 Scenic Routes in Pakistan Perfect for Luxury Car Tours',
+        metaDescription: 'Explore Pakistan\'s most stunning drives, from the Karakoram Highway to the coastal beauty of Makran.',
+        keywords: ['scenic routes', 'pakistan travel', 'luxury car tours', 'road trips', 'karakoram highway'],
+        tags: ['travel', 'scenic routes', 'pakistan', 'road trips'],
+      },
+      {
+        title: 'Rolls-Royce vs Bentley: Choosing the Perfect Ultra-Luxury Vehicle',
+        slug: 'rolls-royce-vs-bentley-choosing-perfect-ultra-luxury-vehicle',
+        excerpt: 'A comprehensive comparison of two automotive icons. Learn about the unique characteristics, features, and experiences that set these prestigious brands apart.',
+        content: `<p>When it comes to ultra-luxury vehicles, two names stand out above all others: Rolls-Royce and Bentley. Both brands represent the pinnacle of automotive excellence, but they offer distinctly different experiences for discerning drivers.</p>
+
+<h2>Heritage and Philosophy</h2>
+<p>Rolls-Royce has been synonymous with luxury and refinement for over a century. The brand emphasizes quiet, effortless power and an almost ethereal driving experience. Bentley, while equally prestigious, has historically focused on blending luxury with performance, creating vehicles that are both elegant and thrilling to drive.</p>
+
+<h2>Design Philosophy</h2>
+<p>Rolls-Royce vehicles are designed to be imposing, stately, and unmistakably luxurious. Every detail is crafted to perfection, from the hand-stitched leather to the custom coachwork. Bentley vehicles, while equally luxurious, often feature more dynamic styling and sporty accents.</p>
+
+<h2>Performance Characteristics</h2>
+<p>Rolls-Royce prioritizes smooth, silent, and effortless power delivery. The vehicles are engineered to feel as if they're floating on air. Bentley, on the other hand, offers more engaging driving dynamics while maintaining exceptional comfort.</p>
+
+<h2>Interior Experience</h2>
+<p>Both brands offer exceptional interior craftsmanship, but with different philosophies. Rolls-Royce interiors are opulent, spacious, and designed for passenger comfort. Bentley interiors balance luxury with a more driver-focused experience.</p>
+
+<h2>Which One Is Right for You?</h2>
+<p>The choice between Rolls-Royce and Bentley ultimately comes down to your personal preferences. If you value supreme comfort, quiet refinement, and being chauffeured in absolute luxury, Rolls-Royce is the perfect choice. If you prefer a more dynamic driving experience while still enjoying exceptional luxury, Bentley may be the better fit.</p>
+
+<p>At Abbottabad Rent A Car, we offer both Rolls-Royce and Bentley vehicles in our fleet, allowing you to experience the difference firsthand before making your decision.</p>`,
+        featuredImage: '/rolls-royce-bentley-comparison.jpg',
+        category: 'Luxury Lifestyle',
+        author: 'Zain Abbas',
+        authorBio: 'Automotive journalist and luxury car enthusiast with expertise in high-end vehicles.',
+        date: '2025-01-15',
+        readTime: '7 min read',
+        featured: false,
+        published: true,
+        metaTitle: 'Rolls-Royce vs Bentley: Choosing the Perfect Ultra-Luxury Vehicle',
+        metaDescription: 'A comprehensive comparison of two automotive icons. Learn about the unique characteristics, features, and experiences that set these prestigious brands apart.',
+        keywords: ['rolls-royce', 'bentley', 'luxury cars', 'ultra-luxury', 'car comparison'],
+        tags: ['luxury', 'rolls-royce', 'bentley', 'comparison'],
+      },
+      {
+        title: 'First-Time Luxury Car Rental: Everything You Need to Know',
+        slug: 'first-time-luxury-car-rental-everything-you-need-to-know',
+        excerpt: 'A beginner\'s guide to renting your first luxury vehicle. From documentation to driving tips, we cover everything to ensure a smooth and enjoyable experience.',
+        content: `<p>Renting a luxury car for the first time can be an exciting yet slightly overwhelming experience. This comprehensive guide will walk you through everything you need to know to make your first luxury rental seamless and enjoyable.</p>
+
+<h2>Understanding the Requirements</h2>
+<p>Before booking a luxury vehicle, it's important to understand the requirements. Most rental companies require:</p>
+<ul>
+<li>Valid driver's license (minimum age varies, typically 25+)</li>
+<li>Clean driving record</li>
+<li>Credit card for deposit</li>
+<li>Proof of insurance (or purchase rental insurance)</li>
+</ul>
+
+<h2>Choosing the Right Vehicle</h2>
+<p>Consider your needs carefully when selecting a luxury vehicle. Factors to consider include:</p>
+<ul>
+<li><strong>Purpose:</strong> Business travel, wedding, special event, or leisure</li>
+<li><strong>Passenger capacity:</strong> Number of passengers and luggage</li>
+<li><strong>Terrain:</strong> City driving, highway, or mountain roads</li>
+<li><strong>Style preference:</strong> Sedan, SUV, or sports car</li>
+</ul>
+
+<h2>Understanding Rental Costs</h2>
+<p>Luxury car rentals typically include:</p>
+<ul>
+<li>Base rental rate</li>
+<li>Insurance coverage</li>
+<li>Mileage limits</li>
+<li>Fuel policy (full-to-full or pre-purchase)</li>
+<li>Additional driver fees</li>
+</ul>
+
+<h2>Driving Tips for Luxury Vehicles</h2>
+<p>Luxury vehicles often have unique features and handling characteristics:</p>
+<ul>
+<li>Familiarize yourself with controls before driving</li>
+<li>Take time to adjust seats, mirrors, and steering wheel</li>
+<li>Understand the vehicle's safety features</li>
+<li>Drive smoothly and avoid aggressive maneuvers</li>
+<li>Be aware of the vehicle's dimensions and clearance</li>
+</ul>
+
+<h2>Insurance and Protection</h2>
+<p>Understanding your insurance options is crucial. Most rental companies offer:</p>
+<ul>
+<li>Basic liability coverage</li>
+<li>Collision damage waiver (CDW)</li>
+<li>Comprehensive coverage</li>
+<li>Personal accident insurance</li>
+</ul>
+
+<h2>Returning the Vehicle</h2>
+<p>When returning your luxury rental:</p>
+<ul>
+<li>Return with the same fuel level as when rented</li>
+<li>Inspect the vehicle with the rental agent</li>
+<li>Report any new damage immediately</li>
+<li>Remove all personal belongings</li>
+<li>Return on time to avoid late fees</li>
+</ul>
+
+<p>With proper preparation and understanding, your first luxury car rental can be a memorable and enjoyable experience that you'll want to repeat.</p>`,
+        featuredImage: '/luxury-car-rental-guide.jpg',
+        category: 'Rental Tips',
+        author: 'Fatima Ali',
+        authorBio: 'Travel consultant specializing in luxury car rentals and premium transportation services.',
+        date: '2025-01-12',
+        readTime: '5 min read',
+        featured: false,
+        published: true,
+        metaTitle: 'First-Time Luxury Car Rental: Everything You Need to Know',
+        metaDescription: 'A beginner\'s guide to renting your first luxury vehicle. From documentation to driving tips, we cover everything to ensure a smooth and enjoyable experience.',
+        keywords: ['luxury car rental', 'car rental guide', 'first time rental', 'rental tips', 'luxury vehicles'],
+        tags: ['rental tips', 'guide', 'luxury', 'first time'],
+      },
+      {
+        title: 'Best Car Rental Services in Abbottabad: Your Complete Guide',
+        slug: 'best-car-rental-services-abbottabad-complete-guide',
+        excerpt: 'Discover the top car rental services in Abbottabad. From luxury vehicles to budget-friendly options, find the perfect rental for your needs in this beautiful mountain city.',
+        content: `<p>Abbottabad, nestled in the picturesque mountains of Khyber Pakhtunkhwa, is a popular destination for tourists and locals alike. Whether you're planning a trip to the scenic northern areas or need reliable transportation within the city, finding the right car rental service is essential.</p>
+
+<h2>Why Choose Car Rental in Abbottabad?</h2>
+<p>Abbottabad serves as a gateway to many stunning destinations including Naran, Kaghan, Hunza, and Gilgit. Having your own vehicle gives you the freedom to explore these beautiful locations at your own pace. Additionally, car rental in Abbottabad offers convenience for business travelers, tourists, and locals who need reliable transportation.</p>
+
+<h3>Key Benefits of Renting a Car in Abbottabad</h3>
+<ul>
+<li><strong>Flexibility:</strong> Create your own schedule and explore at your leisure</li>
+<li><strong>Comfort:</strong> Travel in air-conditioned vehicles suitable for mountain terrain</li>
+<li><strong>Cost-Effective:</strong> More affordable than hiring taxis for multiple trips</li>
+<li><strong>Privacy:</strong> Enjoy your journey with family or friends in complete privacy</li>
+<li><strong>Reliability:</strong> Professional car rental services ensure well-maintained vehicles</li>
+</ul>
+
+<h2>Types of Vehicles Available for Rent in Abbottabad</h2>
+<p>When looking for car rental in Abbottabad, you'll find a variety of options:</p>
+
+<h3>Economy Cars</h3>
+<p>Perfect for city travel and short trips, economy cars are fuel-efficient and affordable. Ideal for couples or small families.</p>
+
+<h3>SUVs and 4x4 Vehicles</h3>
+<p>Essential for mountain trips to Naran, Kaghan, or other northern areas. These vehicles handle rough terrain and provide comfort on long journeys.</p>
+
+<h3>Luxury Vehicles</h3>
+<p>For special occasions, business meetings, or when you want to travel in style. Luxury car rentals in Abbottabad include premium sedans and high-end SUVs.</p>
+
+<h3>Family Cars</h3>
+<p>Spacious vehicles designed for larger families, ensuring everyone travels comfortably with luggage.</p>
+
+<h2>What to Look for in a Car Rental Service in Abbottabad</h2>
+<p>When choosing a car rental service in Abbottabad, consider these important factors:</p>
+
+<ul>
+<li><strong>Vehicle Condition:</strong> Ensure all vehicles are well-maintained and regularly serviced</li>
+<li><strong>Insurance Coverage:</strong> Verify comprehensive insurance is included</li>
+<li><strong>24/7 Support:</strong> Look for services that offer round-the-clock assistance</li>
+<li><strong>Transparent Pricing:</strong> Clear pricing with no hidden charges</li>
+<li><strong>Flexible Rental Periods:</strong> Options for daily, weekly, or monthly rentals</li>
+<li><strong>Delivery Service:</strong> Convenient pickup and drop-off options</li>
+</ul>
+
+<h2>Popular Routes from Abbottabad</h2>
+<p>Renting a car in Abbottabad opens up numerous travel opportunities:</p>
+
+<ul>
+<li><strong>Abbottabad to Naran:</strong> Approximately 4-5 hours, scenic mountain route</li>
+<li><strong>Abbottabad to Hunza:</strong> 10-12 hours, one of Pakistan's most beautiful drives</li>
+<li><strong>Abbottabad to Islamabad:</strong> 2 hours, smooth highway journey</li>
+<li><strong>Abbottabad to Murree:</strong> 2-3 hours, perfect for weekend getaways</li>
+</ul>
+
+<h2>Tips for Car Rental in Abbottabad</h2>
+<ul>
+<li>Book in advance during peak season (summer months)</li>
+<li>Inspect the vehicle thoroughly before accepting</li>
+<li>Understand the rental terms and conditions</li>
+<li>Keep emergency contact numbers handy</li>
+<li>Check weather conditions before mountain trips</li>
+</ul>
+
+<p>At Abbottabad Rent A Car, we offer comprehensive car rental services with a wide selection of vehicles, competitive pricing, and exceptional customer service. Contact us today to find the perfect vehicle for your journey.</p>`,
+        featuredImage: '/luxury-car-rental-guide.jpg',
+        category: 'Rental Tips',
+        author: 'Ahmed Hassan',
+        authorBio: 'Travel consultant specializing in car rentals and tourism in northern Pakistan.',
+        date: '2025-01-10',
+        readTime: '6 min read',
+        featured: false,
+        published: true,
+        metaTitle: 'Best Car Rental Services in Abbottabad: Your Complete Guide',
+        metaDescription: 'Discover the top car rental services in Abbottabad. From luxury vehicles to budget-friendly options, find the perfect rental for your needs.',
+        keywords: ['car rental Abbottabad', 'rent a car Abbottabad', 'Abbottabad car rental', 'vehicle rental Abbottabad', 'car hire Abbottabad'],
+        tags: ['Abbottabad', 'car rental', 'guide', 'rental tips'],
+      },
+      {
+        title: 'Affordable Car Rental in Abbottabad: Budget-Friendly Options',
+        slug: 'affordable-car-rental-abbottabad-budget-friendly-options',
+        excerpt: 'Looking for affordable car rental in Abbottabad? Discover budget-friendly options that don\'t compromise on quality and reliability.',
+        content: `<p>Finding affordable car rental in Abbottabad doesn't mean you have to sacrifice quality or reliability. With the right approach, you can secure a great vehicle at a reasonable price.</p>
+
+<h2>Understanding Car Rental Pricing in Abbottabad</h2>
+<p>Car rental prices in Abbottabad vary based on several factors:</p>
+
+<ul>
+<li><strong>Vehicle Type:</strong> Economy cars are more affordable than luxury vehicles</li>
+<li><strong>Rental Duration:</strong> Longer rentals often offer better daily rates</li>
+<li><strong>Season:</strong> Peak season (summer) may have higher rates</li>
+<li><strong>Additional Services:</strong> Insurance, GPS, and driver services add to costs</li>
+</ul>
+
+<h2>Tips for Finding Affordable Car Rental in Abbottabad</h2>
+
+<h3>1. Book in Advance</h3>
+<p>Early booking often comes with discounts and better rates. Many rental companies offer early bird specials.</p>
+
+<h3>2. Compare Prices</h3>
+<p>Don't settle for the first quote. Compare prices from multiple car rental services in Abbottabad to find the best deal.</p>
+
+<h3>3. Consider Long-Term Rentals</h3>
+<p>If you need a car for a week or more, long-term rentals typically offer significant savings per day.</p>
+
+<h3>4. Look for Package Deals</h3>
+<p>Some rental companies offer packages that include insurance, GPS, and other services at a discounted rate.</p>
+
+<h3>5. Off-Peak Travel</h3>
+<p>Traveling during off-peak seasons can result in lower rental rates.</p>
+
+<h2>Budget-Friendly Vehicle Options</h2>
+<p>For affordable car rental in Abbottabad, consider these options:</p>
+
+<ul>
+<li><strong>Economy Sedans:</strong> Perfect for city travel and small families</li>
+<li><strong>Compact SUVs:</strong> Good balance of space and fuel efficiency</li>
+<li><strong>Hatchbacks:</strong> Most economical option for solo travelers or couples</li>
+</ul>
+
+<h2>What's Included in Affordable Rentals</h2>
+<p>When choosing affordable car rental in Abbottabad, ensure these basics are included:</p>
+
+<ul>
+<li>Comprehensive insurance coverage</li>
+<li>24/7 roadside assistance</li>
+<li>Regular vehicle maintenance</li>
+<li>Clean and sanitized vehicles</li>
+</ul>
+
+<p>Remember, the cheapest option isn't always the best. Look for value - a balance of price, quality, and service that meets your needs.</p>`,
+        featuredImage: '/luxury-car-rental-guide.jpg',
+        category: 'Rental Tips',
+        author: 'Fatima Ali',
+        authorBio: 'Travel consultant specializing in budget-friendly travel solutions.',
+        date: '2025-01-08',
+        readTime: '5 min read',
+        featured: false,
+        published: true,
+        metaTitle: 'Affordable Car Rental in Abbottabad: Budget-Friendly Options',
+        metaDescription: 'Looking for affordable car rental in Abbottabad? Discover budget-friendly options that don\'t compromise on quality and reliability.',
+        keywords: ['affordable car rental Abbottabad', 'cheap car rental Abbottabad', 'budget car rental Abbottabad', 'economy car rental'],
+        tags: ['Abbottabad', 'affordable', 'budget', 'car rental'],
+      },
+      {
+        title: 'Luxury Car Rental in Abbottabad: Premium Transportation Solutions',
+        slug: 'luxury-car-rental-abbottabad-premium-transportation-solutions',
+        excerpt: 'Experience premium luxury car rental in Abbottabad. From business travel to special events, discover our exclusive fleet of high-end vehicles.',
+        content: `<p>When it comes to luxury car rental in Abbottabad, nothing beats the experience of traveling in style and comfort. Whether for business meetings, weddings, or special occasions, premium vehicles make every journey memorable.</p>
+
+<h2>Why Choose Luxury Car Rental in Abbottabad?</h2>
+<p>Luxury car rental in Abbottabad offers numerous advantages:</p>
+
+<ul>
+<li><strong>Prestige:</strong> Make a powerful impression at business meetings and events</li>
+<li><strong>Comfort:</strong> Superior interiors and advanced features for maximum comfort</li>
+<li><strong>Performance:</strong> Powerful engines and smooth handling for any terrain</li>
+<li><strong>Safety:</strong> Latest safety features and technology</li>
+<li><strong>Exclusivity:</strong> Stand out from the crowd with premium vehicles</li>
+</ul>
+
+<h2>Our Luxury Fleet in Abbottabad</h2>
+<p>Our luxury car rental service in Abbottabad includes:</p>
+
+<h3>Premium Sedans</h3>
+<ul>
+<li>Mercedes-Benz S-Class</li>
+<li>BMW 7 Series</li>
+<li>Audi A8</li>
+<li>Lexus LS</li>
+</ul>
+
+<h3>Luxury SUVs</h3>
+<ul>
+<li>Range Rover</li>
+<li>Mercedes GLS</li>
+<li>BMW X7</li>
+<li>Porsche Cayenne</li>
+</ul>
+
+<h3>Ultra-Luxury Vehicles</h3>
+<ul>
+<li>Rolls-Royce Phantom</li>
+<li>Bentley Continental</li>
+<li>Mercedes Maybach</li>
+</ul>
+
+<h2>Occasions for Luxury Car Rental in Abbottabad</h2>
+
+<h3>Business Travel</h3>
+<p>Impress clients and partners with premium transportation. Arrive at meetings in style and comfort.</p>
+
+<h3>Weddings</h3>
+<p>Make your special day unforgettable with a luxury wedding car. Our fleet includes beautifully decorated vehicles perfect for the bride and groom.</p>
+
+<h3>Corporate Events</h3>
+<p>Transport VIP guests and executives in premium vehicles that reflect your company's standards.</p>
+
+<h3>Special Celebrations</h3>
+<p>Anniversaries, birthdays, or any special occasion deserves luxury transportation.</p>
+
+<h2>Services Included with Luxury Car Rental</h2>
+<ul>
+<li>Professional chauffeur service (optional)</li>
+<li>Complimentary refreshments</li>
+<li>Premium insurance coverage</li>
+<li>24/7 concierge support</li>
+<li>Flexible pickup and drop-off locations</li>
+</ul>
+
+<h2>Booking Your Luxury Car Rental</h2>
+<p>To book luxury car rental in Abbottabad:</p>
+<ol>
+<li>Contact us with your requirements</li>
+<li>Select your preferred vehicle</li>
+<li>Choose additional services (chauffeur, decoration, etc.)</li>
+<li>Confirm dates and pricing</li>
+<li>Enjoy your premium experience</li>
+</ol>
+
+<p>At Abbottabad Rent A Car, we specialize in luxury car rental in Abbottabad, providing premium vehicles and exceptional service for discerning clients.</p>`,
+        featuredImage: '/rolls-royce-bentley-comparison.jpg',
+        category: 'Luxury Lifestyle',
+        author: 'Zain Abbas',
+        authorBio: 'Luxury transportation specialist with expertise in premium vehicle rentals.',
+        date: '2025-01-05',
+        readTime: '7 min read',
+        featured: false,
+        published: true,
+        metaTitle: 'Luxury Car Rental in Abbottabad: Premium Transportation Solutions',
+        metaDescription: 'Experience premium luxury car rental in Abbottabad. From business travel to special events, discover our exclusive fleet of high-end vehicles.',
+        keywords: ['luxury car rental Abbottabad', 'premium car rental Abbottabad', 'luxury vehicles Abbottabad', 'high-end car rental'],
+        tags: ['Abbottabad', 'luxury', 'premium', 'car rental'],
+      },
+      {
+        title: 'Car Rental with Driver in Abbottabad: Professional Chauffeur Services',
+        slug: 'car-rental-with-driver-abbottabad-professional-chauffeur-services',
+        excerpt: 'Enjoy stress-free travel with car rental with driver in Abbottabad. Professional chauffeur services for business, tourism, and special events.',
+        content: `<p>Car rental with driver in Abbottabad offers the perfect solution for those who want to enjoy their journey without the stress of driving. Whether for business, tourism, or special events, professional chauffeur services ensure a comfortable and safe experience.</p>
+
+<h2>Benefits of Car Rental with Driver in Abbottabad</h2>
+
+<h3>1. Stress-Free Travel</h3>
+<p>Focus on your work, enjoy the scenery, or relax while a professional handles the driving. No need to worry about navigation, traffic, or parking.</p>
+
+<h3>2. Local Expertise</h3>
+<p>Our drivers know Abbottabad and the surrounding areas intimately. They can suggest the best routes, recommend restaurants, and share local insights.</p>
+
+<h3>3. Safety First</h3>
+<p>All our drivers are professionally trained, licensed, and experienced. Your safety is our top priority.</p>
+
+<h3>4. Convenience</h3>
+<p>Work on your laptop, make phone calls, or simply rest while traveling. Make the most of your travel time.</p>
+
+<h2>When to Choose Car Rental with Driver</h2>
+
+<h3>Business Travel</h3>
+<p>Maximize productivity during business trips. Prepare for meetings, make calls, or review documents while traveling.</p>
+
+<h3>Airport Transfers</h3>
+<p>Reliable airport pickup and drop-off services. No need to worry about flight delays or finding transportation.</p>
+
+<h3>Tourism and Sightseeing</h3>
+<p>Explore Abbottabad and nearby attractions with a knowledgeable driver who knows the best spots and routes.</p>
+
+<h3>Special Events</h3>
+<p>Weddings, corporate events, or celebrations - arrive in style with professional chauffeur service.</p>
+
+<h3>Long Distance Travel</h3>
+<p>Comfortable and safe journeys to Naran, Kaghan, Hunza, or other destinations with an experienced driver.</p>
+
+<h2>Our Professional Drivers</h2>
+<p>When you choose car rental with driver in Abbottabad, you get:</p>
+
+<ul>
+<li>Fully licensed and certified drivers</li>
+<li>Extensive training in defensive driving</li>
+<li>Knowledge of local roads and conditions</li>
+<li>Professional appearance and demeanor</li>
+<li>Punctuality and reliability</li>
+<li>Excellent communication skills</li>
+</ul>
+
+<h2>Vehicle Options with Driver</h2>
+<p>We offer car rental with driver in Abbottabad for all vehicle categories:</p>
+
+<ul>
+<li>Economy cars with driver</li>
+<li>SUVs with driver (ideal for mountain trips)</li>
+<li>Luxury sedans with professional chauffeur</li>
+<li>Premium SUVs with chauffeur service</li>
+<li>Wedding cars with decorated vehicles</li>
+</ul>
+
+<h2>What's Included</h2>
+<ul>
+<li>Professional, licensed driver</li>
+<li>Fuel costs</li>
+<li>Vehicle insurance</li>
+<li>Flexible hours and routes</li>
+<li>24/7 support</li>
+</ul>
+
+<h2>Popular Routes with Driver Service</h2>
+<ul>
+<li>Abbottabad to Islamabad Airport</li>
+<li>Abbottabad to Naran/Kaghan</li>
+<li>Abbottabad to Hunza/Gilgit</li>
+<li>City tours and sightseeing</li>
+<li>Multi-day northern areas tours</li>
+</ul>
+
+<p>Book car rental with driver in Abbottabad today and experience the convenience and comfort of professional chauffeur services.</p>`,
+        featuredImage: '/luxury-car-rental-guide.jpg',
+        category: 'Rental Tips',
+        author: 'Hassan Malik',
+        authorBio: 'Transportation specialist with expertise in chauffeur services and corporate travel.',
+        date: '2025-01-03',
+        readTime: '6 min read',
+        featured: false,
+        published: true,
+        metaTitle: 'Car Rental with Driver in Abbottabad: Professional Chauffeur Services',
+        metaDescription: 'Enjoy stress-free travel with car rental with driver in Abbottabad. Professional chauffeur services for business, tourism, and special events.',
+        keywords: ['car rental with driver Abbottabad', 'chauffeur service Abbottabad', 'driver service Abbottabad', 'car hire with driver'],
+        tags: ['Abbottabad', 'chauffeur', 'driver service', 'car rental'],
+      },
+      {
+        title: 'Weekly and Monthly Car Rental in Abbottabad: Long-Term Options',
+        slug: 'weekly-monthly-car-rental-abbottabad-long-term-options',
+        excerpt: 'Save money with weekly and monthly car rental in Abbottabad. Perfect for extended stays, business projects, and long-term transportation needs.',
+        content: `<p>If you need a vehicle for an extended period, weekly and monthly car rental in Abbottabad offers significant savings and convenience. Perfect for business travelers, tourists, or residents who need temporary transportation.</p>
+
+<h2>Benefits of Long-Term Car Rental in Abbottabad</h2>
+
+<h3>Cost Savings</h3>
+<p>Weekly and monthly car rental in Abbottabad typically offers much better daily rates compared to daily rentals. The longer the rental period, the more you save.</p>
+
+<h3>Convenience</h3>
+<p>Having a vehicle available for extended periods eliminates the need to repeatedly book and return cars. It's like having your own car without the long-term commitment.</p>
+
+<h3>Flexibility</h3>
+<p>Long-term rentals provide flexibility to change vehicles if your needs change, often with no penalty.</p>
+
+<h3>No Maintenance Worries</h3>
+<p>The rental company handles all maintenance, repairs, and servicing. You just drive and enjoy.</p>
+
+<h2>Weekly Car Rental in Abbottabad</h2>
+<p>Weekly car rental in Abbottabad is perfect for:</p>
+
+<ul>
+<li>Week-long business trips</li>
+<li>Extended family visits</li>
+<li>Tourism and exploration</li>
+<li>Temporary work assignments</li>
+</ul>
+
+<h3>What's Included</h3>
+<ul>
+<li>7 days of vehicle use</li>
+<li>Comprehensive insurance</li>
+<li>24/7 roadside assistance</li>
+<li>Regular maintenance</li>
+<li>Flexible pickup/drop-off</li>
+</ul>
+
+<h2>Monthly Car Rental in Abbottabad</h2>
+<p>Monthly car rental in Abbottabad offers even greater savings and is ideal for:</p>
+
+<ul>
+<li>Long-term business projects</li>
+<li>Extended stays in Abbottabad</li>
+<li>Construction or project work</li>
+<li>Temporary relocation</li>
+<li>Multiple vehicle needs for businesses</li>
+</ul>
+
+<h3>Monthly Rental Benefits</h3>
+<ul>
+<li>Best daily rates available</li>
+<li>Vehicle replacement if needed</li>
+<li>Priority customer support</li>
+<li>Customized service packages</li>
+<li>Flexible payment options</li>
+</ul>
+
+<h2>Vehicle Options for Long-Term Rental</h2>
+<p>All vehicle categories are available for weekly and monthly car rental in Abbottabad:</p>
+
+<ul>
+<li><strong>Economy Cars:</strong> Most affordable option for long-term use</li>
+<li><strong>SUVs:</strong> Ideal for families or frequent mountain travel</li>
+<li><strong>Luxury Vehicles:</strong> For executive or VIP transportation needs</li>
+<li><strong>Commercial Vehicles:</strong> For business and commercial use</li>
+</ul>
+
+<h2>Special Features of Long-Term Rentals</h2>
+
+<h3>Vehicle Replacement</h3>
+<p>If your rental vehicle needs service, we provide a replacement vehicle immediately at no extra cost.</p>
+
+<h3>Flexible Terms</h3>
+<p>Most long-term rentals offer flexible terms - extend or shorten your rental period as needed.</p>
+
+<h3>Maintenance Included</h3>
+<p>All regular maintenance, servicing, and repairs are handled by the rental company.</p>
+
+<h3>Priority Support</h3>
+<p>Long-term rental customers receive priority support and faster response times.</p>
+
+<h2>How to Book Long-Term Rental</h2>
+<ol>
+<li>Contact us with your requirements</li>
+<li>Specify rental duration (weekly or monthly)</li>
+<li>Choose your preferred vehicle</li>
+<li>Discuss payment terms and options</li>
+<li>Sign the rental agreement</li>
+<li>Enjoy your vehicle for the rental period</li>
+</ol>
+
+<h2>Tips for Long-Term Car Rental</h2>
+<ul>
+<li>Book in advance for better rates</li>
+<li>Compare prices from multiple providers</li>
+<li>Understand the terms and conditions</li>
+<li>Check insurance coverage details</li>
+<li>Keep maintenance records if required</li>
+</ul>
+
+<p>Contact Abbottabad Rent A Car today to discuss your weekly or monthly car rental needs in Abbottabad. We offer competitive rates and flexible terms to suit your requirements.</p>`,
+        featuredImage: '/luxury-car-rental-guide.jpg',
+        category: 'Rental Tips',
+        author: 'Ali Raza',
+        authorBio: 'Business travel consultant specializing in long-term vehicle rental solutions.',
+        date: '2025-01-01',
+        readTime: '6 min read',
+        featured: false,
+        published: true,
+        metaTitle: 'Weekly and Monthly Car Rental in Abbottabad: Long-Term Options',
+        metaDescription: 'Save money with weekly and monthly car rental in Abbottabad. Perfect for extended stays, business projects, and long-term transportation needs.',
+        keywords: ['weekly car rental Abbottabad', 'monthly car rental Abbottabad', 'long-term car rental Abbottabad', 'extended car rental'],
+        tags: ['Abbottabad', 'long-term rental', 'weekly rental', 'monthly rental'],
+      },
+      {
+        title: 'SUV Rental in Abbottabad: Best Vehicles for Mountain Trips',
+        slug: 'suv-rental-abbottabad-best-vehicles-mountain-trips',
+        excerpt: 'Explore the northern areas with SUV rental in Abbottabad. Discover why SUVs are the best choice for mountain trips to Naran, Kaghan, and beyond.',
+        content: `<p>Planning a trip to the stunning northern areas of Pakistan? SUV rental in Abbottabad is your best option for safe, comfortable, and reliable mountain travel. These rugged vehicles are designed to handle the challenging terrain while providing comfort for long journeys.</p>
+
+<h2>Why Choose SUV Rental in Abbottabad?</h2>
+<p>Abbottabad serves as the perfect starting point for mountain adventures. SUV rental in Abbottabad offers numerous advantages:</p>
+
+<h3>Mountain Terrain Capability</h3>
+<p>SUVs are built for rough roads, steep inclines, and challenging mountain conditions. Their high ground clearance and 4WD capabilities make them ideal for northern areas.</p>
+
+<h3>Space and Comfort</h3>
+<p>Spacious interiors accommodate passengers and luggage comfortably. Perfect for families or groups traveling together.</p>
+
+<h3>Safety Features</h3>
+<p>Modern SUVs come equipped with advanced safety features including ABS, traction control, and multiple airbags - essential for mountain driving.</p>
+
+<h3>Fuel Efficiency</h3>
+<p>Modern SUVs offer better fuel economy than before, making long journeys more economical.</p>
+
+<h2>Popular SUV Models for Rental in Abbottabad</h2>
+
+<h3>Compact SUVs</h3>
+<ul>
+<li>Toyota RAV4</li>
+<li>Honda CR-V</li>
+<li>Nissan X-Trail</li>
+</ul>
+<p>Perfect for small families or couples. Good balance of size and fuel efficiency.</p>
+
+<h3>Mid-Size SUVs</h3>
+<ul>
+<li>Toyota Fortuner</li>
+<li>Honda Pilot</li>
+<li>Mitsubishi Pajero</li>
+</ul>
+<p>Ideal for medium-sized families. Excellent for both city and mountain travel.</p>
+
+<h3>Full-Size SUVs</h3>
+<ul>
+<li>Toyota Land Cruiser</li>
+<li>Range Rover</li>
+<li>Mercedes G-Class</li>
+</ul>
+<p>Luxury options for those who want premium comfort and performance.</p>
+
+<h2>Best Destinations Accessible with SUV Rental</h2>
+
+<h3>Naran and Kaghan Valley</h3>
+<p>One of the most popular destinations from Abbottabad. The journey takes 4-5 hours through beautiful mountain roads. An SUV handles the terrain perfectly.</p>
+
+<h3>Hunza Valley</h3>
+<p>A longer journey (10-12 hours) but incredibly scenic. The Karakoram Highway requires a reliable, capable vehicle like an SUV.</p>
+
+<h3>Swat Valley</h3>
+<p>Known as the "Switzerland of Pakistan," Swat Valley offers stunning landscapes accessible via well-maintained roads suitable for SUVs.</p>
+
+<h3>Murree and Nathia Gali</h3>
+<p>Closer destinations perfect for weekend getaways. SUVs provide comfort on the winding mountain roads.</p>
+
+<h2>What to Look for in SUV Rental</h2>
+<ul>
+<li><strong>4WD/AWD:</strong> Essential for mountain terrain</li>
+<li><strong>Ground Clearance:</strong> Higher clearance handles rough roads better</li>
+<li><strong>Reliability:</strong> Well-maintained vehicles from reputable rental companies</li>
+<li><strong>Insurance:</strong> Comprehensive coverage for mountain travel</li>
+<li><strong>Emergency Kit:</strong> First aid, spare tire, and basic tools</li>
+</ul>
+
+<h2>Tips for Mountain Travel with SUV Rental</h2>
+<ul>
+<li>Check weather conditions before departure</li>
+<li>Ensure proper tire condition (all-terrain tires recommended)</li>
+<li>Carry emergency supplies and warm clothing</li>
+<li>Plan fuel stops (stations may be sparse in mountains)</li>
+<li>Drive carefully on mountain roads</li>
+<li>Keep emergency contact numbers handy</li>
+</ul>
+
+<h2>Booking Your SUV Rental</h2>
+<p>When booking SUV rental in Abbottabad:</p>
+<ol>
+<li>Specify your travel destination and route</li>
+<li>Choose the appropriate SUV size for your group</li>
+<li>Confirm 4WD capability if needed</li>
+<li>Check insurance coverage for mountain travel</li>
+<li>Verify pickup and drop-off locations</li>
+</ol>
+
+<p>At Abbottabad Rent A Car, we offer a wide selection of SUVs perfect for mountain adventures. Contact us to book your SUV rental in Abbottabad and start your journey to the northern areas.</p>`,
+        featuredImage: '/karakoram-highway-scenic-mountain-road.jpg',
+        category: 'Travel Guides',
+        author: 'Ahmed Hassan',
+        authorBio: 'Travel enthusiast and automotive journalist specializing in mountain road trips.',
+        date: '2024-12-28',
+        readTime: '7 min read',
+        featured: false,
+        published: true,
+        metaTitle: 'SUV Rental in Abbottabad: Best Vehicles for Mountain Trips',
+        metaDescription: 'Explore the northern areas with SUV rental in Abbottabad. Discover why SUVs are the best choice for mountain trips to Naran, Kaghan, and beyond.',
+        keywords: ['SUV rental Abbottabad', '4x4 rental Abbottabad', 'mountain car rental Abbottabad', 'off-road vehicle rental'],
+        tags: ['Abbottabad', 'SUV', 'mountain travel', 'travel guides'],
+      },
+      {
+        title: 'Wedding Car Rental in Abbottabad: Make Your Special Day Memorable',
+        slug: 'wedding-car-rental-abbottabad-special-day-memorable',
+        excerpt: 'Create unforgettable memories with wedding car rental in Abbottabad. From luxury sedans to decorated vehicles, make your special day perfect.',
+        content: `<p>Your wedding day is one of the most important days of your life, and every detail matters. Wedding car rental in Abbottabad ensures you arrive in style, making a grand entrance that sets the tone for your special celebration.</p>
+
+<h2>Why Choose Wedding Car Rental in Abbottabad?</h2>
+<p>Wedding car rental in Abbottabad offers more than just transportation - it's about creating magical moments and unforgettable memories.</p>
+
+<h3>Make a Grand Entrance</h3>
+<p>Arriving in a beautifully decorated luxury vehicle creates a stunning first impression. Your wedding car is often the first thing guests see, so make it count.</p>
+
+<h3>Photography Opportunities</h3>
+<p>Luxury wedding cars provide beautiful backdrops for wedding photos. Create stunning memories that will last a lifetime.</p>
+
+<h3>Comfort and Style</h3>
+<p>Travel in comfort and elegance on your special day. Premium vehicles ensure you arrive relaxed and ready to celebrate.</p>
+
+<h2>Wedding Car Options in Abbottabad</h2>
+
+<h3>Luxury Sedans</h3>
+<ul>
+<li>Mercedes-Benz S-Class</li>
+<li>BMW 7 Series</li>
+<li>Audi A8</li>
+</ul>
+<p>Classic elegance perfect for traditional and modern weddings alike.</p>
+
+<h3>Premium SUVs</h3>
+<ul>
+<li>Range Rover</li>
+<li>Mercedes GLS</li>
+<li>BMW X7</li>
+</ul>
+<p>Spacious and luxurious, ideal for larger wedding parties or destination weddings.</p>
+
+<h3>Ultra-Luxury Vehicles</h3>
+<ul>
+<li>Rolls-Royce Phantom</li>
+<li>Bentley Continental</li>
+<li>Mercedes Maybach</li>
+</ul>
+<p>The ultimate in luxury and prestige for the most special occasions.</p>
+
+<h3>Vintage and Classic Cars</h3>
+<p>For a unique touch, vintage and classic cars add timeless elegance to your wedding.</p>
+
+<h2>Wedding Car Decoration Services</h2>
+<p>Many wedding car rental services in Abbottabad offer decoration packages:</p>
+
+<ul>
+<li><strong>Floral Arrangements:</strong> Beautiful flowers matching your wedding theme</li>
+<li><strong>Ribbons and Bows:</strong> Elegant decorations in your wedding colors</li>
+<li><strong>Personalized Touches:</strong> Custom decorations to match your style</li>
+<li><strong>Interior Decorations:</strong> Enhance the interior with flowers and accessories</li>
+</ul>
+
+<h2>Wedding Car Rental Packages</h2>
+
+<h3>Basic Package</h3>
+<ul>
+<li>Luxury vehicle for bride and groom</li>
+<li>Professional chauffeur</li>
+<li>Basic decoration</li>
+<li>4-6 hours of service</li>
+</ul>
+
+<h3>Premium Package</h3>
+<ul>
+<li>Ultra-luxury vehicle</li>
+<li>Professional chauffeur in formal attire</li>
+<li>Premium decoration</li>
+<li>Extended service hours</li>
+<li>Photography coordination</li>
+</ul>
+
+<h3>Complete Wedding Fleet</h3>
+<ul>
+<li>Bridal car (luxury)</li>
+<li>Family cars (multiple vehicles)</li>
+<li>Guest transportation</li>
+<li>Coordinated service</li>
+</ul>
+
+<h2>Booking Your Wedding Car</h2>
+<p>When planning wedding car rental in Abbottabad:</p>
+
+<ol>
+<li><strong>Book Early:</strong> Wedding cars are in high demand, especially during peak season</li>
+<li><strong>Choose Your Style:</strong> Select a vehicle that matches your wedding theme</li>
+<li><strong>Discuss Decoration:</strong> Work with the rental company on decoration options</li>
+<li><strong>Plan the Route:</strong> Coordinate pickup and ceremony locations</li>
+<li><strong>Confirm Timing:</strong> Ensure the vehicle arrives on time for your schedule</li>
+</ul>
+
+<h2>Tips for Perfect Wedding Car Experience</h2>
+<ul>
+<li>Book 2-3 months in advance for peak season</li>
+<li>Schedule a trial run if possible</li>
+<li>Coordinate with your photographer</li>
+<li>Have a backup plan for weather</li>
+<li>Ensure proper insurance coverage</li>
+</ul>
+
+<h2>Additional Services</h2>
+<p>Many wedding car rental services in Abbottabad offer:</p>
+
+<ul>
+<li>Photography packages</li>
+<li>Videography coordination</li>
+<li>Red carpet service</li>
+<li>Umbrella service for weather protection</li>
+<li>Champagne service</li>
+</ul>
+
+<p>At Abbottabad Rent A Car, we specialize in wedding car rental in Abbottabad, offering premium vehicles, professional service, and beautiful decorations to make your special day unforgettable. Contact us to discuss your wedding transportation needs.</p>`,
+        featuredImage: '/luxury-wedding-northern-pakistan-mountains.jpg',
+        category: 'Events & Weddings',
+        author: 'Sarah Khan',
+        authorBio: 'Wedding planner and luxury event specialist with over 10 years of experience.',
+        date: '2024-12-25',
+        readTime: '6 min read',
+        featured: false,
+        published: true,
+        metaTitle: 'Wedding Car Rental in Abbottabad: Make Your Special Day Memorable',
+        metaDescription: 'Create unforgettable memories with wedding car rental in Abbottabad. From luxury sedans to decorated vehicles, make your special day perfect.',
+        keywords: ['wedding car rental Abbottabad', 'wedding cars Abbottabad', 'bridal car rental Abbottabad', 'luxury wedding cars'],
+        tags: ['Abbottabad', 'wedding', 'events', 'luxury'],
+      },
+    ];
+
+    await Blog.insertMany(blogPosts);
+    console.log(`✅ Created ${blogPosts.length} blog posts`);
 
     console.log('🎉 Database seeding completed successfully!');
     console.log(`📧 Admin login: ${admin.email} / admin123`);
