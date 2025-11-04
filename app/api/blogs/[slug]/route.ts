@@ -153,15 +153,13 @@ export async function PUT(
     if (featuredImageFile && featuredImageFile.size > 0) {
       // Delete old image if exists
       if (blog.featuredImage && blog.featuredImage.includes('cloudinary.com')) {
-        await deleteImage(blog.featuredImage, 'blog').catch(() => {
+        await deleteImage(blog.featuredImage, 'abbottabad-rent-a-car/blogs').catch(() => {
           // Ignore deletion errors
         });
       }
 
       // Upload new image
-      const arrayBuffer = await featuredImageFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      blog.featuredImage = await uploadImage(buffer, 'blog', featuredImageFile.name);
+      blog.featuredImage = await uploadImage(featuredImageFile, 'abbottabad-rent-a-car/blogs');
     }
 
     await blog.save();
