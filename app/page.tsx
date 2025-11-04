@@ -86,9 +86,8 @@ export default function HomePage() {
       ? {
           target: heroRef,
           offset: ["start start", "end start"],
-          layoutEffect: false,
         }
-      : { layoutEffect: false }
+      : undefined
   );
 
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
