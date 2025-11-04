@@ -7,6 +7,18 @@ interface IContactMethod {
   description: string;
 }
 
+interface ISocialMedia {
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
+  linkedin?: string;
+}
+
+interface IBusinessHour {
+  day: string;
+  hours: string;
+}
+
 interface IContactContent {
   heroTitle: string;
   heroTitleAccent: string;
@@ -26,6 +38,8 @@ interface IContactContent {
     lng: number;
   };
   whyChooseUs: string[];
+  businessHours: IBusinessHour[];
+  socialMedia: ISocialMedia;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -40,6 +54,18 @@ const contactMethodSchema = new Schema<IContactMethod>({
 const mapCoordinatesSchema = new Schema({
   lat: { type: Number, required: true },
   lng: { type: Number, required: true },
+}, { _id: false });
+
+const businessHourSchema = new Schema({
+  day: { type: String, required: true },
+  hours: { type: String, required: true },
+}, { _id: false });
+
+const socialMediaSchema = new Schema({
+  facebook: { type: String },
+  instagram: { type: String },
+  twitter: { type: String },
+  linkedin: { type: String },
 }, { _id: false });
 
 const contactContentSchema = new Schema<IContactContent>(
@@ -59,6 +85,8 @@ const contactContentSchema = new Schema<IContactContent>(
     mapEmbedUrl: { type: String, required: true },
     mapCoordinates: { type: mapCoordinatesSchema, required: true },
     whyChooseUs: [{ type: String, required: true }],
+    businessHours: [businessHourSchema],
+    socialMedia: { type: socialMediaSchema, default: {} },
   },
   {
     timestamps: true,

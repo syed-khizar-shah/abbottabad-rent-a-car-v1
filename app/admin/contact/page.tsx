@@ -54,7 +54,7 @@ export default function AdminContactPage() {
       
       // Add all text fields
       Object.keys(formData).forEach(key => {
-        if (key === 'contactMethods' || key === 'services' || key === 'whyChooseUs' || key === 'mapCoordinates') {
+        if (key === 'contactMethods' || key === 'services' || key === 'whyChooseUs' || key === 'mapCoordinates' || key === 'businessHours' || key === 'socialMedia') {
           formDataToSend.append(key, JSON.stringify(formData[key]))
         } else if (key !== 'heroImage') {
           formDataToSend.append(key, formData[key] || '')
@@ -312,6 +312,156 @@ export default function AdminContactPage() {
                     rows={2}
                   />
                 </div>
+              </div>
+            </Card>
+
+            {/* Business Hours */}
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4">Business Hours</h2>
+              <div className="space-y-4">
+                {(formData.businessHours || []).map((schedule: any, index: number) => (
+                  <div key={index} className="grid grid-cols-2 gap-4 p-4 border rounded-lg">
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Day</label>
+                      <input
+                        type="text"
+                        value={schedule.day || ""}
+                        onChange={(e) => {
+                          const newHours = [...(formData.businessHours || [])]
+                          newHours[index] = { ...schedule, day: e.target.value }
+                          updateField("businessHours", newHours)
+                        }}
+                        className="w-full px-2 py-1 text-sm border rounded"
+                        placeholder="Monday - Friday"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Hours</label>
+                      <input
+                        type="text"
+                        value={schedule.hours || ""}
+                        onChange={(e) => {
+                          const newHours = [...(formData.businessHours || [])]
+                          newHours[index] = { ...schedule, hours: e.target.value }
+                          updateField("businessHours", newHours)
+                        }}
+                        className="w-full px-2 py-1 text-sm border rounded"
+                        placeholder="9:00 AM - 8:00 PM"
+                      />
+                    </div>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    const newHours = [...(formData.businessHours || []), { day: "", hours: "" }]
+                    updateField("businessHours", newHours)
+                  }}
+                >
+                  Add Business Hour
+                </Button>
+              </div>
+            </Card>
+
+            {/* Social Media */}
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4">Social Media Links</h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Facebook URL</label>
+                  <input
+                    type="url"
+                    value={formData.socialMedia?.facebook || ""}
+                    onChange={(e) => updateField("socialMedia", {
+                      ...formData.socialMedia,
+                      facebook: e.target.value
+                    })}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    placeholder="https://facebook.com/yourpage"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Instagram URL</label>
+                  <input
+                    type="url"
+                    value={formData.socialMedia?.instagram || ""}
+                    onChange={(e) => updateField("socialMedia", {
+                      ...formData.socialMedia,
+                      instagram: e.target.value
+                    })}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    placeholder="https://instagram.com/yourpage"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Twitter URL</label>
+                  <input
+                    type="url"
+                    value={formData.socialMedia?.twitter || ""}
+                    onChange={(e) => updateField("socialMedia", {
+                      ...formData.socialMedia,
+                      twitter: e.target.value
+                    })}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    placeholder="https://twitter.com/yourpage"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">LinkedIn URL</label>
+                  <input
+                    type="url"
+                    value={formData.socialMedia?.linkedin || ""}
+                    onChange={(e) => updateField("socialMedia", {
+                      ...formData.socialMedia,
+                      linkedin: e.target.value
+                    })}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    placeholder="https://linkedin.com/company/yourpage"
+                  />
+                </div>
+              </div>
+            </Card>
+
+            {/* Why Choose Us */}
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4">Why Choose Us</h2>
+              <div className="space-y-4">
+                {(formData.whyChooseUs || []).map((item: string, index: number) => (
+                  <div key={index} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={item || ""}
+                      onChange={(e) => {
+                        const newItems = [...(formData.whyChooseUs || [])]
+                        newItems[index] = e.target.value
+                        updateField("whyChooseUs", newItems)
+                      }}
+                      className="flex-1 px-3 py-2 border rounded-lg"
+                      placeholder="Enter a benefit"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        const newItems = (formData.whyChooseUs || []).filter((_: any, i: number) => i !== index)
+                        updateField("whyChooseUs", newItems)
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    const newItems = [...(formData.whyChooseUs || []), ""]
+                    updateField("whyChooseUs", newItems)
+                  }}
+                >
+                  Add Item
+                </Button>
               </div>
             </Card>
 

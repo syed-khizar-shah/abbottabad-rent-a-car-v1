@@ -12,6 +12,18 @@ const mapCoordinatesSchema = new mongoose.Schema({
   lng: { type: Number, required: true },
 }, { _id: false });
 
+const businessHourSchema = new mongoose.Schema({
+  day: { type: String, required: true },
+  hours: { type: String, required: true },
+}, { _id: false });
+
+const socialMediaSchema = new mongoose.Schema({
+  facebook: { type: String },
+  instagram: { type: String },
+  twitter: { type: String },
+  linkedin: { type: String },
+}, { _id: false });
+
 const contactContentSchema = new mongoose.Schema(
   {
     heroTitle: { type: String, required: true },
@@ -29,6 +41,8 @@ const contactContentSchema = new mongoose.Schema(
     mapEmbedUrl: { type: String, required: true },
     mapCoordinates: { type: mapCoordinatesSchema, required: true },
     whyChooseUs: [{ type: String, required: true }],
+    businessHours: [businessHourSchema],
+    socialMedia: { type: socialMediaSchema, default: {} },
   },
   {
     timestamps: true,

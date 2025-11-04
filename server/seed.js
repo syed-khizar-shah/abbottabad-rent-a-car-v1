@@ -980,6 +980,16 @@ async function seedDatabase() {
         '24/7 roadside assistance and customer support',
         'Comprehensive insurance on all vehicles',
       ],
+      businessHours: [
+        { day: 'Mon-Sat', hours: '9:00 AM - 8:00 PM' },
+        { day: 'Sunday', hours: '10:00 AM - 6:00 PM' },
+      ],
+      socialMedia: {
+        facebook: 'https://facebook.com/abbottabadrentacar',
+        instagram: 'https://instagram.com/abbottabadrentacar',
+        twitter: 'https://twitter.com/abbottabadrentacar',
+        linkedin: 'https://linkedin.com/company/abbottabadrentacar',
+      },
     });
     console.log('✅ Contact content created');
 

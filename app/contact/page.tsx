@@ -70,6 +70,39 @@ export default function ContactPage() {
     content.whatsappNumber?.replace(/[^\d]/g, "") || "923001234567";
   const phoneNumber =
     content.phoneNumber?.replace(/[^\d+]/g, "") || "+923001234567";
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
+    const email = formData.get("email") as string;
+    const phone = formData.get("phone") as string;
+    const service = formData.get("service") as string;
+    const date = formData.get("date") as string;
+    const message = formData.get("message") as string;
+
+    // Format message for WhatsApp
+    const whatsappMessage = `*New Contact Form Submission*\n\n` +
+      `*Name:* ${firstName} ${lastName}\n` +
+      `*Email:* ${email}\n` +
+      `*Phone:* ${phone}\n` +
+      `*Service:* ${service}\n` +
+      (date ? `*Preferred Date:* ${date}\n` : '') +
+      `*Message:*\n${message}`;
+
+    // Encode message for URL
+    const encodedMessage = encodeURIComponent(whatsappMessage);
+    
+    // Open WhatsApp with pre-filled message
+    window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
+    
+    // Optionally show success message
+    alert("Redirecting to WhatsApp...");
+  };
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -201,7 +234,7 @@ export default function ContactPage() {
                 </p>
               </div>
 
-              <form className="space-y-4 md:space-y-6">
+              <form className="space-y-4 md:space-y-6" onSubmit={handleFormSubmit}>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName" className="text-sm md:text-base">
@@ -209,6 +242,7 @@ export default function ContactPage() {
                     </Label>
                     <Input
                       id="firstName"
+                      name="firstName"
                       placeholder="John"
                       required
                       className="h-10 md:h-11"
@@ -220,6 +254,7 @@ export default function ContactPage() {
                     </Label>
                     <Input
                       id="lastName"
+                      name="lastName"
                       placeholder="Doe"
                       required
                       className="h-10 md:h-11"
@@ -233,6 +268,7 @@ export default function ContactPage() {
                   </Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
                     placeholder="john@example.com"
                     required
@@ -246,6 +282,7 @@ export default function ContactPage() {
                   </Label>
                   <Input
                     id="phone"
+                    name="phone"
                     type="tel"
                     placeholder={content.phoneNumber || "+92 300 1234567"}
                     required
@@ -259,6 +296,7 @@ export default function ContactPage() {
                   </Label>
                   <select
                     id="service"
+                    name="service"
                     className="flex h-10 md:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all"
                     required
                   >
@@ -275,7 +313,7 @@ export default function ContactPage() {
                   <Label htmlFor="date" className="text-sm md:text-base">
                     Preferred Rental Date
                   </Label>
-                  <Input id="date" type="date" className="h-10 md:h-11" />
+                  <Input id="date" name="date" type="date" className="h-10 md:h-11" />
                 </div>
 
                 <div className="space-y-2">
@@ -284,6 +322,7 @@ export default function ContactPage() {
                   </Label>
                   <Textarea
                     id="message"
+                    name="message"
                     placeholder="Tell us about your requirements..."
                     rows={5}
                     required
@@ -346,6 +385,21 @@ export default function ContactPage() {
                   </div>
                 </div>
               </div>
+
+              {/* Business Hours */}
+              {content.businessHours && content.businessHours.length > 0 && (
+                <Card className="p-4 md:p-6 space-y-4 shadow-lg hover:shadow-xl transition-shadow">
+                  <h3 className="text-lg md:text-xl font-bold">Business Hours</h3>
+                  <div className="space-y-2 text-xs md:text-sm text-muted-foreground">
+                    {content.businessHours.map((schedule: any, index: number) => (
+                      <div key={index} className="flex justify-between items-center py-2 border-b border-border/50 last:border-0">
+                        <span className="font-medium">{schedule.day}</span>
+                        <span className="text-foreground">{schedule.hours}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              )}
 
               <Card className="p-4 md:p-6 space-y-4 shadow-lg hover:shadow-xl transition-shadow">
                 <h3 className="text-lg md:text-xl font-bold">Why Choose Us?</h3>

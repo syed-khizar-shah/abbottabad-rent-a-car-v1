@@ -67,7 +67,7 @@ export async function PUT(request: NextRequest) {
     });
 
     // Handle JSON fields
-    const jsonFields = ['contactMethods', 'services', 'whyChooseUs'];
+    const jsonFields = ['contactMethods', 'services', 'whyChooseUs', 'businessHours', 'socialMedia'];
     jsonFields.forEach(field => {
       const value = formData.get(field) as string;
       if (value) {
