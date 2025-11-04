@@ -1,33 +1,33 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { authApi } from "@/lib/api"
-import { Lock, Mail, Loader2 } from "lucide-react"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { authApi } from "@/lib/api";
+import { Lock, Mail, Loader2 } from "lucide-react";
 
 export default function AdminLoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setLoading(true)
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
     try {
-      await authApi.login(email, password)
-      router.push("/admin/dashboard")
+      await authApi.login(email, password);
+      router.push("/admin/dashboard");
     } catch (err: any) {
-      setError(err.message || "Invalid credentials")
+      setError(err.message || "Invalid credentials");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-muted/20 to-background p-4">
@@ -35,7 +35,9 @@ export default function AdminLoginPage() {
         <div className="space-y-6">
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-bold font-serif">Admin Login</h1>
-            <p className="text-muted-foreground">Sign in to access the admin dashboard</p>
+            <p className="text-muted-foreground">
+              Sign in to access the admin dashboard
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -81,11 +83,7 @@ export default function AdminLoginPage() {
               </div>
             )}
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={loading}
-            >
+            <Button type="submit" className="w-full" disabled={loading}>
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -99,6 +97,5 @@ export default function AdminLoginPage() {
         </div>
       </Card>
     </div>
-  )
+  );
 }
-

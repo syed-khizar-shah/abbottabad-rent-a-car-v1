@@ -164,102 +164,108 @@ export default function AdminHomepagePage() {
     );
   }
 
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 max-w-4xl">
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <Button variant="ghost" size="sm" asChild className="lg:flex">
-              <Link href="/admin/dashboard">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Back</span>
-              </Link>
-            </Button>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold font-serif">Homepage Content</h1>
-            <div></div>
-          </div>
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 max-w-4xl">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <Button variant="ghost" size="sm" asChild className="lg:flex">
+            <Link href="/admin/dashboard">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Back</span>
+            </Link>
+          </Button>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold font-serif">
+            Homepage Content
+          </h1>
+          <div></div>
+        </div>
 
-          <form onSubmit={handleSubmit}>
-            <div className="space-y-4 sm:space-y-6">
-              {/* Hero Section */}
-              <Card className="p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Hero Section</h2>
-                <div className="space-y-3 sm:space-y-4">
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium mb-2">
-                      Hero Image
-                    </label>
-                    <div className="space-y-2">
-                      {(heroImagePreview || formData.heroImage) && (
-                        <div className="relative w-full h-32 sm:h-48 border rounded-lg overflow-hidden">
-                          <img
-                            src={heroImagePreview || formData.heroImage}
-                            alt="Hero preview"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleHeroImageChange}
-                        className="w-full px-2 sm:px-3 py-2 text-xs sm:text-sm border rounded-lg"
-                      />
-                      {formData.heroImage && !heroImageFile && (
-                        <p className="text-xs text-muted-foreground truncate">
-                          Current image: {formData.heroImage}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium mb-2">
-                      Title
-                    </label>
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-4 sm:space-y-6">
+            {/* Hero Section */}
+            <Card className="p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">
+                Hero Section
+              </h2>
+              <div className="space-y-3 sm:space-y-4">
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium mb-2">
+                    Hero Image
+                  </label>
+                  <div className="space-y-2">
+                    {(heroImagePreview || formData.heroImage) && (
+                      <div className="relative w-full h-32 sm:h-48 border rounded-lg overflow-hidden">
+                        <img
+                          src={heroImagePreview || formData.heroImage}
+                          alt="Hero preview"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
                     <input
-                      type="text"
-                      value={formData.heroTitle || ""}
-                      onChange={(e) => updateField("heroTitle", e.target.value)}
-                      className="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border rounded-lg"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleHeroImageChange}
+                      className="w-full px-2 sm:px-3 py-2 text-xs sm:text-sm border rounded-lg"
                     />
+                    {formData.heroImage && !heroImageFile && (
+                      <p className="text-xs text-muted-foreground truncate">
+                        Current image: {formData.heroImage}
+                      </p>
+                    )}
                   </div>
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium mb-2">
-                      Title Accent
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.heroTitleAccent || ""}
-                      onChange={(e) =>
-                        updateField("heroTitleAccent", e.target.value)
-                      }
-                      className="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium mb-2">
-                      Subtitle
-                    </label>
-                    <textarea
-                      value={formData.heroSubtitle || ""}
-                      onChange={(e) =>
-                        updateField("heroSubtitle", e.target.value)
-                      }
-                      className="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border rounded-lg"
-                      rows={3}
-                    />
-                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium mb-2">
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.heroTitle || ""}
+                    onChange={(e) => updateField("heroTitle", e.target.value)}
+                    className="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium mb-2">
+                    Title Accent
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.heroTitleAccent || ""}
+                    onChange={(e) =>
+                      updateField("heroTitleAccent", e.target.value)
+                    }
+                    className="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium mb-2">
+                    Subtitle
+                  </label>
+                  <textarea
+                    value={formData.heroSubtitle || ""}
+                    onChange={(e) =>
+                      updateField("heroSubtitle", e.target.value)
+                    }
+                    className="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border rounded-lg"
+                    rows={3}
+                  />
+                </div>
               </div>
             </Card>
 
-              {/* Stats */}
-              <Card className="p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Stats</h2>
-                <div className="space-y-3 sm:space-y-4">
-                  {formData.stats?.map((stat: any, index: number) => (
-                    <div
-                      key={index}
-                      className="grid grid-cols-3 gap-2 sm:gap-4 p-3 sm:p-4 border rounded-lg"
-                    >
+            {/* Stats */}
+            <Card className="p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">
+                Stats
+              </h2>
+              <div className="space-y-3 sm:space-y-4">
+                {formData.stats?.map((stat: any, index: number) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-3 gap-2 sm:gap-4 p-3 sm:p-4 border rounded-lg"
+                  >
                     <div>
                       <label className="block text-xs font-medium mb-1">
                         Value
@@ -319,12 +325,12 @@ export default function AdminHomepagePage() {
               </div>
             </Card>
 
-              {/* Offers Section */}
-              <Card className="p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">
-                  Special Promotions / Offers
-                </h2>
-                <div className="space-y-3 sm:space-y-4 mb-3 sm:mb-4">
+            {/* Offers Section */}
+            <Card className="p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">
+                Special Promotions / Offers
+              </h2>
+              <div className="space-y-3 sm:space-y-4 mb-3 sm:mb-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">
                     Section Title
@@ -877,21 +883,26 @@ export default function AdminHomepagePage() {
               </div>
             </Card>
 
-              <div className="flex justify-end gap-4 pt-4 border-t">
-                <Button type="submit" disabled={saving} size="sm" className="w-full sm:w-auto">
-                  {saving ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="mr-2 h-4 w-4" />
-                      Save Changes
-                    </>
-                  )}
-                </Button>
-              </div>
+            <div className="flex justify-end gap-4 pt-4 border-t">
+              <Button
+                type="submit"
+                disabled={saving}
+                size="sm"
+                className="w-full sm:w-auto"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Save Changes
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </form>
       </div>
