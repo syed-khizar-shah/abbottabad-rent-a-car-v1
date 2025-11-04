@@ -14,6 +14,8 @@ const TourRoutesContent = require('./models/TourRoutesContent');
 const AboutContent = require('./models/AboutContent');
 const Review = require('./models/Review');
 const FAQ = require('./models/FAQ');
+const ContactContent = require('./models/ContactContent');
+const LocationContent = require('./models/LocationContent');
 
 // Debug: Check if env vars are loaded
 console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
@@ -44,6 +46,8 @@ async function seedDatabase() {
     await AboutContent.deleteMany({});
     await Review.deleteMany({});
     await FAQ.deleteMany({});
+    await ContactContent.deleteMany({});
+    await LocationContent.deleteMany({});
 
     console.log('📦 Seeding database...');
 
@@ -915,6 +919,101 @@ async function seedDatabase() {
       },
     ]);
     console.log('✅ FAQs created');
+
+    // Seed Contact Content
+    await ContactContent.create({
+      heroTitle: 'Contact Our',
+      heroTitleAccent: 'Concierge',
+      heroSubtitle: 'Our dedicated team is ready to assist you with reservations, inquiries, and personalized service',
+      heroImage: '/luxury-car-rental-customer-service-concierge-desk.jpg',
+      contactMethods: [
+        {
+          icon: 'Phone',
+          title: 'Phone',
+          details: ['+92 300 1234567', '+92 992 123456'],
+          description: 'Available 24/7 for your convenience',
+        },
+        {
+          icon: 'Mail',
+          title: 'Email',
+          details: ['info@abbottabadrentacar.com', 'bookings@abbottabadrentacar.com'],
+          description: 'We respond within 2 hours',
+        },
+        {
+          icon: 'MapPin',
+          title: 'Location',
+          details: ['Main Mansehra Road', 'Abbottabad, KPK, Pakistan'],
+          description: 'Visit our showroom',
+        },
+        {
+          icon: 'Clock',
+          title: 'Business Hours',
+          details: ['Mon-Sat: 9:00 AM - 8:00 PM', 'Sunday: 10:00 AM - 6:00 PM'],
+          description: '24/7 emergency support',
+        },
+      ],
+      services: [
+        'Wedding Car Rental',
+        'Corporate Transportation',
+        'Airport Transfers',
+        'Long-term Rental',
+        'Chauffeur Services',
+        'Event Transportation',
+        'Tourism Packages',
+        'Other',
+      ],
+      formTitle: 'Send Us a Message',
+      formSubtitle: 'Fill out the form below and our team will get back to you within 2 hours during business hours',
+      whatsappNumber: '+92 300 1234567',
+      phoneNumber: '+92 300 1234567',
+      email: 'info@abbottabadrentacar.com',
+      address: 'Main Mansehra Road, Abbottabad, KPK, Pakistan',
+      mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3307.8!2d73.2390944!3d34.2031195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38de31e0862c305b%3A0x37c9fb9a927a10e8!2sAbbottabad%20luxury%20Ride%20Tours%20%26%20rent%20a%20car%20quick%20classy%20service!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s',
+      mapCoordinates: {
+        lat: 34.2031195,
+        lng: 73.2390944,
+      },
+      whyChooseUs: [
+        'Instant booking confirmation via WhatsApp or email',
+        'Flexible payment options including installments',
+        'Free delivery within Abbottabad city limits',
+        '24/7 roadside assistance and customer support',
+        'Comprehensive insurance on all vehicles',
+      ],
+    });
+    console.log('✅ Contact content created');
+
+    // Seed Location Content
+    await LocationContent.create({
+      heroTitle: 'Our Location',
+      heroSubtitle: 'Conveniently located on Mansehra Road in the heart of Abbottabad',
+      heroImage: '/luxury-car-rental-customer-service-concierge-desk.jpg',
+      businessName: 'Abbottabad Rent A Car',
+      address: 'Mansehra Rd, opposite Ayub Medical Complex, near Doctor Plaza',
+      city: 'Abbottabad',
+      postalCode: '22010',
+      country: 'Pakistan',
+      phone: '+92 300 1234567',
+      email: 'info@abbottabadrentacar.com',
+      coordinates: {
+        lat: 34.2031195,
+        lng: 73.2390944,
+      },
+      businessHours: [
+        { day: 'Monday - Friday', hours: '8:00 AM - 8:00 PM' },
+        { day: 'Saturday', hours: '9:00 AM - 6:00 PM' },
+        { day: 'Sunday', hours: '10:00 AM - 4:00 PM' },
+      ],
+      landmarks: [
+        { name: 'Ayub Medical Complex', distance: 'Opposite' },
+        { name: 'Doctor Plaza', distance: 'Near' },
+        { name: 'Mansehra Road', distance: 'On Main Road' },
+      ],
+      mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3307.8!2d73.2390944!3d34.2031195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38de31e0862c305b%3A0x37c9fb9a927a10e8!2sAbbottabad%20luxury%20Ride%20Tours%20%26%20rent%20a%20car%20quick%20classy%20service!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s',
+      ctaTitle: 'Ready to Experience Luxury?',
+      ctaSubtitle: 'Visit our showroom today or contact us to reserve your premium vehicle',
+    });
+    console.log('✅ Location content created');
 
     console.log('🎉 Database seeding completed successfully!');
     console.log(`📧 Admin login: ${admin.email} / admin123`);

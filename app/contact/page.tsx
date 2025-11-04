@@ -1,62 +1,75 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Phone, Mail, MapPin, Clock, MessageCircle, Send, Navigation, Loader2 } from "lucide-react"
-import Image from "next/image"
-import { motion } from "framer-motion"
-import { contactApi } from "@/lib/api"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+  MessageCircle,
+  Send,
+  Navigation,
+  Loader2,
+} from "lucide-react";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { contactApi } from "@/lib/api";
 
 const iconMap: Record<string, any> = {
   Phone,
   Mail,
   MapPin,
   Clock,
-}
+};
 
 export default function ContactPage() {
-  const [loading, setLoading] = useState(true)
-  const [content, setContent] = useState<any>(null)
+  const [loading, setLoading] = useState(true);
+  const [content, setContent] = useState<any>(null);
 
   useEffect(() => {
-    loadContent()
-  }, [])
+    loadContent();
+  }, []);
 
   const loadContent = async () => {
     try {
-      const data = await contactApi.get()
-      setContent(data)
+      const data = await contactApi.get();
+      setContent(data);
     } catch (err) {
-      console.error("Error loading contact content:", err)
+      console.error("Error loading contact content:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-accent" />
       </div>
-    )
+    );
   }
 
   if (!content) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">Contact content not found. Please run the seed script.</p>
+        <p className="text-muted-foreground">
+          Contact content not found. Please run the seed script.
+        </p>
       </div>
-    )
+    );
   }
 
   // Format WhatsApp number for URL (remove spaces and special chars)
-  const whatsappNumber = content.whatsappNumber?.replace(/[^\d]/g, '') || '923001234567'
-  const phoneNumber = content.phoneNumber?.replace(/[^\d+]/g, '') || '+923001234567'
+  const whatsappNumber =
+    content.whatsappNumber?.replace(/[^\d]/g, "") || "923001234567";
+  const phoneNumber =
+    content.phoneNumber?.replace(/[^\d+]/g, "") || "+923001234567";
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -64,7 +77,10 @@ export default function ContactPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src={content.heroImage || "/luxury-car-rental-customer-service-concierge-desk.jpg"}
+            src={
+              content.heroImage ||
+              "/luxury-car-rental-customer-service-concierge-desk.jpg"
+            }
             alt="Contact our concierge team"
             fill
             className="object-cover brightness-[0.35]"
@@ -136,7 +152,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
             {content.contactMethods?.map((method: any, index: number) => {
-              const IconComponent = iconMap[method.icon] || Phone
+              const IconComponent = iconMap[method.icon] || Phone;
               return (
                 <Card
                   key={method.title || index}
@@ -147,16 +163,23 @@ export default function ContactPage() {
                     <IconComponent className="h-6 w-6 md:h-7 md:w-7 text-accent" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-base md:text-lg mb-2">{method.title}</h3>
+                    <h3 className="font-bold text-base md:text-lg mb-2">
+                      {method.title}
+                    </h3>
                     {method.details?.map((detail: string, i: number) => (
-                      <p key={i} className="text-xs md:text-sm text-muted-foreground">
+                      <p
+                        key={i}
+                        className="text-xs md:text-sm text-muted-foreground"
+                      >
                         {detail}
                       </p>
                     ))}
-                    <p className="text-xs text-muted-foreground mt-2">{method.description}</p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      {method.description}
+                    </p>
                   </div>
                 </Card>
-              )
+              );
             })}
           </div>
         </div>
@@ -169,9 +192,12 @@ export default function ContactPage() {
             {/* Contact Form */}
             <div className="animate-in fade-in slide-in-from-left duration-700">
               <div className="mb-6 md:mb-8">
-                <h2 className="text-2xl md:text-3xl font-serif font-bold mb-4">{content.formTitle || "Send Us a Message"}</h2>
+                <h2 className="text-2xl md:text-3xl font-serif font-bold mb-4">
+                  {content.formTitle || "Send Us a Message"}
+                </h2>
                 <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                  {content.formSubtitle || "Fill out the form below and our team will get back to you within 2 hours during business hours"}
+                  {content.formSubtitle ||
+                    "Fill out the form below and our team will get back to you within 2 hours during business hours"}
                 </p>
               </div>
 
@@ -181,13 +207,23 @@ export default function ContactPage() {
                     <Label htmlFor="firstName" className="text-sm md:text-base">
                       First Name *
                     </Label>
-                    <Input id="firstName" placeholder="John" required className="h-10 md:h-11" />
+                    <Input
+                      id="firstName"
+                      placeholder="John"
+                      required
+                      className="h-10 md:h-11"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="lastName" className="text-sm md:text-base">
                       Last Name *
                     </Label>
-                    <Input id="lastName" placeholder="Doe" required className="h-10 md:h-11" />
+                    <Input
+                      id="lastName"
+                      placeholder="Doe"
+                      required
+                      className="h-10 md:h-11"
+                    />
                   </div>
                 </div>
 
@@ -195,14 +231,26 @@ export default function ContactPage() {
                   <Label htmlFor="email" className="text-sm md:text-base">
                     Email Address *
                   </Label>
-                  <Input id="email" type="email" placeholder="john@example.com" required className="h-10 md:h-11" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="john@example.com"
+                    required
+                    className="h-10 md:h-11"
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="text-sm md:text-base">
                     Phone Number *
                   </Label>
-                  <Input id="phone" type="tel" placeholder="+92 300 1234567" required className="h-10 md:h-11" />
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="+92 300 1234567"
+                    required
+                    className="h-10 md:h-11"
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -249,7 +297,8 @@ export default function ContactPage() {
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center">
-                  By submitting this form, you agree to our privacy policy and terms of service
+                  By submitting this form, you agree to our privacy policy and
+                  terms of service
                 </p>
               </form>
             </div>
@@ -261,7 +310,10 @@ export default function ContactPage() {
                 <div className="relative">
                   <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50">
                     <iframe
-                      src={content.mapEmbedUrl || `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3307.8!2d73.2390944!3d34.2031195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38de31e0862c305b%3A0x37c9fb9a927a10e8!2sAbbottabad%20luxury%20Ride%20Tours%20%26%20rent%20a%20car%20quick%20classy%20service!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s`}
+                      src={
+                        content.mapEmbedUrl ||
+                        `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3307.8!2d73.2390944!3d34.2031195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38de31e0862c305b%3A0x37c9fb9a927a10e8!2sAbbottabad%20luxury%20Ride%20Tours%20%26%20rent%20a%20car%20quick%20classy%20service!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s`
+                      }
                       width="100%"
                       height="400"
                       style={{ border: 0 }}
@@ -281,7 +333,9 @@ export default function ContactPage() {
                       className="w-full bg-accent hover:bg-accent/90"
                     >
                       <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${content.mapCoordinates?.lat || 34.2031195},${content.mapCoordinates?.lng || 73.2390944}`}
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${
+                          content.mapCoordinates?.lat || 34.2031195
+                        },${content.mapCoordinates?.lng || 73.2390944}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -309,12 +363,23 @@ export default function ContactPage() {
                 <div className="flex flex-col sm:flex-row items-start gap-4">
                   <MessageCircle className="h-8 w-8 shrink-0 mt-1" />
                   <div className="flex-1">
-                    <h3 className="text-lg md:text-xl font-bold mb-2">Prefer to Chat?</h3>
+                    <h3 className="text-lg md:text-xl font-bold mb-2">
+                      Prefer to Chat?
+                    </h3>
                     <p className="mb-4 opacity-90 text-sm md:text-base">
                       Connect with us instantly on WhatsApp for quick responses
                     </p>
-                    <Button variant="secondary" size="lg" className="w-full sm:w-auto" asChild>
-                      <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer">
+                    <Button
+                      variant="secondary"
+                      size="lg"
+                      className="w-full sm:w-auto"
+                      asChild
+                    >
+                      <a
+                        href={`https://wa.me/${whatsappNumber}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         Open WhatsApp
                       </a>
                     </Button>
@@ -330,9 +395,12 @@ export default function ContactPage() {
       <section className="py-12 md:py-16 bg-gradient-to-br from-muted/30 via-background to-muted/50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-in fade-in zoom-in">
-            <h2 className="text-2xl md:text-3xl font-serif font-bold">Looking for Quick Answers?</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-bold">
+              Looking for Quick Answers?
+            </h2>
             <p className="text-sm md:text-base text-muted-foreground text-pretty">
-              Check out our comprehensive FAQ section for instant answers to common questions
+              Check out our comprehensive FAQ section for instant answers to
+              common questions
             </p>
             <Button
               variant="outline"
@@ -346,5 +414,5 @@ export default function ContactPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

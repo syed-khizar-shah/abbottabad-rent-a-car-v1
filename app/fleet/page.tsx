@@ -1,71 +1,92 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Star, Users, Gauge, Fuel, Settings, Shield, ArrowRight, Filter, Award, CheckCircle2, Car, Loader2, Phone } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
-import { motion } from "framer-motion"
-import { ScaleIn } from "@/components/animated-section"
-import { carsApi, categoriesApi, contactApi } from "@/lib/api"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Star,
+  Users,
+  Gauge,
+  Fuel,
+  Settings,
+  Shield,
+  ArrowRight,
+  Filter,
+  Award,
+  CheckCircle2,
+  Car,
+  Loader2,
+  Phone,
+} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { ScaleIn } from "@/components/animated-section";
+import { carsApi, categoriesApi, contactApi } from "@/lib/api";
 
 export default function FleetPage() {
-  const [activeCategory, setActiveCategory] = useState("all")
-  const [categories, setCategories] = useState<any[]>([])
-  const [fleet, setFleet] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({})
-  const [phoneNumber, setPhoneNumber] = useState("+923001234567")
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [categories, setCategories] = useState<any[]>([]);
+  const [fleet, setFleet] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>(
+    {}
+  );
+  const [phoneNumber, setPhoneNumber] = useState("+923001234567");
 
   useEffect(() => {
-    loadData()
-    loadContactInfo()
-  }, [])
+    loadData();
+    loadContactInfo();
+  }, []);
 
   const loadContactInfo = async () => {
     try {
-      const contactData = await contactApi.get()
+      const contactData = await contactApi.get();
       if (contactData?.phoneNumber) {
-        setPhoneNumber(contactData.phoneNumber.replace(/[^\d+]/g, ''))
+        setPhoneNumber(contactData.phoneNumber.replace(/[^\d+]/g, ""));
       }
     } catch (err) {
-      console.error("Error loading contact info:", err)
+      console.error("Error loading contact info:", err);
     }
-  }
+  };
 
   const loadData = async () => {
     try {
       const [categoriesData, carsData] = await Promise.all([
         categoriesApi.getAll(),
-        carsApi.getAll()
-      ])
-      
-      setCategories(categoriesData)
-      setFleet(carsData)
-      
-      // Calculate category counts
-      const counts: Record<string, number> = { all: carsData.length }
-      categoriesData.forEach((cat: any) => {
-        counts[cat.slug] = carsData.filter((car: any) => 
-          car.category?.slug === cat.slug || car.categoryName === cat.name
-        ).length
-      })
-      setCategoryCounts(counts)
-    } catch (err) {
-      console.error("Error loading data:", err)
-    } finally {
-      setLoading(false)
-    }
-  }
+        carsApi.getAll(),
+      ]);
 
-  const filteredFleet = activeCategory === "all" 
-    ? fleet 
-    : fleet.filter((car) => {
-        const category = categories.find(c => c.slug === activeCategory)
-        return car.category?.slug === activeCategory || car.categoryName === category?.name
-      })
+      setCategories(categoriesData);
+      setFleet(carsData);
+
+      // Calculate category counts
+      const counts: Record<string, number> = { all: carsData.length };
+      categoriesData.forEach((cat: any) => {
+        counts[cat.slug] = carsData.filter(
+          (car: any) =>
+            car.category?.slug === cat.slug || car.categoryName === cat.name
+        ).length;
+      });
+      setCategoryCounts(counts);
+    } catch (err) {
+      console.error("Error loading data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredFleet =
+    activeCategory === "all"
+      ? fleet
+      : fleet.filter((car) => {
+          const category = categories.find((c) => c.slug === activeCategory);
+          return (
+            car.category?.slug === activeCategory ||
+            car.categoryName === category?.name
+          );
+        });
 
   if (loading) {
     return (
@@ -75,13 +96,13 @@ export default function FleetPage() {
           <p className="text-muted-foreground">Loading fleet...</p>
         </div>
       </div>
-    )
+    );
   }
 
   const displayCategories = [
     { id: "all", name: "All Vehicles", slug: "all" },
-    ...categories
-  ]
+    ...categories,
+  ];
 
   return (
     <div className="flex flex-col">
@@ -139,7 +160,8 @@ export default function FleetPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              Meticulously curated collection of the world's most prestigious automobiles, each handpicked for excellence
+              Meticulously curated collection of the world's most prestigious
+              automobiles, each handpicked for excellence
             </motion.p>
           </motion.div>
         </div>
@@ -151,7 +173,9 @@ export default function FleetPage() {
           <div className="flex items-center gap-4 py-5">
             <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-muted/50">
               <Filter className="h-5 w-5 text-accent" />
-              <span className="text-sm font-medium text-muted-foreground">Filter by:</span>
+              <span className="text-sm font-medium text-muted-foreground">
+                Filter by:
+              </span>
             </div>
             <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mb-2 flex-1">
               {displayCategories.map((category, index) => (
@@ -164,24 +188,37 @@ export default function FleetPage() {
                   whileTap={{ scale: 0.95 }}
                 >
                   <Button
-                    variant={activeCategory === (category.slug || category.id || "all") ? "default" : "outline"}
+                    variant={
+                      activeCategory === (category.slug || category.id || "all")
+                        ? "default"
+                        : "outline"
+                    }
                     className={`whitespace-nowrap transition-all duration-300 ${
                       activeCategory === (category.slug || category.id || "all")
                         ? "shadow-md bg-accent hover:bg-accent/90"
                         : "hover:bg-accent/10 hover:border-accent/30"
                     }`}
-                    onClick={() => setActiveCategory(category.slug || category.id || "all")}
+                    onClick={() =>
+                      setActiveCategory(category.slug || category.id || "all")
+                    }
                   >
                     {category.name}
                     <Badge
-                      variant={activeCategory === (category.slug || category.id || "all") ? "secondary" : "outline"}
+                      variant={
+                        activeCategory ===
+                        (category.slug || category.id || "all")
+                          ? "secondary"
+                          : "outline"
+                      }
                       className={`ml-2 ${
-                        activeCategory === (category.slug || category.id || "all")
+                        activeCategory ===
+                        (category.slug || category.id || "all")
                           ? "bg-white/20 text-white border-white/30"
                           : "bg-accent/10 text-accent border-accent/20"
                       }`}
                     >
-                      {categoryCounts[category.slug || category.id || "all"] || 0}
+                      {categoryCounts[category.slug || category.id || "all"] ||
+                        0}
                     </Badge>
                   </Button>
                 </motion.div>
@@ -194,7 +231,7 @@ export default function FleetPage() {
       {/* Premium Fleet Grid */}
       <section className="py-16 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-white/[0.015] bg-[size:60px_60px]" />
-        
+
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10">
             {filteredFleet.map((car, index) => (
@@ -208,7 +245,7 @@ export default function FleetPage() {
               >
                 <Card className="group relative overflow-hidden hover:shadow-2xl transition-all duration-500 border-border/50 hover:border-accent/50 h-full bg-gradient-to-br from-background to-muted/10">
                   <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-0 md:gap-6 relative z-10">
                     {/* Premium Image Section */}
                     <div className="md:col-span-2 relative h-64 sm:h-72 md:h-full min-h-[280px] overflow-hidden bg-muted/30 rounded-t-lg md:rounded-l-lg md:rounded-t-none">
@@ -217,31 +254,35 @@ export default function FleetPage() {
                         transition={{ duration: 0.8, ease: "easeOut" }}
                         className="w-full h-full"
                       >
-                        <Image 
-                          src={car.image || "/placeholder.svg"} 
-                          alt={car.name} 
-                          fill 
-                          className="object-cover" 
+                        <Image
+                          src={car.image || "/placeholder.svg"}
+                          alt={car.name}
+                          fill
+                          className="object-cover"
                         />
                       </motion.div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                       <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-transparent to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                      
+
                       <motion.div
                         className="absolute top-5 left-5 bg-background/95 backdrop-blur-md px-4 py-2 rounded-xl flex items-center gap-2 shadow-xl border border-border/50 group-hover:bg-accent group-hover:border-accent transition-all duration-300"
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.2 }}
                       >
                         <Star className="h-4 w-4 fill-accent text-accent group-hover:fill-white group-hover:text-white transition-colors" />
-                        <span className="text-sm font-bold group-hover:text-white transition-colors">{car.rating || 4.5}</span>
+                        <span className="text-sm font-bold group-hover:text-white transition-colors">
+                          {car.rating || 4.5}
+                        </span>
                         <span className="text-xs text-muted-foreground group-hover:text-white/80 transition-colors">
                           ({car.reviews || 0})
                         </span>
                       </motion.div>
-                      
+
                       <div className="absolute top-5 right-5">
                         <Badge className="bg-accent/95 backdrop-blur-sm text-accent-foreground shadow-xl border-0 text-xs font-semibold">
-                          {car.categoryName || car.category?.name || "Uncategorized"}
+                          {car.categoryName ||
+                            car.category?.name ||
+                            "Uncategorized"}
                         </Badge>
                       </div>
                     </div>
@@ -251,7 +292,9 @@ export default function FleetPage() {
                       <div className="flex-1 space-y-5">
                         <div className="space-y-2">
                           <p className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider font-medium">
-                            {car.categoryName || car.category?.name || "Uncategorized"}
+                            {car.categoryName ||
+                              car.category?.name ||
+                              "Uncategorized"}
                           </p>
                           <h3 className="text-2xl sm:text-3xl font-serif font-bold group-hover:text-accent transition-colors duration-300">
                             {car.name}
@@ -260,8 +303,18 @@ export default function FleetPage() {
 
                         <div className="grid grid-cols-2 gap-3 py-4 border-y border-border/50 bg-gradient-to-br from-muted/20 to-transparent rounded-lg px-3">
                           {[
-                            { icon: Users, text: `${car.specs?.passengers || car.specs?.seats || "N/A"} Passengers` },
-                            { icon: Settings, text: car.specs?.transmission || "N/A" },
+                            {
+                              icon: Users,
+                              text: `${
+                                car.specs?.passengers ||
+                                car.specs?.seats ||
+                                "N/A"
+                              } Passengers`,
+                            },
+                            {
+                              icon: Settings,
+                              text: car.specs?.transmission || "N/A",
+                            },
                             { icon: Fuel, text: car.specs?.fuel || "N/A" },
                             { icon: Gauge, text: car.specs?.power || "N/A" },
                           ].map((spec, i) => (
@@ -284,19 +337,21 @@ export default function FleetPage() {
                             Key Features
                           </p>
                           <div className="flex flex-wrap gap-2">
-                            {car.features?.slice(0, 3).map((feature: string, i: number) => (
-                              <motion.span
-                                key={feature}
-                                className="text-xs bg-muted/80 px-3 py-1.5 rounded-lg hover:bg-accent/20 hover:text-accent transition-all duration-300 border border-border/50"
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.3, delay: i * 0.1 }}
-                                whileHover={{ scale: 1.05, y: -2 }}
-                              >
-                                {feature}
-                              </motion.span>
-                            ))}
+                            {car.features
+                              ?.slice(0, 3)
+                              .map((feature: string, i: number) => (
+                                <motion.span
+                                  key={feature}
+                                  className="text-xs bg-muted/80 px-3 py-1.5 rounded-lg hover:bg-accent/20 hover:text-accent transition-all duration-300 border border-border/50"
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  whileInView={{ opacity: 1, scale: 1 }}
+                                  viewport={{ once: true }}
+                                  transition={{ duration: 0.3, delay: i * 0.1 }}
+                                  whileHover={{ scale: 1.05, y: -2 }}
+                                >
+                                  {feature}
+                                </motion.span>
+                              ))}
                             {car.features && car.features.length > 3 && (
                               <span className="text-xs text-muted-foreground px-3 py-1.5 flex items-center">
                                 +{car.features.length - 3} more
@@ -312,31 +367,47 @@ export default function FleetPage() {
                           transition={{ duration: 0.2 }}
                           className="space-y-1"
                         >
-                          <p className="text-xs sm:text-sm text-muted-foreground font-medium">Starting from</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground font-medium">
+                            Starting from
+                          </p>
                           <p className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-foreground to-accent bg-clip-text text-transparent">
                             ${car.price || car.pricing?.["1-3"] || "N/A"}
-                            <span className="text-base sm:text-lg font-normal text-muted-foreground">/day</span>
+                            <span className="text-base sm:text-lg font-normal text-muted-foreground">
+                              /day
+                            </span>
                           </p>
                         </motion.div>
                         <div className="flex flex-col sm:flex-row gap-2">
-                          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                          <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
                             <Button
                               asChild
                               className="w-full sm:w-auto transition-all duration-300 shadow-md hover:shadow-xl bg-accent hover:bg-accent/90"
                             >
-                              <Link href={`/fleet/${car.slug || car._id}`} className="group/btn">
+                              <Link
+                                href={`/fleet/${car.slug || car._id}`}
+                                className="group/btn"
+                              >
                                 View Details
                                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
                               </Link>
                             </Button>
                           </motion.div>
-                          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                          <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
                             <Button
                               asChild
                               variant="outline"
                               className="w-full sm:w-auto transition-all duration-300 shadow-md hover:shadow-xl"
                             >
-                              <a href={`tel:${phoneNumber}`} className="group/btn">
+                              <a
+                                href={`tel:${phoneNumber}`}
+                                className="group/btn"
+                              >
                                 <Phone className="mr-2 h-4 w-4" />
                                 Book Now
                               </a>
@@ -346,7 +417,7 @@ export default function FleetPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-accent/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </Card>
               </motion.div>
@@ -362,7 +433,9 @@ export default function FleetPage() {
             >
               <div className="space-y-4">
                 <Car className="h-16 w-16 mx-auto text-muted-foreground/50" />
-                <p className="text-muted-foreground text-lg font-medium">No vehicles found in this category.</p>
+                <p className="text-muted-foreground text-lg font-medium">
+                  No vehicles found in this category.
+                </p>
                 <Button variant="outline" asChild>
                   <Link href="/fleet" onClick={() => setActiveCategory("all")}>
                     View All Vehicles
@@ -382,7 +455,7 @@ export default function FleetPage() {
           animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         />
-        
+
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <ScaleIn delay={0.2}>
             <Card className="p-8 sm:p-12 md:p-16 text-center max-w-4xl mx-auto border-0 shadow-2xl bg-gradient-to-br from-background via-background to-muted/20 backdrop-blur-sm">
@@ -393,28 +466,40 @@ export default function FleetPage() {
               >
                 <Shield className="h-10 w-10 md:h-12 md:w-12 text-accent" />
               </motion.div>
-              
+
               <div className="space-y-4 md:space-y-6">
                 <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold">
                   Comprehensive Insurance Included
                 </h3>
                 <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                  Every vehicle in our premium fleet comes with full comprehensive insurance coverage, providing you with
-                  complete peace of mind throughout your rental period. Additional coverage options are available upon request.
+                  Every vehicle in our premium fleet comes with full
+                  comprehensive insurance coverage, providing you with complete
+                  peace of mind throughout your rental period. Additional
+                  coverage options are available upon request.
                 </p>
-                
+
                 <div className="grid sm:grid-cols-2 gap-3 max-w-2xl mx-auto pt-4">
-                  {["Full Coverage Insurance", "24/7 Roadside Assistance", "Zero Liability", "Additional Options Available"].map(
-                    (item, idx) => (
-                      <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground justify-center sm:justify-start">
-                        <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
-                        <span>{item}</span>
-                      </div>
-                    )
-                  )}
+                  {[
+                    "Full Coverage Insurance",
+                    "24/7 Roadside Assistance",
+                    "Zero Liability",
+                    "Additional Options Available",
+                  ].map((item, idx) => (
+                    <div
+                      key={item}
+                      className="flex items-center gap-2 text-sm text-muted-foreground justify-center sm:justify-start"
+                    >
+                      <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
                 </div>
-                
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="pt-4">
+
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="pt-4"
+                >
                   <Button
                     variant="outline"
                     size="lg"
@@ -430,5 +515,5 @@ export default function FleetPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }
