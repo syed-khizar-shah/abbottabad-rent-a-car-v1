@@ -4,14 +4,17 @@ import { Phone, MessageCircle } from "lucide-react"
 import { motion } from "framer-motion"
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
-import { authApi } from "@/lib/api"
+import { authApi, contactApi } from "@/lib/api"
 
 export function ContactButtons() {
   const [isAdmin, setIsAdmin] = useState(false)
+  const [whatsappNumber, setWhatsappNumber] = useState("923001234567")
+  const [phoneNumber, setPhoneNumber] = useState("+923001234567")
   const pathname = usePathname()
 
   useEffect(() => {
     checkAdminAuth()
+    loadContactInfo()
   }, [pathname])
 
   const checkAdminAuth = async () => {
@@ -29,6 +32,20 @@ export function ContactButtons() {
     }
   }
 
+  const loadContactInfo = async () => {
+    try {
+      const contactData = await contactApi.get()
+      if (contactData?.whatsappNumber) {
+        setWhatsappNumber(contactData.whatsappNumber.replace(/[^\d]/g, ''))
+      }
+      if (contactData?.phoneNumber) {
+        setPhoneNumber(contactData.phoneNumber.replace(/[^\d+]/g, ''))
+      }
+    } catch (err) {
+      console.error("Error loading contact info:", err)
+    }
+  }
+
   // Hide buttons if admin is logged in
   if (isAdmin) {
     return null
@@ -43,7 +60,7 @@ export function ContactButtons() {
     >
       {/* WhatsApp Button */}
       <motion.a
-        href="https://wa.me/923001234567"
+        href={`https://wa.me/${whatsappNumber}`}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Contact us on WhatsApp"
@@ -65,7 +82,7 @@ export function ContactButtons() {
 
       {/* Call Button */}
       <motion.a
-        href="tel:+923001234567"
+        href={`tel:${phoneNumber}`}
         aria-label="Call us"
         className="group relative"
         whileHover={{ scale: 1.05, y: -2 }}

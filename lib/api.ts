@@ -213,3 +213,41 @@ export const faqsApi = {
     }),
 };
 
+// Contact API
+export const contactApi = {
+  get: () => apiRequest('/contact'),
+  update: (formData: FormData) => {
+    return fetch(`${API_URL}/contact`, {
+      method: 'PUT',
+      credentials: 'include',
+      body: formData,
+    }).then((res) => {
+      if (!res.ok) {
+        return res.json().then((err) => {
+          throw new Error(err.message || 'Request failed');
+        });
+      }
+      return res.json();
+    });
+  },
+};
+
+// Location API
+export const locationApi = {
+  get: () => apiRequest('/location'),
+  update: (formData: FormData) => {
+    return fetch(`${API_URL}/location`, {
+      method: 'PUT',
+      credentials: 'include',
+      body: formData,
+    }).then((res) => {
+      if (!res.ok) {
+        return res.json().then((err) => {
+          throw new Error(err.message || 'Request failed');
+        });
+      }
+      return res.json();
+    });
+  },
+};
+

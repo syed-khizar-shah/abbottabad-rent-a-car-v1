@@ -15,7 +15,9 @@ import {
   HelpCircle,
   LogOut,
   Menu,
-  X
+  X,
+  Phone,
+  Map
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -28,6 +30,8 @@ const menuItems = [
   { icon: Users, label: "About Us", href: "/admin/about" },
   { icon: Star, label: "Reviews", href: "/admin/reviews" },
   { icon: HelpCircle, label: "FAQs", href: "/admin/faqs" },
+  { icon: Phone, label: "Contact", href: "/admin/contact" },
+  { icon: Map, label: "Location", href: "/admin/location" },
 ]
 
 export default function AdminLayout({

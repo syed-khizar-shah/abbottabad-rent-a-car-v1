@@ -1,37 +1,47 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { MapPin, Phone, Mail, Clock, Navigation, Car } from "lucide-react"
+import { MapPin, Phone, Mail, Clock, Navigation, Car, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
+import { locationApi } from "@/lib/api"
 
 export default function LocationClient() {
-  const businessInfo = {
-    name: "Abbottabad Rent A Car",
-    address: "Mansehra Rd, opposite Ayub Medical Complex, near Doctor Plaza",
-    city: "Abbottabad",
-    postalCode: "22010",
-    country: "Pakistan",
-    phone: "+92 300 1234567",
-    email: "info@abbottabadrentacar.com",
-    coordinates: {
-      lat: 34.2031195,
-      lng: 73.2390944,
-    },
+  const [loading, setLoading] = useState(true)
+  const [content, setContent] = useState<any>(null)
+
+  useEffect(() => {
+    loadContent()
+  }, [])
+
+  const loadContent = async () => {
+    try {
+      const data = await locationApi.get()
+      setContent(data)
+    } catch (err) {
+      console.error("Error loading location content:", err)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const businessHours = [
-    { day: "Monday - Friday", hours: "8:00 AM - 8:00 PM" },
-    { day: "Saturday", hours: "9:00 AM - 6:00 PM" },
-    { day: "Sunday", hours: "10:00 AM - 4:00 PM" },
-  ]
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-accent" />
+      </div>
+    )
+  }
 
-  const landmarks = [
-    { name: "Ayub Medical Complex", distance: "Opposite" },
-    { name: "Doctor Plaza", distance: "Near" },
-    { name: "Mansehra Road", distance: "On Main Road" },
-  ]
+  if (!content) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-muted-foreground">Location content not found. Please run the seed script.</p>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen">
@@ -40,23 +50,23 @@ export default function LocationClient() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('/luxury-car-rental-customer-service-concierge-desk.jpg')`,
+            backgroundImage: `url('${content.heroImage || "/luxury-car-rental-customer-service-concierge-desk.jpg"}')`,
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-navy-900/90 via-navy-900/80 to-navy-900/90" />
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <span className="inline-block px-4 py-2 bg-amber-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-medium mb-6">
-              Visit Us Today
-            </span>
-            <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6">Our Location</h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Conveniently located on Mansehra Road in the heart of Abbottabad
-            </p>
-          </motion.div>
-        </div>
+          <div className="relative z-10 container mx-auto px-4 text-center">
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+              <span className="inline-block px-4 py-2 bg-amber-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-medium mb-6">
+                Visit Us Today
+              </span>
+              <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6">{content.heroTitle}</h1>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                {content.heroSubtitle}
+              </p>
+            </motion.div>
+          </div>
       </section>
 
       {/* Map and Info Section */}
@@ -73,7 +83,7 @@ export default function LocationClient() {
             >
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-navy-200">
                 <iframe
-                  src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3307.8!2d${businessInfo.coordinates.lng}!3d${businessInfo.coordinates.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38de31e0862c305b%3A0x37c9fb9a927a10e8!2sAbbottabad%20luxury%20Ride%20Tours%20%26%20rent%20a%20car%20quick%20classy%20service!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s`}
+                  src={content.mapEmbedUrl || `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3307.8!2d${content.coordinates?.lng || 73.2390944}!3d${content.coordinates?.lat || 34.2031195}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38de31e0862c305b%3A0x37c9fb9a927a10e8!2sAbbottabad%20luxury%20Ride%20Tours%20%26%20rent%20a%20car%20quick%20classy%20service!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s`}
                   width="100%"
                   height="500"
                   style={{ border: 0 }}
@@ -98,7 +108,7 @@ export default function LocationClient() {
                   className="w-full bg-amber-500 hover:bg-amber-600 text-navy-900 font-semibold"
                 >
                   <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${businessInfo.coordinates.lat},${businessInfo.coordinates.lng}`}
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${content.coordinates?.lat || 34.2031195},${content.coordinates?.lng || 73.2390944}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -126,11 +136,11 @@ export default function LocationClient() {
                   <div className="flex-1">
                     <h3 className="font-serif text-2xl font-bold text-navy-900 mb-3">Visit Our Office</h3>
                     <p className="text-gray-700 leading-relaxed">
-                      {businessInfo.address}
+                      {content.address}
                       <br />
-                      {businessInfo.city}, {businessInfo.postalCode}
+                      {content.city}, {content.postalCode}
                       <br />
-                      {businessInfo.country}
+                      {content.country}
                     </p>
                   </div>
                 </div>
@@ -147,10 +157,10 @@ export default function LocationClient() {
                     <div>
                       <p className="text-sm text-gray-600">Phone</p>
                       <a
-                        href={`tel:${businessInfo.phone}`}
+                        href={`tel:${content.phone}`}
                         className="text-navy-900 font-semibold hover:text-amber-500 transition-colors"
                       >
-                        {businessInfo.phone}
+                        {content.phone}
                       </a>
                     </div>
                   </div>
@@ -161,10 +171,10 @@ export default function LocationClient() {
                     <div>
                       <p className="text-sm text-gray-600">Email</p>
                       <a
-                        href={`mailto:${businessInfo.email}`}
+                        href={`mailto:${content.email}`}
                         className="text-navy-900 font-semibold hover:text-amber-500 transition-colors"
                       >
-                        {businessInfo.email}
+                        {content.email}
                       </a>
                     </div>
                   </div>
@@ -180,7 +190,7 @@ export default function LocationClient() {
                   <h3 className="font-serif text-2xl font-bold text-navy-900">Business Hours</h3>
                 </div>
                 <div className="space-y-3">
-                  {businessHours.map((schedule, index) => (
+                  {content.businessHours?.map((schedule: any, index: number) => (
                     <div
                       key={index}
                       className="flex justify-between items-center py-2 border-b border-gray-200 last:border-0"
@@ -196,7 +206,7 @@ export default function LocationClient() {
               <Card className="p-8 bg-white border-navy-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <h3 className="font-serif text-2xl font-bold text-navy-900 mb-6">Nearby Landmarks</h3>
                 <div className="space-y-3">
-                  {landmarks.map((landmark, index) => (
+                  {content.landmarks?.map((landmark: any, index: number) => (
                     <div key={index} className="flex items-center gap-3">
                       <div className="w-2 h-2 bg-amber-500 rounded-full" />
                       <span className="text-gray-700">{landmark.name}</span>
@@ -236,10 +246,10 @@ export default function LocationClient() {
               <Car className="h-10 w-10 md:h-12 md:w-12 text-accent" />
             </motion.div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-4 md:mb-6">
-              Ready to Experience Luxury?
+              {content.ctaTitle || "Ready to Experience Luxury?"}
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-              Visit our showroom today or contact us to reserve your premium vehicle
+              {content.ctaSubtitle || "Visit our showroom today or contact us to reserve your premium vehicle"}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>

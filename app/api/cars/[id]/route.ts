@@ -12,7 +12,12 @@ export async function GET(
     await connectDB();
     const { id } = await params;
 
-    const car = await Car.findById(id).populate('category', 'name slug');
+    // Try to find by ID first, then by slug
+    let car = await Car.findById(id).populate('category', 'name slug');
+    
+    if (!car) {
+      car = await Car.findOne({ slug: id }).populate('category', 'name slug');
+    }
 
     if (!car) {
       return NextResponse.json(

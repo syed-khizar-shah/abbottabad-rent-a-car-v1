@@ -1,54 +1,62 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Phone, Mail, MapPin, Clock, MessageCircle, Send, Navigation } from "lucide-react"
+import { Phone, Mail, MapPin, Clock, MessageCircle, Send, Navigation, Loader2 } from "lucide-react"
 import Image from "next/image"
 import { motion } from "framer-motion"
+import { contactApi } from "@/lib/api"
 
-const contactMethods = [
-  {
-    icon: Phone,
-    title: "Phone",
-    details: ["+92 300 1234567", "+92 992 123456"],
-    description: "Available 24/7 for your convenience",
-  },
-  {
-    icon: Mail,
-    title: "Email",
-    details: ["info@abbottabadrentacar.com", "bookings@abbottabadrentacar.com"],
-    description: "We respond within 2 hours",
-  },
-  {
-    icon: MapPin,
-    title: "Location",
-    details: ["Main Mansehra Road", "Abbottabad, KPK, Pakistan"],
-    description: "Visit our showroom",
-  },
-  {
-    icon: Clock,
-    title: "Business Hours",
-    details: ["Mon-Sat: 9:00 AM - 8:00 PM", "Sunday: 10:00 AM - 6:00 PM"],
-    description: "24/7 emergency support",
-  },
-]
-
-const services = [
-  "Wedding Car Rental",
-  "Corporate Transportation",
-  "Airport Transfers",
-  "Long-term Rental",
-  "Chauffeur Services",
-  "Event Transportation",
-  "Tourism Packages",
-  "Other",
-]
+const iconMap: Record<string, any> = {
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+}
 
 export default function ContactPage() {
+  const [loading, setLoading] = useState(true)
+  const [content, setContent] = useState<any>(null)
+
+  useEffect(() => {
+    loadContent()
+  }, [])
+
+  const loadContent = async () => {
+    try {
+      const data = await contactApi.get()
+      setContent(data)
+    } catch (err) {
+      console.error("Error loading contact content:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-accent" />
+      </div>
+    )
+  }
+
+  if (!content) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-muted-foreground">Contact content not found. Please run the seed script.</p>
+      </div>
+    )
+  }
+
+  // Format WhatsApp number for URL (remove spaces and special chars)
+  const whatsappNumber = content.whatsappNumber?.replace(/[^\d]/g, '') || '923001234567'
+  const phoneNumber = content.phoneNumber?.replace(/[^\d+]/g, '') || '+923001234567'
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -56,7 +64,7 @@ export default function ContactPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/luxury-car-rental-customer-service-concierge-desk.jpg"
+            src={content.heroImage || "/luxury-car-rental-customer-service-concierge-desk.jpg"}
             alt="Contact our concierge team"
             fill
             className="object-cover brightness-[0.35]"
@@ -103,10 +111,12 @@ export default function ContactPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              Contact Our
-              <span className="block mt-2 bg-gradient-to-r from-white via-accent to-white bg-clip-text text-transparent">
-                Concierge
-              </span>
+              {content.heroTitle}
+              {content.heroTitleAccent && (
+                <span className="block mt-2 bg-gradient-to-r from-white via-accent to-white bg-clip-text text-transparent">
+                  {content.heroTitleAccent}
+                </span>
+              )}
             </motion.h1>
 
             <motion.p
@@ -115,7 +125,7 @@ export default function ContactPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              Our dedicated team is ready to assist you with reservations, inquiries, and personalized service
+              {content.heroSubtitle}
             </motion.p>
           </motion.div>
         </div>
@@ -125,26 +135,29 @@ export default function ContactPage() {
       <section className="py-12 md:py-16 border-b border-border bg-background">
         <div className="container mx-auto px-4">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
-            {contactMethods.map((method, index) => (
-              <Card
-                key={method.title}
-                className="p-4 md:p-6 text-center space-y-3 md:space-y-4 hover:shadow-xl hover:scale-105 transition-all duration-300 animate-in fade-in slide-in-from-bottom-4"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-accent/10">
-                  <method.icon className="h-6 w-6 md:h-7 md:w-7 text-accent" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-base md:text-lg mb-2">{method.title}</h3>
-                  {method.details.map((detail) => (
-                    <p key={detail} className="text-xs md:text-sm text-muted-foreground">
-                      {detail}
-                    </p>
-                  ))}
-                  <p className="text-xs text-muted-foreground mt-2">{method.description}</p>
-                </div>
-              </Card>
-            ))}
+            {content.contactMethods?.map((method: any, index: number) => {
+              const IconComponent = iconMap[method.icon] || Phone
+              return (
+                <Card
+                  key={method.title || index}
+                  className="p-4 md:p-6 text-center space-y-3 md:space-y-4 hover:shadow-xl hover:scale-105 transition-all duration-300 animate-in fade-in slide-in-from-bottom-4"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-accent/10">
+                    <IconComponent className="h-6 w-6 md:h-7 md:w-7 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base md:text-lg mb-2">{method.title}</h3>
+                    {method.details?.map((detail: string, i: number) => (
+                      <p key={i} className="text-xs md:text-sm text-muted-foreground">
+                        {detail}
+                      </p>
+                    ))}
+                    <p className="text-xs text-muted-foreground mt-2">{method.description}</p>
+                  </div>
+                </Card>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -156,9 +169,9 @@ export default function ContactPage() {
             {/* Contact Form */}
             <div className="animate-in fade-in slide-in-from-left duration-700">
               <div className="mb-6 md:mb-8">
-                <h2 className="text-2xl md:text-3xl font-serif font-bold mb-4">Send Us a Message</h2>
+                <h2 className="text-2xl md:text-3xl font-serif font-bold mb-4">{content.formTitle || "Send Us a Message"}</h2>
                 <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                  Fill out the form below and our team will get back to you within 2 hours during business hours
+                  {content.formSubtitle || "Fill out the form below and our team will get back to you within 2 hours during business hours"}
                 </p>
               </div>
 
@@ -202,7 +215,7 @@ export default function ContactPage() {
                     required
                   >
                     <option value="">Select a service</option>
-                    {services.map((service) => (
+                    {content.services?.map((service: string) => (
                       <option key={service} value={service}>
                         {service}
                       </option>
@@ -248,7 +261,7 @@ export default function ContactPage() {
                 <div className="relative">
                   <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50">
                     <iframe
-                      src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3307.8!2d73.2390944!3d34.2031195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38de31e0862c305b%3A0x37c9fb9a927a10e8!2sAbbottabad%20luxury%20Ride%20Tours%20%26%20rent%20a%20car%20quick%20classy%20service!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s`}
+                      src={content.mapEmbedUrl || `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3307.8!2d73.2390944!3d34.2031195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38de31e0862c305b%3A0x37c9fb9a927a10e8!2sAbbottabad%20luxury%20Ride%20Tours%20%26%20rent%20a%20car%20quick%20classy%20service!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s`}
                       width="100%"
                       height="400"
                       style={{ border: 0 }}
@@ -268,7 +281,7 @@ export default function ContactPage() {
                       className="w-full bg-accent hover:bg-accent/90"
                     >
                       <a
-                        href="https://www.google.com/maps/dir/?api=1&destination=34.2031195,73.2390944"
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${content.mapCoordinates?.lat || 34.2031195},${content.mapCoordinates?.lng || 73.2390944}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -283,26 +296,12 @@ export default function ContactPage() {
               <Card className="p-4 md:p-6 space-y-4 shadow-lg hover:shadow-xl transition-shadow">
                 <h3 className="text-lg md:text-xl font-bold">Why Choose Us?</h3>
                 <ul className="space-y-3 text-xs md:text-sm text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
-                    <span>Instant booking confirmation via WhatsApp or email</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
-                    <span>Flexible payment options including installments</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
-                    <span>Free delivery within Abbottabad city limits</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
-                    <span>24/7 roadside assistance and customer support</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
-                    <span>Comprehensive insurance on all vehicles</span>
-                  </li>
+                  {content.whyChooseUs?.map((item: string, index: number) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
                 </ul>
               </Card>
 
@@ -315,7 +314,7 @@ export default function ContactPage() {
                       Connect with us instantly on WhatsApp for quick responses
                     </p>
                     <Button variant="secondary" size="lg" className="w-full sm:w-auto" asChild>
-                      <a href="https://wa.me/923001234567" target="_blank" rel="noopener noreferrer">
+                      <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer">
                         Open WhatsApp
                       </a>
                     </Button>

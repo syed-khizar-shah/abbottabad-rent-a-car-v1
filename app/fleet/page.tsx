@@ -4,12 +4,12 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Star, Users, Gauge, Fuel, Settings, Shield, ArrowRight, Filter, Award, CheckCircle2, Car, Loader2 } from "lucide-react"
+import { Star, Users, Gauge, Fuel, Settings, Shield, ArrowRight, Filter, Award, CheckCircle2, Car, Loader2, Phone } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import { ScaleIn } from "@/components/animated-section"
-import { carsApi, categoriesApi } from "@/lib/api"
+import { carsApi, categoriesApi, contactApi } from "@/lib/api"
 
 export default function FleetPage() {
   const [activeCategory, setActiveCategory] = useState("all")
@@ -17,10 +17,23 @@ export default function FleetPage() {
   const [fleet, setFleet] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({})
+  const [phoneNumber, setPhoneNumber] = useState("+923001234567")
 
   useEffect(() => {
     loadData()
+    loadContactInfo()
   }, [])
+
+  const loadContactInfo = async () => {
+    try {
+      const contactData = await contactApi.get()
+      if (contactData?.phoneNumber) {
+        setPhoneNumber(contactData.phoneNumber.replace(/[^\d+]/g, ''))
+      }
+    } catch (err) {
+      console.error("Error loading contact info:", err)
+    }
+  }
 
   const loadData = async () => {
     try {
@@ -305,17 +318,31 @@ export default function FleetPage() {
                             <span className="text-base sm:text-lg font-normal text-muted-foreground">/day</span>
                           </p>
                         </motion.div>
-                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                          <Button
-                            asChild
-                            className="w-full sm:w-auto transition-all duration-300 shadow-md hover:shadow-xl bg-accent hover:bg-accent/90"
-                          >
-                            <Link href={`/fleet/${car.slug || car._id}`} className="group/btn">
-                              View Details
-                              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                            </Link>
-                          </Button>
-                        </motion.div>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                            <Button
+                              asChild
+                              className="w-full sm:w-auto transition-all duration-300 shadow-md hover:shadow-xl bg-accent hover:bg-accent/90"
+                            >
+                              <Link href={`/fleet/${car.slug || car._id}`} className="group/btn">
+                                View Details
+                                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                              </Link>
+                            </Button>
+                          </motion.div>
+                          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                            <Button
+                              asChild
+                              variant="outline"
+                              className="w-full sm:w-auto transition-all duration-300 shadow-md hover:shadow-xl"
+                            >
+                              <a href={`tel:${phoneNumber}`} className="group/btn">
+                                <Phone className="mr-2 h-4 w-4" />
+                                Book Now
+                              </a>
+                            </Button>
+                          </motion.div>
+                        </div>
                       </div>
                     </div>
                   </div>
