@@ -31,7 +31,7 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-muted/20 to-background p-4">
-      <Card className="w-full max-w-md p-8 shadow-2xl">
+      <Card className="w-full max-w-md p-6 sm:p-8 shadow-2xl">
         <div className="space-y-6">
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-bold font-serif">Admin Login</h1>

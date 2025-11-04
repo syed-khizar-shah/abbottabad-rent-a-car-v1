@@ -64,18 +64,18 @@ export default function AdminCategoriesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 sm:px-6 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" asChild>
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Button variant="ghost" size="sm" asChild className="lg:flex">
               <Link href="/admin/dashboard">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
+                <span className="hidden sm:inline">Back</span>
               </Link>
             </Button>
-            <h1 className="text-3xl font-bold font-serif">Manage Categories</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold font-serif">Manage Categories</h1>
           </div>
-          <Button asChild>
+          <Button size="sm" asChild className="w-full sm:w-auto">
             <Link href="/admin/categories/new">
               <Plus className="mr-2 h-4 w-4" />
               Add Category
@@ -83,10 +83,10 @@ export default function AdminCategoriesPage() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {categories.map((category) => (
             <Card key={category._id} className="overflow-hidden">
-              <div className="relative h-48 bg-muted">
+              <div className="relative h-40 sm:h-48 bg-muted">
                 {category.image && (
                   <Image
                     src={category.image}
@@ -98,21 +98,21 @@ export default function AdminCategoriesPage() {
               </div>
               <div className="p-4 space-y-3">
                 <div>
-                  <h3 className="font-bold text-lg">{category.name}</h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{category.description}</p>
+                  <h3 className="font-bold text-base sm:text-lg line-clamp-1">{category.name}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{category.description}</p>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xl font-bold">${category.priceFrom}/day</span>
+                  <span className="text-lg sm:text-xl font-bold">${category.priceFrom}/day</span>
                 </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" asChild className="flex-1">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Button variant="outline" size="sm" asChild className="flex-1 text-xs sm:text-sm">
                     <Link href={`/admin/categories/${category._id}/cars`}>
                       View Cars
                     </Link>
                   </Button>
-                  <Button variant="outline" size="sm" asChild className="flex-1">
+                  <Button variant="outline" size="sm" asChild className="flex-1 text-xs sm:text-sm">
                     <Link href={`/admin/categories/${category._id}`}>
-                      <Edit className="mr-2 h-4 w-4" />
+                      <Edit className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                       Edit
                     </Link>
                   </Button>
@@ -121,11 +121,12 @@ export default function AdminCategoriesPage() {
                     size="sm"
                     onClick={() => handleDelete(category._id)}
                     disabled={deletingId === category._id}
+                    className="px-2 sm:px-3"
                   >
                     {deletingId === category._id ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
                     ) : (
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                     )}
                   </Button>
                 </div>
@@ -135,9 +136,9 @@ export default function AdminCategoriesPage() {
         </div>
 
         {categories.length === 0 && (
-          <Card className="p-12 text-center">
-            <p className="text-muted-foreground mb-4">No categories found</p>
-            <Button asChild>
+          <Card className="p-8 sm:p-12 text-center">
+            <p className="text-sm sm:text-base text-muted-foreground mb-4">No categories found</p>
+            <Button asChild size="sm">
               <Link href="/admin/categories/new">Add Your First Category</Link>
             </Button>
           </Card>

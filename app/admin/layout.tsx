@@ -44,10 +44,21 @@ export default function AdminLayout({
   const router = useRouter()
   const pathname = usePathname()
   const [loading, setLoading] = useState(true)
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     checkAuth()
+    // On desktop, sidebar should be open by default
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setSidebarOpen(true)
+      } else {
+        setSidebarOpen(false)
+      }
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const checkAuth = async () => {
@@ -79,8 +90,10 @@ export default function AdminLayout({
       {/* Sidebar */}
       <aside
         className={`${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        } ${
           sidebarOpen ? "w-64" : "w-20"
-        } bg-background border-r border-border transition-all duration-300 flex flex-col fixed h-screen z-50 lg:static lg:h-auto`}
+        } bg-background border-r border-border transition-all duration-300 flex flex-col fixed lg:static h-screen z-50 lg:z-auto`}
       >
         {/* Sidebar Header */}
         <div className="p-4 border-b border-border flex items-center justify-between">
@@ -91,15 +104,7 @@ export default function AdminLayout({
             variant="ghost"
             size="icon"
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="lg:hidden"
-          >
-            {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="hidden lg:flex"
+            className="lg:flex"
           >
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
@@ -115,6 +120,12 @@ export default function AdminLayout({
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => {
+                  // Close sidebar on mobile when clicking a link
+                  if (window.innerWidth < 1024) {
+                    setSidebarOpen(false)
+                  }
+                }}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                   isActive
                     ? "bg-accent text-accent-foreground shadow-md"
@@ -152,7 +163,19 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 lg:ml-0">
+      <div className="flex-1 flex flex-col min-w-0 w-full lg:w-auto">
+        {/* Mobile Menu Button */}
+        <div className="lg:hidden fixed top-4 left-4 z-40">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setSidebarOpen(true)}
+            className="bg-background"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        </div>
+        
         {/* Mobile overlay */}
         {sidebarOpen && (
           <div
@@ -160,7 +183,7 @@ export default function AdminLayout({
             onClick={() => setSidebarOpen(false)}
           />
         )}
-        <main className="flex-1 overflow-y-auto lg:ml-0">{children}</main>
+        <main className="flex-1 overflow-y-auto pt-16 lg:pt-0">{children}</main>
       </div>
     </div>
   )

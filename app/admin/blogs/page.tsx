@@ -69,10 +69,10 @@ export default function AdminBlogsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 sm:px-6 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold font-serif">Blog Posts</h1>
-          <Button asChild>
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold font-serif">Blog Posts</h1>
+          <Button size="sm" asChild className="w-full sm:w-auto">
             <Link href="/admin/blogs/new">
               <Plus className="mr-2 h-4 w-4" />
               Add New Post
@@ -81,11 +81,12 @@ export default function AdminBlogsPage() {
         </div>
 
         {/* Category Filter */}
-        <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
+        <div className="mb-6 flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
           <Button
             variant={selectedCategory === "all" ? "default" : "outline"}
+            size="sm"
             onClick={() => setSelectedCategory("all")}
-            className="whitespace-nowrap"
+            className="whitespace-nowrap shrink-0"
           >
             All Posts
           </Button>
@@ -93,11 +94,12 @@ export default function AdminBlogsPage() {
             <Button
               key={cat.id}
               variant={selectedCategory === cat.id ? "default" : "outline"}
+              size="sm"
               onClick={() => setSelectedCategory(cat.id)}
-              className="whitespace-nowrap"
+              className="whitespace-nowrap shrink-0"
             >
               {cat.name}
-              <Badge variant="secondary" className="ml-2">
+              <Badge variant="secondary" className="ml-2 text-xs">
                 {cat.count}
               </Badge>
             </Button>
@@ -107,9 +109,9 @@ export default function AdminBlogsPage() {
         {/* Blog List */}
         <div className="grid gap-4">
           {blogs.length === 0 ? (
-            <Card className="p-8 text-center">
-              <p className="text-muted-foreground mb-4">No blog posts found.</p>
-              <Button asChild>
+            <Card className="p-6 sm:p-8 text-center">
+              <p className="text-sm sm:text-base text-muted-foreground mb-4">No blog posts found.</p>
+              <Button asChild size="sm">
                 <Link href="/admin/blogs/new">
                   <Plus className="mr-2 h-4 w-4" />
                   Create Your First Post
@@ -118,9 +120,9 @@ export default function AdminBlogsPage() {
             </Card>
           ) : (
             blogs.map((blog) => (
-              <Card key={blog._id} className="p-4 hover:shadow-lg transition-shadow">
-                <div className="flex gap-4">
-                  <div className="relative w-32 h-32 rounded-lg overflow-hidden shrink-0">
+              <Card key={blog._id} className="p-3 sm:p-4 hover:shadow-lg transition-shadow">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                  <div className="relative w-full sm:w-32 h-48 sm:h-32 rounded-lg overflow-hidden shrink-0">
                     <Image
                       src={blog.featuredImage || "/placeholder.svg"}
                       alt={blog.title}
@@ -128,23 +130,23 @@ export default function AdminBlogsPage() {
                       className="object-cover"
                     />
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge variant="secondary">{blog.category}</Badge>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between mb-2 gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <Badge variant="secondary" className="text-xs">{blog.category}</Badge>
                           {blog.featured && (
-                            <Badge variant="default">Featured</Badge>
+                            <Badge variant="default" className="text-xs">Featured</Badge>
                           )}
                           {!blog.published && (
-                            <Badge variant="outline">Draft</Badge>
+                            <Badge variant="outline" className="text-xs">Draft</Badge>
                           )}
                         </div>
-                        <h3 className="text-xl font-bold mb-1">{blog.title}</h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                        <h3 className="text-base sm:text-lg lg:text-xl font-bold mb-1 line-clamp-2">{blog.title}</h3>
+                        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mb-2">
                           {blog.excerpt}
                         </p>
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-muted-foreground">
                           <span>By {blog.author}</span>
                           <span>{new Date(blog.date).toLocaleDateString()}</span>
                           <span>{blog.readTime}</span>
@@ -152,14 +154,15 @@ export default function AdminBlogsPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex gap-2 mt-4">
+                    <div className="flex flex-wrap gap-2 mt-4">
                       <Button
                         variant="outline"
                         size="sm"
                         asChild
+                        className="text-xs sm:text-sm"
                       >
                         <Link href={`/blog/${blog.slug}`} target="_blank">
-                          <Eye className="mr-2 h-4 w-4" />
+                          <Eye className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                           View
                         </Link>
                       </Button>
@@ -167,9 +170,10 @@ export default function AdminBlogsPage() {
                         variant="outline"
                         size="sm"
                         asChild
+                        className="text-xs sm:text-sm"
                       >
                         <Link href={`/admin/blogs/${blog.slug}`}>
-                          <Edit className="mr-2 h-4 w-4" />
+                          <Edit className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                           Edit
                         </Link>
                       </Button>
@@ -177,9 +181,9 @@ export default function AdminBlogsPage() {
                         variant="outline"
                         size="sm"
                         onClick={() => handleDelete(blog.slug)}
-                        className="text-destructive hover:text-destructive"
+                        className="text-xs sm:text-sm text-destructive hover:text-destructive"
                       >
-                        <Trash2 className="mr-2 h-4 w-4" />
+                        <Trash2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                         Delete
                       </Button>
                     </div>

@@ -64,18 +64,18 @@ export default function AdminCarsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 sm:px-6 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" asChild>
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Button variant="ghost" size="sm" asChild className="lg:flex">
               <Link href="/admin/dashboard">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
+                <span className="hidden sm:inline">Back</span>
               </Link>
             </Button>
-            <h1 className="text-3xl font-bold font-serif">Manage Cars</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold font-serif">Manage Cars</h1>
           </div>
-          <Button asChild>
+          <Button size="sm" asChild className="w-full sm:w-auto">
             <Link href="/admin/cars/new">
               <Plus className="mr-2 h-4 w-4" />
               Add Car
@@ -83,10 +83,10 @@ export default function AdminCarsPage() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {cars.map((car) => (
             <Card key={car._id} className="overflow-hidden">
-              <div className="relative h-48 bg-muted">
+              <div className="relative h-40 sm:h-48 bg-muted">
                 {car.image && (
                   <Image
                     src={car.image}
@@ -98,19 +98,19 @@ export default function AdminCarsPage() {
               </div>
               <div className="p-4 space-y-3">
                 <div>
-                  <h3 className="font-bold text-lg">{car.name}</h3>
-                  <p className="text-sm text-muted-foreground">{car.categoryName}</p>
+                  <h3 className="font-bold text-base sm:text-lg line-clamp-1">{car.name}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{car.categoryName}</p>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold">${car.price}/day</span>
+                  <span className="text-xl sm:text-2xl font-bold">${car.price}/day</span>
                   {car.isFeatured && (
-                    <Badge variant="default">Featured</Badge>
+                    <Badge variant="default" className="text-xs">Featured</Badge>
                   )}
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" asChild className="flex-1">
+                  <Button variant="outline" size="sm" asChild className="flex-1 text-xs sm:text-sm">
                     <Link href={`/admin/cars/${car._id}`}>
-                      <Edit className="mr-2 h-4 w-4" />
+                      <Edit className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                       Edit
                     </Link>
                   </Button>
@@ -119,11 +119,12 @@ export default function AdminCarsPage() {
                     size="sm"
                     onClick={() => handleDelete(car._id)}
                     disabled={deletingId === car._id}
+                    className="px-2 sm:px-3"
                   >
                     {deletingId === car._id ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
                     ) : (
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                     )}
                   </Button>
                 </div>
@@ -133,9 +134,9 @@ export default function AdminCarsPage() {
         </div>
 
         {cars.length === 0 && (
-          <Card className="p-12 text-center">
-            <p className="text-muted-foreground mb-4">No cars found</p>
-            <Button asChild>
+          <Card className="p-8 sm:p-12 text-center">
+            <p className="text-sm sm:text-base text-muted-foreground mb-4">No cars found</p>
+            <Button asChild size="sm">
               <Link href="/admin/cars/new">Add Your First Car</Link>
             </Button>
           </Card>
