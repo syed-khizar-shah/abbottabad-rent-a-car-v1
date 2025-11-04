@@ -13,12 +13,15 @@ export function RichTextEditor({ value, onChange, placeholder = "Write your cont
   const editorRef = useRef<HTMLDivElement>(null)
   const quillRef = useRef<Quill | null>(null)
   const [mounted, setMounted] = useState(false)
+  const isUpdatingRef = useRef(false)
+  const initialValueSetRef = useRef(false)
 
   useEffect(() => {
     if (typeof window === "undefined") return
 
     let QuillModule: typeof Quill
     let isMounted = true
+    let changeTimeout: NodeJS.Timeout | null = null
 
     // Dynamically import Quill
     const initQuill = async () => {
@@ -80,16 +83,51 @@ export function RichTextEditor({ value, onChange, placeholder = "Write your cont
           },
         })
 
-        // Set initial content
-        if (value) {
+        // Set initial content only once
+        if (value && !initialValueSetRef.current) {
           quill.root.innerHTML = value
+          initialValueSetRef.current = true
         }
 
-        // Listen for text changes
-        quill.on("text-change", () => {
-          if (isMounted) {
-            const html = quill.root.innerHTML
-            onChange(html)
+        // Listen for text changes with proper state management
+        quill.on("text-change", (delta, oldDelta, source) => {
+          if (isMounted && !isUpdatingRef.current && source === "user") {
+            // Debounce onChange to prevent too many updates
+            if (changeTimeout) {
+              clearTimeout(changeTimeout)
+            }
+            changeTimeout = setTimeout(() => {
+              if (isMounted && quillRef.current && !isUpdatingRef.current) {
+                try {
+                  const html = quillRef.current.root.innerHTML
+                  isUpdatingRef.current = true
+                  onChange(html)
+                  // Reset flag after a short delay
+                  setTimeout(() => {
+                    isUpdatingRef.current = false
+                  }, 10)
+                } catch (error) {
+                  console.error("Error in onChange:", error)
+                  isUpdatingRef.current = false
+                }
+              }
+            }, 50)
+          }
+        })
+
+        // Handle selection changes to prevent cursor issues
+        quill.on("selection-change", (range) => {
+          // Prevent cursor errors by ensuring selection is valid
+          if (range && quillRef.current) {
+            try {
+              const length = quillRef.current.getLength()
+              if (range.index > length || range.index < 0) {
+                // Invalid selection, reset to end
+                quillRef.current.setSelection(length - 1)
+              }
+            } catch (e) {
+              // Ignore selection errors
+            }
           }
         })
 
@@ -109,30 +147,101 @@ export function RichTextEditor({ value, onChange, placeholder = "Write your cont
 
     return () => {
       clearTimeout(timeoutId)
+      if (changeTimeout) {
+        clearTimeout(changeTimeout)
+      }
       isMounted = false
       if (quillRef.current) {
+        // Remove all event listeners
+        quillRef.current.off("text-change")
+        quillRef.current.off("selection-change")
         quillRef.current = null
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Update content when value prop changes (external updates)
+  // Update content when value prop changes (external updates only)
   useEffect(() => {
-    if (quillRef.current && value !== quillRef.current.root.innerHTML) {
-      const selection = quillRef.current.getSelection()
-      const currentContent = quillRef.current.root.innerHTML
-      if (value !== currentContent) {
-        quillRef.current.root.innerHTML = value
-        // Restore selection after a brief delay
-        setTimeout(() => {
+    if (!quillRef.current || isUpdatingRef.current || !mounted) return
+
+    const currentContent = quillRef.current.root.innerHTML
+    // Normalize HTML for comparison (remove extra whitespace)
+    const normalizeHTML = (html: string) => html.trim().replace(/\s+/g, " ")
+    const normalizedCurrent = normalizeHTML(currentContent)
+    const normalizedValue = normalizeHTML(value || "")
+
+    // Only update if value is actually different and not from user input
+    if (normalizedValue !== normalizedCurrent && value !== undefined && value !== null && value !== "") {
+      try {
+        isUpdatingRef.current = true
+        
+        // Save selection before update
+        const selection = quillRef.current.getSelection(true)
+        const lengthBefore = quillRef.current.getLength()
+        
+        // Update content using delta if possible, otherwise use innerHTML
+        try {
+          quillRef.current.root.innerHTML = value
+        } catch (e) {
+          console.error("Error setting innerHTML:", e)
+          isUpdatingRef.current = false
+          return
+        }
+
+        // Wait for DOM to update before restoring selection
+        requestAnimationFrame(() => {
           if (quillRef.current && selection) {
-            quillRef.current.setSelection(selection)
+            try {
+              const lengthAfter = quillRef.current.getLength()
+              // Adjust selection if content length changed
+              let adjustedIndex = selection.index
+              const lengthDiff = lengthAfter - lengthBefore
+              
+              if (lengthDiff !== 0 && selection.index >= lengthBefore) {
+                // Selection was at end, keep it at end
+                adjustedIndex = lengthAfter - 1
+              } else if (adjustedIndex > lengthAfter - 1) {
+                adjustedIndex = lengthAfter - 1
+              } else if (adjustedIndex < 0) {
+                adjustedIndex = 0
+              }
+
+              // Ensure selection is within bounds
+              const safeIndex = Math.max(0, Math.min(adjustedIndex, lengthAfter - 1))
+              const safeLength = selection.length ? Math.min(selection.length, lengthAfter - safeIndex) : 0
+              
+              quillRef.current.setSelection(safeIndex, safeLength)
+            } catch (e) {
+              // If selection fails, set to end
+              try {
+                const length = quillRef.current.getLength()
+                quillRef.current.setSelection(length - 1)
+              } catch (e2) {
+                // Ignore if still fails
+              }
+            }
           }
-        }, 0)
+          isUpdatingRef.current = false
+        })
+      } catch (error) {
+        console.error("Error updating Quill content:", error)
+        isUpdatingRef.current = false
+      }
+    } else if (value === "" && currentContent !== "") {
+      // Handle empty value case
+      try {
+        isUpdatingRef.current = true
+        quillRef.current.root.innerHTML = ""
+        requestAnimationFrame(() => {
+          isUpdatingRef.current = false
+        })
+      } catch (error) {
+        console.error("Error clearing Quill content:", error)
+        isUpdatingRef.current = false
       }
     }
-  }, [value])
+  }, [value, mounted])
 
   return (
     <div className="rich-text-editor relative">
