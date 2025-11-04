@@ -20,6 +20,11 @@ const benefitSchema = new mongoose.Schema({
   description: { type: String, required: true }
 }, { _id: false });
 
+const faqSchema = new mongoose.Schema({
+  question: { type: String, required: true },
+  answer: { type: String, required: true }
+}, { _id: false });
+
 const testimonialSchema = new mongoose.Schema({
   name: { type: String, required: true },
   role: { type: String, required: true },
@@ -73,6 +78,12 @@ const homepageContentSchema = new mongoose.Schema({
   benefitsSectionSubtitle: { type: String, required: true },
   benefitsSectionBadge: { type: String, required: true },
   benefits: [benefitSchema],
+  
+  // FAQ Section
+  faqSectionTitle: { type: String, required: true },
+  faqSectionSubtitle: { type: String, required: true },
+  faqSectionBadge: { type: String, required: true },
+  faqs: [faqSchema],
   
   // CTA Section
   ctaTitle: { type: String, required: true },

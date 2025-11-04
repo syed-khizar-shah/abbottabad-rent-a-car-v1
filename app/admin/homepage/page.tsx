@@ -53,7 +53,7 @@ export default function AdminHomepagePage() {
       
       // Add all text fields
       Object.keys(formData).forEach(key => {
-        if (key === 'stats' || key === 'offers' || key === 'brands' || key === 'testimonials' || key === 'benefits') {
+        if (key === 'stats' || key === 'offers' || key === 'brands' || key === 'testimonials' || key === 'benefits' || key === 'faqs') {
           formDataToSend.append(key, JSON.stringify(formData[key]))
         } else if (key !== 'heroImage') {
           formDataToSend.append(key, formData[key] || '')
@@ -261,6 +261,202 @@ export default function AdminHomepagePage() {
               </div>
             </Card>
 
+            {/* Offers Section */}
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4">Special Promotions / Offers</h2>
+              <div className="space-y-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Section Title</label>
+                  <input
+                    type="text"
+                    value={formData.offersSectionTitle || ""}
+                    onChange={(e) => updateField("offersSectionTitle", e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Section Subtitle</label>
+                  <textarea
+                    value={formData.offersSectionSubtitle || ""}
+                    onChange={(e) => updateField("offersSectionSubtitle", e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    rows={2}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Section Badge</label>
+                  <input
+                    type="text"
+                    value={formData.offersSectionBadge || ""}
+                    onChange={(e) => updateField("offersSectionBadge", e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+              </div>
+              <div className="space-y-4">
+                {formData.offers?.map((offer: any, index: number) => (
+                  <div key={index} className="p-4 border rounded-lg space-y-3">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium mb-1">Title</label>
+                        <input
+                          type="text"
+                          value={offer.title}
+                          onChange={(e) => updateArrayField("offers", index, "title", e.target.value)}
+                          className="w-full px-2 py-1 text-sm border rounded"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium mb-1">Discount</label>
+                        <input
+                          type="text"
+                          value={offer.discount}
+                          onChange={(e) => updateArrayField("offers", index, "discount", e.target.value)}
+                          className="w-full px-2 py-1 text-sm border rounded"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Description</label>
+                      <textarea
+                        value={offer.description}
+                        onChange={(e) => updateArrayField("offers", index, "description", e.target.value)}
+                        className="w-full px-2 py-1 text-sm border rounded"
+                        rows={2}
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium mb-1">Icon</label>
+                        <input
+                          type="text"
+                          value={offer.icon}
+                          onChange={(e) => updateArrayField("offers", index, "icon", e.target.value)}
+                          className="w-full px-2 py-1 text-sm border rounded"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium mb-1">Color (e.g., bg-blue-500)</label>
+                        <input
+                          type="text"
+                          value={offer.color}
+                          onChange={(e) => updateArrayField("offers", index, "color", e.target.value)}
+                          className="w-full px-2 py-1 text-sm border rounded"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            {/* Brands Section */}
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4">Our Fleet Partners / Brands</h2>
+              <div className="space-y-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Section Title</label>
+                  <input
+                    type="text"
+                    value={formData.brandsSectionTitle || ""}
+                    onChange={(e) => updateField("brandsSectionTitle", e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Section Subtitle</label>
+                  <input
+                    type="text"
+                    value={formData.brandsSectionSubtitle || ""}
+                    onChange={(e) => updateField("brandsSectionSubtitle", e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium mb-2">Brands (comma-separated)</label>
+                <textarea
+                  value={formData.brands?.join(', ') || ""}
+                  onChange={(e) => {
+                    const brands = e.target.value.split(',').map(b => b.trim()).filter(Boolean);
+                    updateField("brands", brands);
+                  }}
+                  className="w-full px-3 py-2 border rounded-lg"
+                  rows={3}
+                  placeholder="Toyota, Honda, Hyundai, Suzuki, KIA, Nissan"
+                />
+              </div>
+            </Card>
+
+            {/* Benefits Section */}
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4">Why Choose Us / Benefits</h2>
+              <div className="space-y-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Section Title</label>
+                  <input
+                    type="text"
+                    value={formData.benefitsSectionTitle || ""}
+                    onChange={(e) => updateField("benefitsSectionTitle", e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Section Subtitle</label>
+                  <textarea
+                    value={formData.benefitsSectionSubtitle || ""}
+                    onChange={(e) => updateField("benefitsSectionSubtitle", e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    rows={2}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Section Badge</label>
+                  <input
+                    type="text"
+                    value={formData.benefitsSectionBadge || ""}
+                    onChange={(e) => updateField("benefitsSectionBadge", e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+              </div>
+              <div className="space-y-4">
+                {formData.benefits?.map((benefit: any, index: number) => (
+                  <div key={index} className="p-4 border rounded-lg space-y-3">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium mb-1">Title</label>
+                        <input
+                          type="text"
+                          value={benefit.title}
+                          onChange={(e) => updateArrayField("benefits", index, "title", e.target.value)}
+                          className="w-full px-2 py-1 text-sm border rounded"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium mb-1">Icon</label>
+                        <input
+                          type="text"
+                          value={benefit.icon}
+                          onChange={(e) => updateArrayField("benefits", index, "icon", e.target.value)}
+                          className="w-full px-2 py-1 text-sm border rounded"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Description</label>
+                      <textarea
+                        value={benefit.description}
+                        onChange={(e) => updateArrayField("benefits", index, "description", e.target.value)}
+                        className="w-full px-2 py-1 text-sm border rounded"
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
             {/* Testimonials */}
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4">Testimonials</h2>
@@ -306,6 +502,64 @@ export default function AdminHomepagePage() {
                         value={testimonial.rating}
                         onChange={(e) => updateArrayField("testimonials", index, "rating", parseFloat(e.target.value))}
                         className="w-full px-2 py-1 text-sm border rounded"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            {/* FAQ Section */}
+            <Card className="p-6">
+              <h2 className="text-xl font-bold mb-4">Common Questions / FAQs</h2>
+              <div className="space-y-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Section Title</label>
+                  <input
+                    type="text"
+                    value={formData.faqSectionTitle || ""}
+                    onChange={(e) => updateField("faqSectionTitle", e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Section Subtitle</label>
+                  <textarea
+                    value={formData.faqSectionSubtitle || ""}
+                    onChange={(e) => updateField("faqSectionSubtitle", e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    rows={2}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Section Badge</label>
+                  <input
+                    type="text"
+                    value={formData.faqSectionBadge || ""}
+                    onChange={(e) => updateField("faqSectionBadge", e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+              </div>
+              <div className="space-y-4">
+                {formData.faqs?.map((faq: any, index: number) => (
+                  <div key={index} className="p-4 border rounded-lg space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Question</label>
+                      <input
+                        type="text"
+                        value={faq.question}
+                        onChange={(e) => updateArrayField("faqs", index, "question", e.target.value)}
+                        className="w-full px-2 py-1 text-sm border rounded"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Answer</label>
+                      <textarea
+                        value={faq.answer}
+                        onChange={(e) => updateArrayField("faqs", index, "answer", e.target.value)}
+                        className="w-full px-2 py-1 text-sm border rounded"
+                        rows={3}
                       />
                     </div>
                   </div>

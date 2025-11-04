@@ -517,6 +517,27 @@ async function seedDatabase() {
           description: 'Professional service from booking to return'
         }
       ],
+      faqSectionTitle: 'Frequently Asked Questions',
+      faqSectionSubtitle: 'Quick answers to questions you may have',
+      faqSectionBadge: 'Common Questions',
+      faqs: [
+        {
+          question: 'How far in advance should I book?',
+          answer: 'We recommend booking at least 2-3 weeks in advance, especially for peak seasons. However, we do accept last-minute bookings subject to availability.'
+        },
+        {
+          question: 'What is included in the rental price?',
+          answer: 'Our rental prices include comprehensive insurance, 24/7 roadside assistance, regular maintenance, and basic cleaning. Fuel is not included.'
+        },
+        {
+          question: 'Do you offer delivery and pickup services?',
+          answer: 'Yes! We offer complimentary delivery and pickup within Abbottabad city limits. For locations outside the city, we charge a nominal fee based on distance.'
+        },
+        {
+          question: 'What documents do I need to rent a vehicle?',
+          answer: 'Required documents: Valid CNIC or passport, valid driver\'s license (held for minimum 3 years), proof of address, and a credit card for security deposit.'
+        }
+      ],
       ctaTitle: 'Begin Your Luxury Journey',
       ctaSubtitle: 'Our dedicated team is ready to curate the perfect rental experience tailored to your needs',
       ctaBadge: 'Experience Premium Service',

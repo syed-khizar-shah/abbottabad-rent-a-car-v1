@@ -111,30 +111,6 @@ export default function HomePage() {
     return getIcon(iconName);
   };
 
-  // Static data for sections not yet in API
-  const homeFaqs = [
-    {
-      question: "How far in advance should I book?",
-      answer:
-        "We recommend booking at least 2-3 weeks in advance, especially for peak seasons. However, we do accept last-minute bookings subject to availability.",
-    },
-    {
-      question: "What is included in the rental price?",
-      answer:
-        "Our rental prices include comprehensive insurance, 24/7 roadside assistance, regular maintenance, and basic cleaning. Fuel is not included.",
-    },
-    {
-      question: "Do you offer delivery and pickup services?",
-      answer:
-        "Yes! We offer complimentary delivery and pickup within Abbottabad city limits. For locations outside the city, we charge a nominal fee based on distance.",
-    },
-    {
-      question: "What documents do I need to rent a vehicle?",
-      answer:
-        "Required documents: Valid CNIC or passport, valid driver's license (held for minimum 3 years), proof of address, and a credit card for security deposit.",
-    },
-  ];
-
   return (
     <div className="flex flex-col">
       {/* Hero Section - Dynamic */}
@@ -216,7 +192,7 @@ export default function HomePage() {
             </motion.p>
 
             <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6"
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6 relative z-10"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.7 }}
@@ -268,7 +244,7 @@ export default function HomePage() {
       </section>
 
       {/* Premium Stats Bar - Dynamic */}
-      <section className="relative -mt-20 z-20 mb-20">
+      <section className="relative -mt-20 z-10 mb-20">
         <div className="container mx-auto px-4 sm:px-6">
           <Card className="border-0 shadow-2xl bg-background/95 backdrop-blur-xl">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 p-6 md:p-10">
@@ -889,53 +865,55 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FAQ Section - Static for now */}
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-4">
-          <AnimatedSection className="text-center mb-16">
-            <Badge variant="outline" className="mb-4">
-              Common Questions
-            </Badge>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Quick answers to questions you may have
-            </p>
-          </AnimatedSection>
-
-          <div className="max-w-3xl mx-auto">
-            <Accordion type="single" collapsible className="space-y-4">
-              {homeFaqs.map((faq, index) => (
-                <AnimatedSection key={index} delay={index * 0.1} direction="up">
-                  <AccordionItem
-                    value={`faq-${index}`}
-                    className="border rounded-lg px-6"
-                  >
-                    <AccordionTrigger className="text-left hover:no-underline py-6">
-                      <span className="font-semibold text-lg">
-                        {faq.question}
-                      </span>
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground pb-6 leading-relaxed">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                </AnimatedSection>
-              ))}
-            </Accordion>
-
-            <AnimatedSection className="text-center mt-8" delay={0.5}>
-              <Button variant="outline" size="lg" asChild>
-                <Link href="/faqs">
-                  View All FAQs
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+      {/* FAQ Section - Dynamic */}
+      {homepageContent.faqs && homepageContent.faqs.length > 0 && (
+        <section className="py-24 bg-background">
+          <div className="container mx-auto px-4">
+            <AnimatedSection className="text-center mb-16">
+              <Badge variant="outline" className="mb-4">
+                {homepageContent.faqSectionBadge || "Common Questions"}
+              </Badge>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
+                {homepageContent.faqSectionTitle || "Frequently Asked Questions"}
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                {homepageContent.faqSectionSubtitle || "Quick answers to questions you may have"}
+              </p>
             </AnimatedSection>
+
+            <div className="max-w-3xl mx-auto">
+              <Accordion type="single" collapsible className="space-y-4">
+                {homepageContent.faqs.map((faq: any, index: number) => (
+                  <AnimatedSection key={index} delay={index * 0.1} direction="up">
+                    <AccordionItem
+                      value={`faq-${index}`}
+                      className="border rounded-lg px-6"
+                    >
+                      <AccordionTrigger className="text-left hover:no-underline py-6">
+                        <span className="font-semibold text-lg">
+                          {faq.question}
+                        </span>
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground pb-6 leading-relaxed">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </AnimatedSection>
+                ))}
+              </Accordion>
+
+              <AnimatedSection className="text-center mt-8" delay={0.5}>
+                <Button variant="outline" size="lg" asChild>
+                  <Link href="/faqs">
+                    View All FAQs
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </AnimatedSection>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Blog Section - Dynamic */}
       {recentBlogs.length > 0 && (

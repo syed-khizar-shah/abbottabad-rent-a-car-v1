@@ -99,6 +99,9 @@ export async function PUT(request: NextRequest) {
     const benefits = formData.get('benefits') as string;
     if (benefits) updateData.benefits = JSON.parse(benefits);
     
+    const faqs = formData.get('faqs') as string;
+    if (faqs) updateData.faqs = JSON.parse(faqs);
+    
     // Handle other text fields
     const fields = [
       'categoriesSectionTitle', 'categoriesSectionSubtitle', 'categoriesSectionBadge',
@@ -107,6 +110,7 @@ export async function PUT(request: NextRequest) {
       'featuredSectionTitle', 'featuredSectionSubtitle', 'featuredSectionBadge',
       'testimonialsSectionTitle', 'testimonialsSectionSubtitle', 'testimonialsSectionBadge',
       'benefitsSectionTitle', 'benefitsSectionSubtitle', 'benefitsSectionBadge',
+      'faqSectionTitle', 'faqSectionSubtitle', 'faqSectionBadge',
       'ctaTitle', 'ctaSubtitle', 'ctaBadge', 'ctaPrimaryButton', 'ctaSecondaryButton',
       'ctaPhone', 'ctaEmail', 'ctaAddress'
     ];

@@ -28,6 +28,11 @@ interface ITestimonial {
   image?: string;
 }
 
+interface IFAQ {
+  question: string;
+  answer: string;
+}
+
 interface IHomepageContent {
   heroTitle: string;
   heroTitleAccent: string;
@@ -58,6 +63,10 @@ interface IHomepageContent {
   benefitsSectionSubtitle: string;
   benefitsSectionBadge: string;
   benefits: IBenefit[];
+  faqSectionTitle: string;
+  faqSectionSubtitle: string;
+  faqSectionBadge: string;
+  faqs: IFAQ[];
   ctaTitle: string;
   ctaSubtitle: string;
   ctaBadge: string;
@@ -88,6 +97,11 @@ const benefitSchema = new Schema<IBenefit>({
   icon: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
+}, { _id: false });
+
+const faqSchema = new Schema<IFAQ>({
+  question: { type: String, required: true },
+  answer: { type: String, required: true },
 }, { _id: false });
 
 const testimonialSchema = new Schema<ITestimonial>({
@@ -129,6 +143,10 @@ const homepageContentSchema = new Schema<IHomepageContent>(
     benefitsSectionSubtitle: { type: String, required: true },
     benefitsSectionBadge: { type: String, required: true },
     benefits: [benefitSchema],
+    faqSectionTitle: { type: String, required: true },
+    faqSectionSubtitle: { type: String, required: true },
+    faqSectionBadge: { type: String, required: true },
+    faqs: [faqSchema],
     ctaTitle: { type: String, required: true },
     ctaSubtitle: { type: String, required: true },
     ctaBadge: { type: String, required: true },
