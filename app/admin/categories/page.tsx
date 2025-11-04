@@ -83,9 +83,9 @@ export default function AdminCategoriesPage() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {categories.map((category) => (
-            <Card key={category._id} className="overflow-hidden">
+            <Card key={category._id} className="overflow-hidden hover:shadow-lg transition-shadow">
               <div className="relative h-40 sm:h-48 bg-muted">
                 {category.image && (
                   <Image
@@ -96,39 +96,45 @@ export default function AdminCategoriesPage() {
                   />
                 )}
               </div>
-              <div className="p-4 space-y-3">
+              <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
                 <div>
-                  <h3 className="font-bold text-base sm:text-lg line-clamp-1">{category.name}</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{category.description}</p>
+                  <h3 className="font-bold text-base sm:text-lg line-clamp-1 mb-1">{category.name}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem] sm:min-h-0">{category.description}</p>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-lg sm:text-xl font-bold">${category.priceFrom}/day</span>
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-base sm:text-lg lg:text-xl font-bold">${category.priceFrom}/day</span>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <Button variant="outline" size="sm" asChild className="flex-1 text-xs sm:text-sm">
+                <div className="flex flex-col gap-2 pt-2">
+                  <Button variant="outline" size="sm" asChild className="w-full text-xs sm:text-sm">
                     <Link href={`/admin/categories/${category._id}/cars`}>
                       View Cars
                     </Link>
                   </Button>
-                  <Button variant="outline" size="sm" asChild className="flex-1 text-xs sm:text-sm">
-                    <Link href={`/admin/categories/${category._id}`}>
-                      <Edit className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                      Edit
-                    </Link>
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDelete(category._id)}
-                    disabled={deletingId === category._id}
-                    className="px-2 sm:px-3"
-                  >
-                    {deletingId === category._id ? (
-                      <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
-                    ) : (
-                      <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                    )}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" asChild className="flex-1 text-xs sm:text-sm">
+                      <Link href={`/admin/categories/${category._id}`}>
+                        <Edit className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                        <span className="hidden xs:inline">Edit</span>
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDelete(category._id)}
+                      disabled={deletingId === category._id}
+                      className="flex-1 sm:flex-initial px-3 sm:px-3 text-xs sm:text-sm"
+                      aria-label="Delete category"
+                    >
+                      {deletingId === category._id ? (
+                        <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
+                      ) : (
+                        <>
+                          <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-0" />
+                          <span className="hidden sm:inline ml-0 sm:ml-1.5">Delete</span>
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </Card>
@@ -136,9 +142,9 @@ export default function AdminCategoriesPage() {
         </div>
 
         {categories.length === 0 && (
-          <Card className="p-8 sm:p-12 text-center">
+          <Card className="p-6 sm:p-8 lg:p-12 text-center">
             <p className="text-sm sm:text-base text-muted-foreground mb-4">No categories found</p>
-            <Button asChild size="sm">
+            <Button asChild size="sm" className="w-full sm:w-auto">
               <Link href="/admin/categories/new">Add Your First Category</Link>
             </Button>
           </Card>
