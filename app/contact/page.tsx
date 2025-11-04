@@ -16,6 +16,10 @@ import {
   Send,
   Navigation,
   Loader2,
+  Facebook,
+  Instagram,
+  Twitter,
+  Linkedin,
 } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -461,6 +465,62 @@ export default function ContactPage() {
                   </div>
                 </div>
               </Card>
+
+              {/* Social Media */}
+              {content.socialMedia && (
+                <Card className="p-4 md:p-6 space-y-4 shadow-lg hover:shadow-xl transition-shadow">
+                  <h3 className="text-lg md:text-xl font-bold">Follow Us</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Stay connected with us on social media
+                  </p>
+                  <div className="flex gap-3 pt-2">
+                    {content.socialMedia.facebook && (
+                      <a
+                        href={content.socialMedia.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group w-12 h-12 rounded-xl bg-muted/80 flex items-center justify-center hover:bg-accent hover:text-accent-foreground hover:scale-110 hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-md"
+                        aria-label="Facebook"
+                      >
+                        <Facebook className="h-5 w-5 transition-transform group-hover:scale-110" />
+                      </a>
+                    )}
+                    {content.socialMedia.instagram && (
+                      <a
+                        href={content.socialMedia.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group w-12 h-12 rounded-xl bg-muted/80 flex items-center justify-center hover:bg-accent hover:text-accent-foreground hover:scale-110 hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-md"
+                        aria-label="Instagram"
+                      >
+                        <Instagram className="h-5 w-5 transition-transform group-hover:scale-110" />
+                      </a>
+                    )}
+                    {content.socialMedia.twitter && (
+                      <a
+                        href={content.socialMedia.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group w-12 h-12 rounded-xl bg-muted/80 flex items-center justify-center hover:bg-accent hover:text-accent-foreground hover:scale-110 hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-md"
+                        aria-label="Twitter"
+                      >
+                        <Twitter className="h-5 w-5 transition-transform group-hover:scale-110" />
+                      </a>
+                    )}
+                    {content.socialMedia.linkedin && (
+                      <a
+                        href={content.socialMedia.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group w-12 h-12 rounded-xl bg-muted/80 flex items-center justify-center hover:bg-accent hover:text-accent-foreground hover:scale-110 hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-md"
+                        aria-label="LinkedIn"
+                      >
+                        <Linkedin className="h-5 w-5 transition-transform group-hover:scale-110" />
+                      </a>
+                    )}
+                  </div>
+                </Card>
+              )}
             </div>
           </div>
         </div>
