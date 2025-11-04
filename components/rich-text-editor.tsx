@@ -1,24 +1,7 @@
 "use client"
 
-import { useMemo, useState, useEffect } from "react"
-import dynamic from "next/dynamic"
-
-// Dynamic import with proper SSR handling
-const ReactQuill = dynamic(
-  () => import("react-quill"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="min-h-[300px] border rounded-lg p-4 bg-muted/50 animate-pulse">
-        <div className="h-10 bg-muted rounded mb-4" />
-        <div className="space-y-2">
-          <div className="h-4 bg-muted rounded w-full" />
-          <div className="h-4 bg-muted rounded w-3/4" />
-        </div>
-      </div>
-    ),
-  }
-)
+import { useRef, useEffect, useState } from "react"
+import type Quill from "quill"
 
 interface RichTextEditorProps {
   value: string
@@ -27,63 +10,101 @@ interface RichTextEditorProps {
 }
 
 export function RichTextEditor({ value, onChange, placeholder = "Write your content here..." }: RichTextEditorProps) {
+  const editorRef = useRef<HTMLDivElement>(null)
+  const quillRef = useRef<Quill | null>(null)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-    
-    // Load Quill CSS dynamically only on client
-    if (typeof window !== "undefined") {
-      const linkId = "quill-snow-css"
-      if (!document.getElementById(linkId)) {
-        const link = document.createElement("link")
-        link.id = linkId
-        link.href = "https://cdn.quilljs.com/1.3.6/quill.snow.css"
-        link.rel = "stylesheet"
-        document.head.appendChild(link)
+    if (typeof window === "undefined") return
+
+    let QuillModule: typeof Quill
+    let isMounted = true
+
+    // Dynamically import Quill
+    const initQuill = async () => {
+      try {
+        // Load CSS
+        const linkId = "quill-snow-css"
+        if (!document.getElementById(linkId)) {
+          const link = document.createElement("link")
+          link.id = linkId
+          link.href = "https://cdn.quilljs.com/1.3.6/quill.snow.css"
+          link.rel = "stylesheet"
+          document.head.appendChild(link)
+        }
+
+        // Import Quill
+        QuillModule = (await import("quill")).default
+
+        if (!isMounted || !editorRef.current || quillRef.current) return
+
+        // Initialize Quill
+        const quill = new QuillModule(editorRef.current, {
+          theme: "snow",
+          placeholder,
+          modules: {
+            toolbar: [
+              [{ header: [1, 2, 3, 4, 5, 6, false] }],
+              [{ font: [] }],
+              [{ size: [] }],
+              ["bold", "italic", "underline", "strike", "blockquote"],
+              [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
+              ["link", "image", "video"],
+              [{ color: [] }, { background: [] }],
+              [{ align: [] }],
+              ["clean"],
+            ],
+            clipboard: {
+              matchVisual: false,
+            },
+          },
+        })
+
+        // Set initial content
+        if (value) {
+          quill.root.innerHTML = value
+        }
+
+        // Listen for text changes
+        quill.on("text-change", () => {
+          const html = quill.root.innerHTML
+          onChange(html)
+        })
+
+        quillRef.current = quill
+        setMounted(true)
+      } catch (error) {
+        console.error("Error initializing Quill:", error)
       }
     }
+
+    initQuill()
+
+    return () => {
+      isMounted = false
+      if (quillRef.current) {
+        quillRef.current = null
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const modules = useMemo(
-    () => ({
-      toolbar: [
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        [{ font: [] }],
-        [{ size: [] }],
-        ["bold", "italic", "underline", "strike", "blockquote"],
-        [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
-        ["link", "image", "video"],
-        [{ color: [] }, { background: [] }],
-        [{ align: [] }],
-        ["clean"],
-      ],
-      clipboard: {
-        matchVisual: false,
-      },
-    }),
-    []
-  )
-
-  const formats = [
-    "header",
-    "font",
-    "size",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-    "video",
-    "color",
-    "background",
-    "align",
-  ]
+  // Update content when value prop changes (external updates)
+  useEffect(() => {
+    if (quillRef.current && value !== quillRef.current.root.innerHTML) {
+      const selection = quillRef.current.getSelection()
+      const currentContent = quillRef.current.root.innerHTML
+      if (value !== currentContent) {
+        quillRef.current.root.innerHTML = value
+        // Restore selection after a brief delay
+        setTimeout(() => {
+          if (quillRef.current && selection) {
+            quillRef.current.setSelection(selection)
+          }
+        }, 0)
+      }
+    }
+  }, [value])
 
   if (!mounted) {
     return (
@@ -99,15 +120,7 @@ export function RichTextEditor({ value, onChange, placeholder = "Write your cont
 
   return (
     <div className="rich-text-editor">
-      <ReactQuill
-        theme="snow"
-        value={value}
-        onChange={onChange}
-        modules={modules}
-        formats={formats}
-        placeholder={placeholder}
-        className="bg-background"
-      />
+      <div ref={editorRef} className="bg-background" />
       <style jsx global>{`
         .rich-text-editor .ql-container {
           font-family: inherit;
