@@ -247,7 +247,7 @@ export default function ContactPage() {
                   <Input
                     id="phone"
                     type="tel"
-                    placeholder="+92 300 1234567"
+                    placeholder={content.phoneNumber || "+92 300 1234567"}
                     required
                     className="h-10 md:h-11"
                   />

@@ -12,9 +12,22 @@ export async function GET(
     await connectDB();
     const { id } = await params;
 
-    // Try to find by ID first, then by slug
-    let car = await Car.findById(id).populate('category', 'name slug');
+    if (!id) {
+      return NextResponse.json(
+        { message: 'Car ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Try to find by ID first (if it's a valid ObjectId), then by slug
+    let car = null;
     
+    // Check if id is a valid MongoDB ObjectId (24 hex characters)
+    if (/^[0-9a-fA-F]{24}$/.test(id)) {
+      car = await Car.findById(id).populate('category', 'name slug');
+    }
+    
+    // If not found by ID, try by slug
     if (!car) {
       car = await Car.findOne({ slug: id }).populate('category', 'name slug');
     }

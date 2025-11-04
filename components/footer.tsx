@@ -4,7 +4,7 @@ import Link from "next/link"
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react"
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
-import { authApi } from "@/lib/api"
+import { authApi, contactApi, locationApi } from "@/lib/api"
 
 const footerLinks = {
   company: [
@@ -29,11 +29,27 @@ const footerLinks = {
 
 export function Footer() {
   const [isAdmin, setIsAdmin] = useState(false)
+  const [contactInfo, setContactInfo] = useState<any>(null)
+  const [locationInfo, setLocationInfo] = useState<any>(null)
   const pathname = usePathname()
 
   useEffect(() => {
     checkAdminAuth()
+    loadContactAndLocationInfo()
   }, [pathname])
+
+  const loadContactAndLocationInfo = async () => {
+    try {
+      const [contactData, locationData] = await Promise.all([
+        contactApi.get().catch(() => null),
+        locationApi.get().catch(() => null)
+      ])
+      setContactInfo(contactData)
+      setLocationInfo(locationData)
+    } catch (err) {
+      console.error("Error loading contact/location info:", err)
+    }
+  }
 
   const checkAdminAuth = async () => {
     // Don't show footer on admin pages or if admin is logged in
@@ -73,28 +89,31 @@ export function Footer() {
             </p>
             <div className="space-y-3 text-sm md:text-base">
               <a 
-                href="tel:+923001234567" 
+                href={`tel:${contactInfo?.phoneNumber || locationInfo?.phone || "+923001234567"}`}
                 className="flex items-center gap-3 text-muted-foreground hover:text-accent transition-all duration-200 hover:translate-x-1 group"
               >
                 <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent group-hover:text-accent-foreground transition-colors">
                   <Phone className="h-4 w-4" />
                 </div>
-                <span>+92 300 1234567</span>
+                <span>{contactInfo?.phoneNumber || locationInfo?.phone || "+92 300 1234567"}</span>
               </a>
               <a 
-                href="mailto:info@abbottabadrentacar.com" 
+                href={`mailto:${contactInfo?.email || locationInfo?.email || "info@abbottabadrentacar.com"}`}
                 className="flex items-center gap-3 text-muted-foreground hover:text-accent transition-all duration-200 hover:translate-x-1 group"
               >
                 <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent group-hover:text-accent-foreground transition-colors">
                   <Mail className="h-4 w-4" />
                 </div>
-                <span>info@abbottabadrentacar.com</span>
+                <span>{contactInfo?.email || locationInfo?.email || "info@abbottabadrentacar.com"}</span>
               </a>
               <div className="flex items-start gap-3 text-muted-foreground">
                 <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 mt-0.5">
                   <MapPin className="h-4 w-4" />
                 </div>
-                <span className="text-sm md:text-base leading-relaxed">Main Mansehra Road, Abbottabad, KPK</span>
+                <span className="text-sm md:text-base leading-relaxed">
+                  {locationInfo?.address || contactInfo?.address || "Main Mansehra Road, Abbottabad, KPK"}
+                  {locationInfo?.city && `, ${locationInfo.city}`}
+                </span>
               </div>
             </div>
             <div className="flex gap-3 pt-2">

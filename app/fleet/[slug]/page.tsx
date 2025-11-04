@@ -14,22 +14,28 @@ import { notFound } from "next/navigation"
 
 export default function CarDetailPage() {
   const params = useParams()
-  const slug = params.slug as string
+  const slug = params?.slug as string
   const [loading, setLoading] = useState(true)
   const [car, setCar] = useState<any>(null)
   const [phoneNumber, setPhoneNumber] = useState("+923001234567")
 
   useEffect(() => {
-    loadCar()
-    loadContactInfo()
+    if (slug) {
+      loadCar()
+      loadContactInfo()
+    }
   }, [slug])
 
   const loadCar = async () => {
+    if (!slug) return
+    
     try {
+      setLoading(true)
       const carData = await carsApi.getOne(slug)
       setCar(carData)
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error loading car:", err)
+      // If car not found, set to null so notFound() is called
       setCar(null)
     } finally {
       setLoading(false)
