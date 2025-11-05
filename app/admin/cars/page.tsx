@@ -102,7 +102,7 @@ export default function AdminCarsPage() {
                   <p className="text-xs sm:text-sm text-muted-foreground">{car.categoryName}</p>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xl sm:text-2xl font-bold">${car.price}/day</span>
+                  <span className="text-xl sm:text-2xl font-bold">Rs{car.price}/day</span>
                   {car.isFeatured && (
                     <Badge variant="default" className="text-xs">Featured</Badge>
                   )}

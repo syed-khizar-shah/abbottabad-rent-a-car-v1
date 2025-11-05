@@ -371,7 +371,7 @@ export default function FleetPage() {
                             Starting from
                           </p>
                           <p className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-foreground to-accent bg-clip-text text-transparent">
-                            ${car.price || car.pricing?.["1-3"] || "N/A"}
+                            Rs{car.price || car.pricing?.["1-3"] || "N/A"}
                             <span className="text-base sm:text-lg font-normal text-muted-foreground">
                               /day
                             </span>

@@ -342,7 +342,7 @@ export default function HomePage() {
                               Starting from
                             </p>
                             <p className="text-lg md:text-xl font-bold bg-gradient-to-r from-accent to-accent/70 bg-clip-text text-transparent">
-                              ${carClass.priceFrom}/day
+                              Rs{carClass.priceFrom}/day
                             </p>
                           </motion.div>
                         </div>
@@ -702,7 +702,7 @@ export default function HomePage() {
                                   : "text-foreground"
                               }`}
                             >
-                              ${tier.price}
+                              Rs{tier.price}
                             </span>
                           </motion.div>
                         ))}

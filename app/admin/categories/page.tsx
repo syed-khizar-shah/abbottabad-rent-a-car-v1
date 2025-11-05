@@ -102,7 +102,7 @@ export default function AdminCategoriesPage() {
                   <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem] sm:min-h-0">{category.description}</p>
                 </div>
                 <div className="flex items-center justify-between pt-1">
-                  <span className="text-base sm:text-lg lg:text-xl font-bold">${category.priceFrom}/day</span>
+                  <span className="text-base sm:text-lg lg:text-xl font-bold">Rs{category.priceFrom}/day</span>
                 </div>
                 <div className="flex flex-col gap-2 pt-2">
                   <Button variant="outline" size="sm" asChild className="w-full text-xs sm:text-sm">

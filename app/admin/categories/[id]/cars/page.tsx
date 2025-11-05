@@ -107,7 +107,7 @@ export default function CategoryCarsPage() {
                     <p className="text-sm text-muted-foreground">{car.categoryName}</p>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">${car.price}/day</span>
+                    <span className="text-2xl font-bold">Rs{car.price}/day</span>
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 fill-accent text-accent" />
                       <span className="text-sm font-medium">{car.rating || 4.5}</span>
